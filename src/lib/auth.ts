@@ -2,9 +2,14 @@ import { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { db } from "@/lib/db/client";
+import { users, account, session } from "@/lib/db/schema";
 
 export const authOptions: NextAuthOptions = {
-    adapter: DrizzleAdapter(db),
+    adapter: DrizzleAdapter(db, {
+        usersTable: users,
+        accountsTable: account,
+        sessionsTable: session,
+    }),
     secret: process.env.NEXTAUTH_SECRET,
     session: {
         strategy: "jwt",
@@ -16,6 +21,7 @@ export const authOptions: NextAuthOptions = {
             profile(profile) {
                 return {
                     id: profile.sub,
+                    name: profile.name,
                     fullName: profile.name,
                     email: profile.email,
                     image: profile.picture,

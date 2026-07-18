@@ -1,23 +1,18 @@
-import { pgTable, text, timestamp, date, pgEnum, jsonb } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, date, pgEnum, jsonb, integer, primaryKey, uuid } from "drizzle-orm/pg-core";
+import { AdapterAccount } from "next-auth/adapters";
 
+// Definición física del Enum para el género en PostgreSQL
 export const genderEnum = pgEnum("gender_enum", ["male", "female"]);
 
-/**
- * Strict interface for the phone_numbers field to avoid using any[].
- * Allows storing multiple numbers and identifying the preferred emergency contact channel.
- */
 export interface UserPhoneConfig {
     phoneNumber: string;
     label: "personal" | "work" | "emergency" | "other";
     isPreferred: boolean;
 }
+export const users = pgTable("users", {
+    id: uuid("id").defaultRandom().primaryKey(),
 
-/**
- * 'user' table structured for NextAuth.js v4 and extended for the Heroes onboarding flow.
- * Forces the use of snake_case in the physical SQL engine.
- */
-export const user = pgTable("user", {
-    id: text("id").primaryKey(),
+    name: text("name"),
 
     fullName: text("full_name").notNull(),
 
@@ -39,4 +34,36 @@ export const user = pgTable("user", {
         .defaultNow()
         .$onUpdate(() => new Date())
         .notNull(),
+});
+
+export const account = pgTable(
+    "account",
+    {
+        userId: uuid("user_id")
+            .notNull()
+            .references(() => users.id, { onDelete: "cascade" }),
+        type: text("type").$type<AdapterAccount["type"]>().notNull(),
+        provider: text("provider").notNull(),
+        providerAccountId: text("providerAccountId").notNull(),
+        refresh_token: text("refresh_token"),
+        access_token: text("access_token"),
+        expires_at: integer("expires_at"),
+        token_type: text("token_type"),
+        scope: text("scope"),
+        id_token: text("id_token"),
+        session_state: text("session_state"),
+    },
+    (table) => [
+        {
+            compoundKey: primaryKey({ columns: [table.provider, table.providerAccountId] }),
+        }
+    ]
+);
+
+export const session = pgTable("session", {
+    sessionToken: text("sessionToken").primaryKey(),
+    userId: uuid("user_id") 
+        .notNull()
+        .references(() => users.id, { onDelete: "cascade" }),
+    expires: timestamp("expires", { mode: "date" }).notNull(),
 });
