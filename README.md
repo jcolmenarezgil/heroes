@@ -1,36 +1,91 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Heroes Project
 
-## Getting Started
 
-First, run the development server:
+## 🛠 Tech Stack & Ecosystem
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+*   **Framework:** Next.js 15 (App Router - Hybrid Client/Server Architecture)
+*   **Package Manager:** `pnpm` (Optimized performance and resource allocation)
+*   **Build Tool / Compiler:** Turbopack (`next dev --turbo`)
+*   **Styling:** Tailwind CSS
+*   **Database ORM:** Drizzle ORM (PostgreSQL dialect)
+*   **Authentication:** NextAuth.js v4 (LTS Stable Integration)
+*   **Deployment Platform:** Vercel
+
+---
+
+## 📁 Project Structure & Alias Mapping
+
+The project enforces a highly structured, scalable directory tree located inside the `src/` directory.
+
+### Path Alias Configuration
+To maintain clean, absolute imports across the codebase, a global path alias is strictly mapped in `tsconfig.json`. The standard `@/` prefix is explicitly tied to the root of the source folder:
+
+*   **`@/*`** maps directly to **`./src/*`**
+
+### Folder Directory Conventions
+```text
+src/
+├── app/                  # File-system Routing (App Router)
+│   ├── api/
+│   │   └── auth/
+│   │       └── [...nextauth]/
+│   │           └── route.ts  # NextAuth v4 Route Handlers
+│   ├── layout.tsx
+│   └── page.tsx
+├── components/           # Reusable UI components (Atomic/Molecular)
+├── lib/                  # Infrastructure, database clients, and core services
+│   ├── auth.ts           # NextAuth execution configuration options
+│   └── db/
+│       ├── client.ts     # Singleton database client instance
+│       └── schema.ts     # Strongly typed relational database schemas
+├── styles/               # Global styles and Tailwind entrypoints
+└── types/                # Global type definitions (No 'any' allowed)
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## ⚙️ Environment Variables Setup
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The repository ships with an environment variable blueprint to guarantee reproducible deployments across local and cloud pipelines. 
 
-## Learn More
+### How to configure:
+1. Copy the template file to create your local runtime configuration:
+   ```bash
+   cp .env.example .env
+   ```
+2. Open the newly created `.env` file and populate it with your local credentials:
+   *   `DATABASE_URL`: Your secure PostgreSQL connection string.
+   *   `NEXTAUTH_SECRET`: A secure, cryptographically random string (minimum 32 characters) used to encrypt session tokens.
+   *   `NEXTAUTH_URL`: The canonical base URL of your application (e.g., `http://localhost:3000` during development).
 
-To learn more about Next.js, take a look at the following resources:
+*Note: The `.env` file is explicitly blocked in `.gitignore` to prevent any structural credential leaks.*
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🚀 Getting Started
 
-## Deploy on Vercel
+### 1. Install Dependencies
+```bash
+pnpm install
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 2. Run the Local Development Environment (with Turbopack)
+```bash
+pnpm dev
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 3. Database Management Operations
+```bash
+# Generate relational migrations based on the schema definitions
+pnpm db:generate
+
+# Push schema states safely directly to the database instance
+pnpm db:push
+```
+
+---
+
+## 👥 Participants
+
+*   **Natanael da Matta:** *_"What we know is a drop, what we don't know is an ocean."_*
+*   **Jose Colmenarez:** *_“The best way to predict the future is to invent it.”_*
