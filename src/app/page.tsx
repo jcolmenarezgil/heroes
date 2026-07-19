@@ -1,65 +1,173 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import React, { useState } from "react";
+import Image from "next/image";
+import { signIn, signOut, useSession } from "next-auth/react";
+
+/**
+ * OnboardingPage manages both the guest entrance and the post-auth setup wizard.
+ * Implements granular control over optional demographic tracking parameters.
+ */
+export default function OnboardingPage() {
+  const { data: session, status } = useSession();
+
+  // Local state management for optional parameters
+  const [gender, setGender] = useState<"" | "male" | "female">("");
+  const [dob, setDob] = useState<string>("");
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
+  // High-speed compilation loading check
+  if (status === "loading") {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-white px-4">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-red-600 border-t-transparent"></div>
+      </div>
+    );
+  }
+
+  /**
+   * Handles persistence operations for optional profile values.
+   */
+  const handleSaveProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      // Future integration with Server Action or API endpoint will execute here
+      console.log("Submitting values to DB:", { gender, dob });
+    } catch (error) {
+      console.error("Failed to update profile", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+    <div className="flex min-h-screen flex-col items-center justify-center bg-slate-50 px-4 py-8 sm:px-6 lg:px-8">
+      <div className="w-full max-w-md overflow-hidden rounded-3xl bg-white p-6 shadow-xl border border-slate-100 flex flex-col items-center">
+
+        {/* Brand Header Section */}
+        <header className="flex items-center justify-center gap-3 mt-4 w-full">
+          <Image
+            src="/heroes-logo-app.webp"
+            alt="Heroes Application Logo"
+            width={174}
+            height={202}
+            className="h-10 w-auto object-contain"
+            priority
+          />
+          <h1 className="text-xl font-bold tracking-tight text-slate-900">Heroes</h1>
+        </header>
+
+        {!session ? (
+          /* ================= STATE A: UNAUTHENTICATED ENTRANCE ================= */
+          <>
+            <section className="text-center mt-6">
+              <h2 className="text-2xl font-black text-slate-900 sm:text-3xl">Crisis Response</h2>
+              <p className="text-sm font-medium text-slate-600 mt-1">& Missing Persons Locator</p>
+            </section>
+
+            <div className="relative w-full aspect-[4/3] mt-6 rounded-xl overflow-hidden bg-slate-100">
+              <Image
+                src="/barner_heroes.webp"
+                alt="Crisis response operational visualization"
+                fill
+                sizes="(max-w-md) 100vw, 400px"
+                className="object-cover"
+                priority
+              />
+            </div>
+
+            <div className="mt-8 space-y-3 w-full">
+              <button
+                onClick={() => signIn("google")}
+                className="w-full rounded-xl bg-red-600 py-3.5 text-sm font-bold tracking-wide text-white uppercase transition-colors hover:bg-red-700 active:bg-red-800"
+              >
+                Login with Google
+              </button>
+
+              <button className="flex items-center justify-center gap-2 w-full rounded-xl bg-white border border-slate-200 py-3.5 text-sm font-bold tracking-wide text-slate-700 uppercase hover:bg-slate-50">
+                Choose Language <span className="text-base">🇺🇸</span>
+              </button>
+
+              <button className="w-full rounded-xl bg-white border border-slate-200 py-3.5 text-sm font-bold tracking-wide text-slate-700 uppercase hover:bg-slate-50">
+                Continue without Account
+              </button>
+            </div>
+
+            <footer className="mt-6 text-center">
+              <p className="text-xs leading-relaxed text-slate-500 max-w-xs">
+                <span className="font-semibold text-slate-700">Hint:</span> You can continue without creating an account, but to suggest modifications or update statuses, you must log in first.
+              </p>
+            </footer>
+          </>
+        ) : (
+          /* ================= STATE B: AUTHENTICATED ONBOARDING SETUP ================= */
+          <div className="w-full mt-6 space-y-6">
+            <div className="text-center">
+              <h2 className="text-xl font-extrabold text-slate-900">Complete Profile Details</h2>
+              <p className="text-xs text-slate-500 mt-1">Welcome, {session.user?.name || "Hero"}</p>
+            </div>
+
+            <div className="rounded-xl bg-blue-50/50 p-4 border border-blue-100 text-xs text-blue-800 leading-relaxed">
+              These demographic parameters are completely <strong className="uppercase">optional</strong>. They assist rescue operations in matching structural identification lists faster during field operations.
+            </div>
+
+            <form onSubmit={handleSaveProfile} className="space-y-4">
+              {/* Optional Field 1: Gender Identifier */}
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor="gender" className="text-xs font-bold uppercase tracking-wider text-slate-600">
+                  Gender <span className="text-slate-400 font-normal">(Optional)</span>
+                </label>
+                <select
+                  id="gender"
+                  value={gender}
+                  onChange={(e) => setGender(e.target.value as any)}
+                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-800 focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500"
+                >
+                  <option value="">Select gender option...</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                </select>
+              </div>
+
+              {/* Optional Field 2: Date of Birth */}
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor="dob" className="text-xs font-bold uppercase tracking-wider text-slate-600">
+                  Date of Birth <span className="text-slate-400 font-normal">(Optional)</span>
+                </label>
+                <input
+                  id="dob"
+                  type="date"
+                  value={dob}
+                  onChange={(e) => setDob(e.target.value)}
+                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-800 focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500"
+                />
+              </div>
+
+              {/* Action Operations Trigger */}
+              <div className="pt-2 space-y-2">
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full rounded-xl bg-red-600 py-3.5 text-sm font-bold tracking-wide text-white uppercase transition-colors hover:bg-red-700 disabled:bg-slate-300"
+                >
+                  {isSubmitting ? "Saving Parameters..." : "Save and Continue"}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => signOut()}
+                  className="w-full rounded-xl bg-white border border-slate-200 py-2.5 text-xs font-semibold text-slate-500 uppercase transition-colors hover:bg-slate-50"
+                >
+                  Sign Out
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
+
+      </div>
     </div>
   );
 }
