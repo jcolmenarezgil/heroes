@@ -7,12 +7,7 @@
 .pnp.*
 .yarn/*
 !.yarn/patches
-!.yarn/plugins# Database Connection
-DATABASE_URL="postgresql://user:password@localhost:5432/heroes_db"
-
-# NextAuth Configuration
-NEXTAUTH_URL="http://localhost:3000"
-NEXTAUTH_SECRET="your_development_secret_key_minimum_32_chars"
+!.yarn/plugins
 !.yarn/releases
 !.yarn/versions
 

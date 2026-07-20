@@ -1,0 +1,45 @@
+{
+  "metadata": {
+    "title": "Heroes - Crisis Response & Missing Persons Locator",
+    "description": "A resilient and optimized platform designed for crisis situations to facilitate the locating of unaccounted individuals, maximizing local persistence, battery efficiency, and secure coordination between families and rescuers."
+  },
+  "common": {
+    "loading": "Loading...",
+    "optional": "(Optional)",
+    "logoAlt": "Heroes Application Logo",
+    "crisisResponse": "Crisis Response",
+    "missingPersonsLocator": "& Missing Persons Locator"
+  },
+  "auth": {
+    "loginWithGoogle": "Login with Google",
+    "signOut": "Sign Out"
+  },
+  "onboarding": {
+    "continueWithoutAccount": "Continue without Account",
+    "hintLabel": "Hint:",
+    "hintText": "You can continue without creating an account, but to suggest modifications or update statuses, you must log in first.",
+    "completeProfile": "Complete Profile Details",
+    "welcome": "Welcome, {name}",
+    "optionalNote": "These demographic parameters are completely optional. They assist rescue operations in matching structural identification lists faster during field operations.",
+    "gender": {
+      "label": "Gender",
+      "placeholder": "Select gender option...",
+      "male": "Male",
+      "female": "Female"
+    },
+    "dateOfBirth": {
+      "label": "Date of Birth"
+    },
+    "saving": "Saving Parameters...",
+    "saveAndContinue": "Save and Continue"
+  },
+  "languageSwitcher": {
+    "label": "Language",
+    "english": "English",
+    "spanish": "Español"
+  },
+  "errors": {
+    "unauthorized": "You don't have permission to perform this action.",
+    "generic": "Something went wrong. Please try again."
+  }
+}

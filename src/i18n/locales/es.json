@@ -1,0 +1,45 @@
+{
+  "metadata": {
+    "title": "Heroes - Localizador de Personas Desaparecidas y Respuesta a Crisis",
+    "description": "Una plataforma resiliente y optimizada diseñada para situaciones de crisis que facilita la localización de personas no localizadas, maximizando la persistencia local, la eficiencia de batería y la coordinación segura entre familias y rescatistas."
+  },
+  "common": {
+    "loading": "Cargando...",
+    "optional": "(Opcional)",
+    "logoAlt": "Logotipo de la aplicación Heroes",
+    "crisisResponse": "Respuesta a Crisis",
+    "missingPersonsLocator": "y Localizador de Personas Desaparecidas"
+  },
+  "auth": {
+    "loginWithGoogle": "Iniciar sesión con Google",
+    "signOut": "Cerrar sesión"
+  },
+  "onboarding": {
+    "continueWithoutAccount": "Continuar sin cuenta",
+    "hintLabel": "Consejo:",
+    "hintText": "Puedes continuar sin crear una cuenta, pero para sugerir modificaciones o actualizar estados debes iniciar sesión primero.",
+    "completeProfile": "Completar detalles del perfil",
+    "welcome": "Bienvenido, {name}",
+    "optionalNote": "Estos parámetros demográficos son completamente opcionales. Ayudan a las operaciones de rescate a comparar listas de identificación estructural más rápido durante operaciones de campo.",
+    "gender": {
+      "label": "Género",
+      "placeholder": "Selecciona una opción de género...",
+      "male": "Masculino",
+      "female": "Femenino"
+    },
+    "dateOfBirth": {
+      "label": "Fecha de nacimiento"
+    },
+    "saving": "Guardando parámetros...",
+    "saveAndContinue": "Guardar y continuar"
+  },
+  "languageSwitcher": {
+    "label": "Idioma",
+    "english": "English",
+    "spanish": "Español"
+  },
+  "errors": {
+    "unauthorized": "No tienes permiso para realizar esta acción.",
+    "generic": "Algo salió mal. Por favor, inténtalo de nuevo."
+  }
+}
