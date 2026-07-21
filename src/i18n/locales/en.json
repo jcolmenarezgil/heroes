@@ -10,9 +10,102 @@
     "crisisResponse": "Crisis Response",
     "missingPersonsLocator": "& Missing Persons Locator"
   },
+  "nav": {
+    "home": "Home",
+    "signIn": "Sign in",
+    "signOut": "Sign out"
+  },
   "auth": {
-    "loginWithGoogle": "Login with Google",
-    "signOut": "Sign Out"
+    "loginWithGoogle": "Sign in with Google",
+    "signOut": "Sign Out",
+    "signInToContinue": "Sign in to continue"
+  },
+  "home": {
+    "title": "Missing persons",
+    "subtitle": "Search the registry or create a new profile.",
+    "searchPlaceholder": "Search by name…",
+    "emptyState": "Search for a missing person or create a new profile.",
+    "create": "Create profile",
+    "noResults": "No results found",
+    "createNew": "Create a new profile",
+    "resultAria": "Open profile for {name}",
+    "photoHeader": "Photo",
+    "personHeader": "Person",
+    "statusHeader": "Status"
+  },
+  "profile": {
+    "createTitle": "Create Profile",
+    "editTitle": "Edit Profile",
+    "detailTitle": "Profile",
+    "status": {
+      "active": "Active",
+      "found": "Found",
+      "deceased": "Deceased"
+    },
+    "fields": {
+      "name": "Name",
+      "photo": "Photo",
+      "location": "Last known location",
+      "status": "Status",
+      "contact": "Contact phone",
+      "notes": "Notes"
+    },
+    "placeholders": {
+      "name": "Enter full name",
+      "location": "e.g. San Juan, PR",
+      "contact": "+1 787-555-0199",
+      "notes": "Additional details…"
+    },
+    "validation": {
+      "nameRequired": "Name is required",
+      "locationRequired": "Location is required",
+      "photoRequired": "Photo is required"
+    },
+    "dropzone": "Tap to upload a photo",
+    "photoPreview": "Photo preview",
+    "changePhoto": "Change photo",
+    "actions": {
+      "save": "Save Profile",
+      "cancel": "Cancel",
+      "edit": "Edit",
+      "share": "Share via QR",
+      "download": "Download PNG",
+      "export": "Export as JSON",
+      "suggestUpdate": "Suggest update"
+    },
+    "notFound": "Profile not found",
+    "backToHome": "Back to home",
+    "noContact": "No contact provided",
+    "noNotes": "No notes",
+    "qrAlt": "QR code for {name}",
+    "saveSuccess": "Profile saved",
+    "saveError": "Could not save profile",
+    "createSuccess": "Profile created",
+    "updateSuccess": "Profile updated",
+    "exportSuccess": "Profile exported",
+    "suggestionComingSoon": "Update suggestions will be reviewed by a rescuer",
+    "suggestionTitle": "Suggest an update",
+    "suggestionDescription": "You can suggest changes to this profile. A rescuer or admin will review your request.",
+    "suggestionPlaceholder": "Describe the change you want to suggest…",
+    "suggestionSubmitted": "Suggestion submitted for review",
+    "sections": {
+      "lastKnownLocation": "Last known location",
+      "contact": "Contact",
+      "notes": "Notes"
+    }
+  },
+  "connectivity": {
+    "online": "You are online",
+    "offline": "You are offline — showing cached results"
+  },
+  "admin": {
+    "dashboardTitle": "Dashboard",
+    "usersTitle": "Users",
+    "roles": {
+      "viewer": "Viewer",
+      "rescuer": "Rescuer",
+      "admin": "Admin"
+    }
   },
   "onboarding": {
     "continueWithoutAccount": "Continue without Account",
