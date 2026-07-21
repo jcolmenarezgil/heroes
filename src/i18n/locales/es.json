@@ -10,9 +10,102 @@
     "crisisResponse": "Respuesta a Crisis",
     "missingPersonsLocator": "y Localizador de Personas Desaparecidas"
   },
+  "nav": {
+    "home": "Inicio",
+    "signIn": "Iniciar sesión",
+    "signOut": "Cerrar sesión"
+  },
   "auth": {
     "loginWithGoogle": "Iniciar sesión con Google",
-    "signOut": "Cerrar sesión"
+    "signOut": "Cerrar sesión",
+    "signInToContinue": "Inicia sesión para continuar"
+  },
+  "home": {
+    "title": "Personas desaparecidas",
+    "subtitle": "Busca en el registro o crea un nuevo perfil.",
+    "searchPlaceholder": "Buscar por nombre…",
+    "emptyState": "Busca una persona desaparecida o crea un nuevo perfil.",
+    "create": "Crear perfil",
+    "noResults": "No se encontraron resultados",
+    "createNew": "Crear un nuevo perfil",
+    "resultAria": "Abrir perfil de {name}",
+    "photoHeader": "Foto",
+    "personHeader": "Persona",
+    "statusHeader": "Estado"
+  },
+  "profile": {
+    "createTitle": "Crear Perfil",
+    "editTitle": "Editar Perfil",
+    "detailTitle": "Perfil",
+    "status": {
+      "active": "Activo",
+      "found": "Encontrado",
+      "deceased": "Fallecido"
+    },
+    "fields": {
+      "name": "Nombre",
+      "photo": "Foto",
+      "location": "Última ubicación conocida",
+      "status": "Estado",
+      "contact": "Teléfono de contacto",
+      "notes": "Notas"
+    },
+    "placeholders": {
+      "name": "Ingresa el nombre completo",
+      "location": "p. ej. San Juan, PR",
+      "contact": "+1 787-555-0199",
+      "notes": "Detalles adicionales…"
+    },
+    "validation": {
+      "nameRequired": "El nombre es obligatorio",
+      "locationRequired": "La ubicación es obligatoria",
+      "photoRequired": "La foto es obligatoria"
+    },
+    "dropzone": "Toca para subir una foto",
+    "photoPreview": "Vista previa de la foto",
+    "changePhoto": "Cambiar foto",
+    "actions": {
+      "save": "Guardar Perfil",
+      "cancel": "Cancelar",
+      "edit": "Editar",
+      "share": "Compartir por QR",
+      "download": "Descargar PNG",
+      "export": "Exportar como JSON",
+      "suggestUpdate": "Sugerir actualización"
+    },
+    "notFound": "Perfil no encontrado",
+    "backToHome": "Volver al inicio",
+    "noContact": "Sin teléfono de contacto",
+    "noNotes": "Sin notas",
+    "qrAlt": "Código QR para {name}",
+    "saveSuccess": "Perfil guardado",
+    "saveError": "No se pudo guardar el perfil",
+    "createSuccess": "Perfil creado",
+    "updateSuccess": "Perfil actualizado",
+    "exportSuccess": "Perfil exportado",
+    "suggestionComingSoon": "Las sugerencias serán revisadas por un rescatista",
+    "suggestionTitle": "Sugerir una actualización",
+    "suggestionDescription": "Puedes sugerir cambios a este perfil. Un rescatista o administrador revisará tu solicitud.",
+    "suggestionPlaceholder": "Describe el cambio que quieres sugerir…",
+    "suggestionSubmitted": "Sugerencia enviada para revisión",
+    "sections": {
+      "lastKnownLocation": "Última ubicación conocida",
+      "contact": "Contacto",
+      "notes": "Notas"
+    }
+  },
+  "connectivity": {
+    "online": "Estás en línea",
+    "offline": "Estás sin conexión — mostrando resultados en caché"
+  },
+  "admin": {
+    "dashboardTitle": "Panel",
+    "usersTitle": "Usuarios",
+    "roles": {
+      "viewer": "Espectador",
+      "rescuer": "Rescatista",
+      "admin": "Administrador"
+    }
   },
   "onboarding": {
     "continueWithoutAccount": "Continuar sin cuenta",

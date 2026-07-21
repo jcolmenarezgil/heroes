@@ -3,6 +3,7 @@
 import React from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { usePathname, useRouter } from "@/i18n/navigation";
+import { GlobeIcon } from "@/components/icons";
 
 export default function LanguageSwitcher() {
   const t = useTranslations("languageSwitcher");
@@ -16,17 +17,25 @@ export default function LanguageSwitcher() {
   };
 
   return (
-    <label className="flex items-center gap-2 text-sm font-medium">
-      <span className="sr-only">{t("label")}</span>
+    <div className="flex items-center gap-1 text-white">
+      <GlobeIcon className="h-5 w-5" />
+      <label className="sr-only" htmlFor="language-switcher">
+        {t("label")}
+      </label>
       <select
+        id="language-switcher"
         value={locale}
         onChange={handleChange}
         aria-label={t("label")}
-        className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+        className="bg-transparent text-sm font-medium focus:outline-none"
       >
-        <option value="en">{t("english")}</option>
-        <option value="es">{t("spanish")}</option>
+        <option value="en" className="bg-black text-white">
+          EN
+        </option>
+        <option value="es" className="bg-black text-white">
+          ES
+        </option>
       </select>
-    </label>
+    </div>
   );
 }
