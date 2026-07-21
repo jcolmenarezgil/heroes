@@ -4,6 +4,18 @@ import { AdapterAccount } from "next-auth/adapters";
 // Definición física del Enum para el género en PostgreSQL
 export const genderEnum = pgEnum("gender_enum", ["male", "female"]);
 
+export const roleEnum = pgEnum("role_enum", ["viewer", "rescuer", "admin"]);
+export const profileStatusEnum = pgEnum("profile_status_enum", [
+  "active",
+  "found",
+  "deceased",
+]);
+export const updateRequestStatusEnum = pgEnum("update_request_status_enum", [
+  "pending",
+  "approved",
+  "rejected",
+]);
+
 export interface UserPhoneConfig {
     phoneNumber: string;
     label: "personal" | "work" | "emergency" | "other";
@@ -27,6 +39,8 @@ export const users = pgTable("users", {
     dob: date("dob"),
 
     gender: genderEnum("gender"),
+
+    role: roleEnum("role").default("viewer").notNull(),
 
     createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
 
@@ -62,8 +76,46 @@ export const account = pgTable(
 
 export const session = pgTable("session", {
     sessionToken: text("sessionToken").primaryKey(),
-    userId: uuid("user_id") 
+    userId: uuid("user_id")
         .notNull()
         .references(() => users.id, { onDelete: "cascade" }),
     expires: timestamp("expires", { mode: "date" }).notNull(),
+});
+
+export const profiles = pgTable("profiles", {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: uuid("user_id")
+        .notNull()
+        .references(() => users.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    photoUrl: text("photo_url"),
+    lastKnownLocation: text("last_known_location").notNull(),
+    status: profileStatusEnum("status").default("active").notNull(),
+    contactPhone: text("contact_phone"),
+    notes: text("notes"),
+    verified: timestamp("verified", { mode: "date" }),
+    createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", { mode: "date" })
+        .defaultNow()
+        .$onUpdate(() => new Date())
+        .notNull(),
+});
+
+export const profileUpdateRequests = pgTable("profile_update_requests", {
+    id: uuid("id").defaultRandom().primaryKey(),
+    profileId: uuid("profile_id")
+        .notNull()
+        .references(() => profiles.id, { onDelete: "cascade" }),
+    requesterId: uuid("requester_id")
+        .notNull()
+        .references(() => users.id, { onDelete: "cascade" }),
+    payload: jsonb("payload").$type<Partial<typeof profiles.$inferInsert>>().notNull(),
+    status: updateRequestStatusEnum("status").default("pending").notNull(),
+    reviewerId: uuid("reviewer_id").references(() => users.id, { onDelete: "set null" }),
+    reviewedAt: timestamp("reviewed_at", { mode: "date" }),
+    createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", { mode: "date" })
+        .defaultNow()
+        .$onUpdate(() => new Date())
+        .notNull(),
 });
