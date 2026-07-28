@@ -137,6 +137,26 @@
     "english": "English",
     "spanish": "Español"
   },
+  "sync": {
+    "interval": {
+      "realtime": "Tiempo real",
+      "3min": "3 minutos",
+      "5min": "5 minutos",
+      "10min": "10 minutos"
+    }
+  },
+  "userMenu": {
+    "openMenu": "Abrir menú de usuario",
+    "lastSync": "Últ. sync: {time}",
+    "neverSynced": "Nunca sincronizado",
+    "syncNow": "Sincronizar ahora",
+    "syncing": "Sincronizando…",
+    "syncInterval": "Sincronizar",
+    "myProfile": "Mi perfil",
+    "adminDashboard": "Panel de administración",
+    "comingSoon": "Próximamente",
+    "offlineSync": "Sin conexión. Conéctate para sincronizar."
+  },
   "errors": {
     "unauthorized": "No tienes permiso para realizar esta acción.",
     "generic": "Algo salió mal. Por favor, inténtalo de nuevo."

@@ -13,8 +13,8 @@ import ProfileCard from "@/components/ui/ProfileCard";
 import Skeleton from "@/components/ui/Skeleton";
 import { Button } from "@/components/ui/Button";
 import { useToast } from "@/components/providers/ToastProvider";
-import { useConnectivity } from "@/components/providers/ConnectivityProvider";
-import { searchCachedProfiles, syncProfiles } from "@/lib/profiles-cache";
+import { useSync } from "@/components/providers/SyncProvider";
+import { searchCachedProfiles } from "@/lib/profiles-cache";
 import type { ProfileDTO } from "@/types/profile";
 
 const PAGE_SIZE = 20;
@@ -24,7 +24,7 @@ export default function HomePage() {
   const format = useFormatter();
   const router = useRouter();
   const { addToast } = useToast();
-  const { isOnline } = useConnectivity();
+  const { lastSync } = useSync();
 
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
@@ -41,26 +41,17 @@ export default function HomePage() {
     return () => clearTimeout(id);
   }, [query]);
 
-  // Dexie-first: render cached profiles immediately, then refresh from the
-  // server in the background when online (stale-while-revalidate).
+  // Read from IndexedDB first; the SyncProvider handles background server sync.
+  // We also re-read when lastSync changes so manual/auto syncs reflect here.
   useEffect(() => {
     let cancelled = false;
 
     (async () => {
-      const cached = await searchCachedProfiles(debouncedQuery);
-      if (cancelled) return;
-      setProfiles(cached);
-      if (cached.length > 0) setIsLoading(false);
-
       try {
-        const synced = await syncProfiles(isOnline);
-        if (synced && !cancelled) {
-          const fresh = await searchCachedProfiles(debouncedQuery);
-          if (!cancelled) setProfiles(fresh);
-        }
+        const cached = await searchCachedProfiles(debouncedQuery);
+        if (!cancelled) setProfiles(cached);
       } catch {
-        // sync failed (server error): only complain if there is no cache
-        if (!cancelled && cached.length === 0) addToast(t("loadError"), "error");
+        if (!cancelled) addToast(t("loadError"), "error");
       } finally {
         if (!cancelled) setIsLoading(false);
       }
@@ -69,7 +60,7 @@ export default function HomePage() {
     return () => {
       cancelled = true;
     };
-  }, [debouncedQuery, isOnline, addToast, t]);
+  }, [debouncedQuery, lastSync, addToast, t]);
 
   const totalPages = Math.ceil(profiles.length / PAGE_SIZE);
   // clamp in case a background sync shrinks the list while on a later page

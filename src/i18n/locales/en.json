@@ -137,6 +137,26 @@
     "english": "English",
     "spanish": "Español"
   },
+  "sync": {
+    "interval": {
+      "realtime": "Real-time",
+      "3min": "3 minutes",
+      "5min": "5 minutes",
+      "10min": "10 minutes"
+    }
+  },
+  "userMenu": {
+    "openMenu": "Open user menu",
+    "lastSync": "Last sync: {time}",
+    "neverSynced": "Never synced",
+    "syncNow": "Sync now",
+    "syncing": "Syncing…",
+    "syncInterval": "Sync",
+    "myProfile": "My profile",
+    "adminDashboard": "Admin dashboard",
+    "comingSoon": "Coming soon",
+    "offlineSync": "You are offline. Connect to sync."
+  },
   "errors": {
     "unauthorized": "You don't have permission to perform this action.",
     "generic": "Something went wrong. Please try again."

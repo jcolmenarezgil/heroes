@@ -5,13 +5,21 @@ import type { ProfileDTO } from "@/types/profile";
  * Local-first read cache for profiles (IndexedDB via Dexie).
  *
  * - The home/search UI reads from this cache first.
- * - `syncProfiles` refreshes it in the background when online, throttled to
- *   one sync every CACHE_TTL_MS; it fully replaces the cached rows so profiles
+ * - `syncProfiles` refreshes it in the background when online, throttled by the
+ *   user-configurable sync interval; it fully replaces the cached rows so profiles
  *   deleted on the server disappear locally too.
  * - When offline (or logged out), the previous cache is kept as-is.
  */
 
-const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+export const SYNC_INTERVALS = [
+    { labelKey: "sync.interval.realtime", value: 0 },
+    { labelKey: "sync.interval.3min", value: 3 * 60 * 1000 },
+    { labelKey: "sync.interval.5min", value: 5 * 60 * 1000 },
+    { labelKey: "sync.interval.10min", value: 10 * 60 * 1000 },
+];
+
+const DEFAULT_SYNC_INTERVAL = SYNC_INTERVALS[2].value; // 5 minutes
+const SYNC_INTERVAL_KEY = "heroes-sync-interval";
 const SYNC_LIMIT = 200;
 const LAST_SYNC_KEY = "profilesLastSync";
 
@@ -30,7 +38,20 @@ db.version(1).stores({
     meta: "key",
 });
 
-async function getLastSync(): Promise<number | null> {
+export function getSyncInterval(): number {
+    if (typeof window === "undefined") return DEFAULT_SYNC_INTERVAL;
+    const raw = window.localStorage.getItem(SYNC_INTERVAL_KEY);
+    const ms = raw ? Number(raw) : NaN;
+    const known = SYNC_INTERVALS.find((item) => item.value === ms);
+    return known ? known.value : DEFAULT_SYNC_INTERVAL;
+}
+
+export function setSyncInterval(ms: number): void {
+    if (typeof window === "undefined") return;
+    window.localStorage.setItem(SYNC_INTERVAL_KEY, String(ms));
+}
+
+export async function getLastSync(): Promise<number | null> {
     const row = await db.meta.get(LAST_SYNC_KEY);
     const millis = row ? Number(row.value) : NaN;
     return Number.isFinite(millis) ? millis : null;
@@ -65,8 +86,11 @@ export async function searchCachedProfiles(
 export async function syncProfiles(isOnline: boolean): Promise<boolean> {
     if (!isOnline) return false;
 
+    const ttl = getSyncInterval();
     const lastSync = await getLastSync();
-    if (lastSync !== null && Date.now() - lastSync < CACHE_TTL_MS) {
+
+    // ttl === 0 means "real-time": always sync when online
+    if (ttl > 0 && lastSync !== null && Date.now() - lastSync < ttl) {
         return false; // cache is still fresh
     }
 
