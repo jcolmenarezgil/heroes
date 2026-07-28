@@ -11,6 +11,9 @@ importers:
       '@auth/drizzle-adapter':
         specifier: ^1.11.2
         version: 1.11.2
+      dexie:
+        specifier: ^4.4.4
+        version: 4.4.4
       drizzle-orm:
         specifier: ^0.45.2
         version: 0.45.2(@types/pg@8.20.0)(postgres@3.4.9)
@@ -1669,6 +1672,9 @@ packages:
   detect-libc@2.1.2:
     resolution: {integrity: sha512-Btj2BOOO83o3WyH59e8MgXsxEQVcarkUOpEYrubB0urwnN10yQ364rsiByU11nZlqWYZm05i/of7io4mzihBtQ==}
     engines: {node: '>=8'}
+
+  dexie@4.4.4:
+    resolution: {integrity: sha512-jIwsYI8Os2hgnqc6O49YwFDKGc5v5QjGx0wPVp543ip1F53VFAKMLthV2pQosQcVTv3eAskTWYspOx195PM0FQ==}
 
   dijkstrajs@1.0.3:
     resolution: {integrity: sha512-qiSlmBq9+BCdCA/L46dw8Uy93mloxsPSbwnm5yrKn2vMPiy8KyAskTF6zuV/j5BMsmOGZDPs7KjU+mjb670kfA==}
@@ -4328,6 +4334,8 @@ snapshots:
       object-keys: 1.1.1
 
   detect-libc@2.1.2: {}
+
+  dexie@4.4.4: {}
 
   dijkstrajs@1.0.3: {}
 

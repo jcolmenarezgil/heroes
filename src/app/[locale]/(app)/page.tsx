@@ -13,8 +13,9 @@ import ProfileCard from "@/components/ui/ProfileCard";
 import Skeleton from "@/components/ui/Skeleton";
 import { Button } from "@/components/ui/Button";
 import { useToast } from "@/components/providers/ToastProvider";
-import { listProfiles } from "@/lib/api-client";
-import type { ProfileListResponse } from "@/types/profile";
+import { useConnectivity } from "@/components/providers/ConnectivityProvider";
+import { searchCachedProfiles, syncProfiles } from "@/lib/profiles-cache";
+import type { ProfileDTO } from "@/types/profile";
 
 const PAGE_SIZE = 20;
 
@@ -23,12 +24,13 @@ export default function HomePage() {
   const format = useFormatter();
   const router = useRouter();
   const { addToast } = useToast();
+  const { isOnline } = useConnectivity();
 
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
-  const [result, setResult] = useState<ProfileListResponse | null>(null);
+  const [profiles, setProfiles] = useState<ProfileDTO[]>([]);
 
   // debounce search input ~300ms
   useEffect(() => {
@@ -39,30 +41,43 @@ export default function HomePage() {
     return () => clearTimeout(id);
   }, [query]);
 
+  // Dexie-first: render cached profiles immediately, then refresh from the
+  // server in the background when online (stale-while-revalidate).
   useEffect(() => {
     let cancelled = false;
-    // stale-while-revalidate: keep previous results visible while refetching
-    listProfiles({
-      q: debouncedQuery || undefined,
-      page,
-      limit: PAGE_SIZE,
-    })
-      .then((data) => {
-        if (!cancelled) setResult(data);
-      })
-      .catch(() => {
-        if (!cancelled) addToast(t("loadError"), "error");
-      })
-      .finally(() => {
+
+    (async () => {
+      const cached = await searchCachedProfiles(debouncedQuery);
+      if (cancelled) return;
+      setProfiles(cached);
+      if (cached.length > 0) setIsLoading(false);
+
+      try {
+        const synced = await syncProfiles(isOnline);
+        if (synced && !cancelled) {
+          const fresh = await searchCachedProfiles(debouncedQuery);
+          if (!cancelled) setProfiles(fresh);
+        }
+      } catch {
+        // sync failed (server error): only complain if there is no cache
+        if (!cancelled && cached.length === 0) addToast(t("loadError"), "error");
+      } finally {
         if (!cancelled) setIsLoading(false);
-      });
+      }
+    })();
+
     return () => {
       cancelled = true;
     };
-  }, [debouncedQuery, page, addToast, t]);
+  }, [debouncedQuery, isOnline, addToast, t]);
 
-  const results = result?.profiles ?? [];
-  const totalPages = result?.totalPages ?? 0;
+  const totalPages = Math.ceil(profiles.length / PAGE_SIZE);
+  // clamp in case a background sync shrinks the list while on a later page
+  const currentPage = Math.min(page, Math.max(totalPages, 1));
+  const results = profiles.slice(
+    (currentPage - 1) * PAGE_SIZE,
+    currentPage * PAGE_SIZE
+  );
 
   return (
     <div className="flex flex-col">
@@ -139,17 +154,17 @@ export default function HomePage() {
           <Button
             variant="secondary"
             onClick={() => setPage((p) => Math.max(1, p - 1))}
-            disabled={page <= 1}
+            disabled={currentPage <= 1}
           >
             {t("pagination.previous")}
           </Button>
           <span className="text-sm text-neutral-400">
-            {t("pagination.pageOf", { page, total: totalPages })}
+            {t("pagination.pageOf", { page: currentPage, total: totalPages })}
           </span>
           <Button
             variant="secondary"
             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-            disabled={page >= totalPages}
+            disabled={currentPage >= totalPages}
           >
             {t("pagination.next")}
           </Button>
