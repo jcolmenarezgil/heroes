@@ -41,7 +41,6 @@
   "profile": {
     "createTitle": "Crear Perfil",
     "editTitle": "Editar Perfil",
-    "detailTitle": "Perfil",
     "status": {
       "active": "Activo",
       "found": "Encontrado",
@@ -89,8 +88,6 @@
     "userNotFound": "Usuario no encontrado",
     "saveToast": "Guardado. La lista se actualizará en la próxima sincronización.",
     "saveError": "No se pudo guardar el perfil",
-    "createSuccess": "Perfil creado",
-    "updateSuccess": "Perfil actualizado",
     "exportSuccess": "Perfil exportado",
     "suggestionComingSoon": "Las sugerencias serán revisadas por un rescatista",
     "suggestionTitle": "Sugerir una actualización",

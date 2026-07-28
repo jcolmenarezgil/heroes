@@ -6,14 +6,9 @@ export const genderEnum = pgEnum("gender_enum", ["male", "female"]);
 
 export const roleEnum = pgEnum("role_enum", ["viewer", "rescuer", "admin"]);
 export const profileStatusEnum = pgEnum("profile_status_enum", [
-  "active",
-  "found",
-  "deceased",
-]);
-export const updateRequestStatusEnum = pgEnum("update_request_status_enum", [
-  "pending",
-  "approved",
-  "rejected",
+    "active",
+    "found",
+    "deceased",
 ]);
 
 export interface UserPhoneConfig {
@@ -107,21 +102,3 @@ export const profiles = pgTable("profiles", {
         .notNull(),
 });
 
-export const profileUpdateRequests = pgTable("profile_update_requests", {
-    id: uuid("id").defaultRandom().primaryKey(),
-    profileId: uuid("profile_id")
-        .notNull()
-        .references(() => profiles.id, { onDelete: "cascade" }),
-    requesterId: uuid("requester_id")
-        .notNull()
-        .references(() => users.id, { onDelete: "cascade" }),
-    payload: jsonb("payload").$type<Partial<typeof profiles.$inferInsert>>().notNull(),
-    status: updateRequestStatusEnum("status").default("pending").notNull(),
-    reviewerId: uuid("reviewer_id").references(() => users.id, { onDelete: "set null" }),
-    reviewedAt: timestamp("reviewed_at", { mode: "date" }),
-    createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
-    updatedAt: timestamp("updated_at", { mode: "date" })
-        .defaultNow()
-        .$onUpdate(() => new Date())
-        .notNull(),
-});

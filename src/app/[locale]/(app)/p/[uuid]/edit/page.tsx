@@ -109,7 +109,7 @@ export default function EditProfilePage() {
   }
 
   if (!canEditDirectly) {
-    return <SuggestionView profileId={profile.id} />;
+    return <SuggestionView />;
   }
 
   return (
@@ -135,14 +135,13 @@ export default function EditProfilePage() {
   );
 }
 
-function SuggestionView({ profileId }: { profileId: string }) {
+function SuggestionView() {
   const t = useTranslations("profile");
   const { addToast } = useToast();
   const [note, setNote] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Suggestion for", profileId, note);
     addToast(t("suggestionSubmitted"), "success");
     setNote("");
   };

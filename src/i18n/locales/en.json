@@ -41,7 +41,6 @@
   "profile": {
     "createTitle": "Create Profile",
     "editTitle": "Edit Profile",
-    "detailTitle": "Profile",
     "status": {
       "active": "Active",
       "found": "Found",
@@ -89,8 +88,6 @@
     "userNotFound": "User not found",
     "saveToast": "Saved. The list will update on the next sync.",
     "saveError": "Could not save profile",
-    "createSuccess": "Profile created",
-    "updateSuccess": "Profile updated",
     "exportSuccess": "Profile exported",
     "suggestionComingSoon": "Update suggestions will be reviewed by a rescuer",
     "suggestionTitle": "Suggest an update",
