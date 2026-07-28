@@ -12,6 +12,7 @@ import { Textarea } from "@/components/ui/Field";
 import Skeleton from "@/components/ui/Skeleton";
 import { useToast } from "@/components/providers/ToastProvider";
 import { ApiError, getProfile, updateProfile } from "@/lib/api-client";
+import { upsertProfile } from "@/lib/profiles-cache";
 import type { ProfileDTO } from "@/types/profile";
 
 export default function EditProfilePage() {
@@ -66,7 +67,7 @@ export default function EditProfilePage() {
     if (!profile) return;
     try {
       // photo upload is not implemented yet; blob previews are not persisted
-      await updateProfile(profile.id, {
+      const updated = await updateProfile(profile.id, {
         name: data.name,
         photoUrl: data.photoUrl?.startsWith("blob:") ? null : data.photoUrl,
         lastKnownLocation: data.lastKnownLocation,
@@ -74,6 +75,9 @@ export default function EditProfilePage() {
         contactPhone: data.contactPhone || null,
         notes: data.notes || null,
       });
+      // Update local cache immediately so edits are visible on home
+      // without waiting for the next background sync.
+      await upsertProfile(updated);
       router.push(`/p/${profile.id}`);
     } catch (error) {
       if (error instanceof ApiError) {

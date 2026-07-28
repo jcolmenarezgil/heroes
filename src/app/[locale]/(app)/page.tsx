@@ -125,7 +125,9 @@ export default function HomePage() {
                 id={profile.id}
                 name={profile.name}
                 location={profile.lastKnownLocation}
-                updatedAt={format.relativeTime(new Date(profile.updatedAt))}
+                updatedAt={format.relativeTime(new Date(profile.updatedAt), {
+                  now: new Date(),
+                })}
                 status={profile.status}
                 photoUrl={profile.photoUrl}
                 onClick={() => router.push(`/p/${profile.id}`)}

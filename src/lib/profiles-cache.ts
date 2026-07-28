@@ -87,3 +87,12 @@ export async function syncProfiles(isOnline: boolean): Promise<boolean> {
 
     return true;
 }
+
+/**
+ * Inserts or updates a single profile in the cache.
+ * Call this immediately after a successful create/edit mutation so the UI
+ * reflects the change without waiting for the next background sync.
+ */
+export async function upsertProfile(profile: ProfileDTO): Promise<void> {
+    await db.profiles.put(profile);
+}

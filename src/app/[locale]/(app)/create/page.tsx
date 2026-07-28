@@ -7,6 +7,7 @@ import { useRouter } from "@/i18n/navigation";
 import ProfileForm, { ProfileFormData } from "@/components/ProfileForm";
 import Skeleton from "@/components/ui/Skeleton";
 import { ApiError, createProfile } from "@/lib/api-client";
+import { upsertProfile } from "@/lib/profiles-cache";
 
 export default function CreateProfilePage() {
   const t = useTranslations("profile");
@@ -31,6 +32,9 @@ export default function CreateProfilePage() {
         contactPhone: data.contactPhone || null,
         notes: data.notes || null,
       });
+      // Update local cache immediately so the new profile appears on home
+      // without waiting for the next background sync.
+      await upsertProfile(created);
       router.push(`/p/${created.id}`);
     } catch (error) {
       if (error instanceof ApiError && error.status === 401) {
