@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import Link from "next/link";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import UserMenu from "@/components/layout/UserMenu";
+import SyncStatus from "@/components/layout/SyncStatus";
 
 export default function NavBar() {
     const t = useTranslations("nav");
@@ -30,6 +31,7 @@ export default function NavBar() {
                 </Link>
 
                 <div className="flex items-center gap-3">
+                    <SyncStatus />
                     <LanguageSwitcher />
                     <UserMenu />
                 </div>

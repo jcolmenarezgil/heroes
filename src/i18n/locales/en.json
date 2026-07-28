@@ -145,6 +145,10 @@
       "10min": "10 minutes"
     }
   },
+  "syncStatus": {
+    "online": "Online",
+    "offline": "Offline"
+  },
   "userMenu": {
     "openMenu": "Open user menu",
     "lastSync": "Last sync: {time}",
