@@ -16,7 +16,7 @@ import { Button } from "@/components/ui/Button";
 import AvatarPlaceholder from "@/components/ui/AvatarPlaceholder";
 import QRCode from "@/components/ui/QRCode";
 import StatusBadge from "@/components/ui/StatusBadge";
-import Skeleton from "@/components/ui/Skeleton";
+import ProfileDetailSkeleton from "@/components/ProfileDetailSkeleton";
 import { useToast } from "@/components/providers/ToastProvider";
 import { ApiError, getProfile } from "@/lib/api-client";
 import type { ProfileDTO } from "@/types/profile";
@@ -70,13 +70,7 @@ export default function ProfileDetailPage() {
   }, [profileUrl]);
 
   if (isLoading) {
-    return (
-      <div className="mx-auto max-w-lg space-y-6 lg:max-w-4xl">
-        <Skeleton className="aspect-[3/4] w-full rounded-lg" />
-        <Skeleton className="h-8 w-2/3" />
-        <Skeleton className="h-24 w-full" />
-      </div>
-    );
+    return <ProfileDetailSkeleton />;
   }
 
   if (notFound || !profile) {
