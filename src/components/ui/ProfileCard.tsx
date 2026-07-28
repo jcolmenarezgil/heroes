@@ -9,8 +9,11 @@ interface ProfileCardProps {
   id: string;
   name: string;
   location: string;
-  updatedAt: string;
   status: ProfileStatus;
+  createdByName: string;
+  updatedByName: string;
+  createdAt: string;
+  updatedAt: string;
   photoUrl?: string | null;
   onClick?: () => void;
 }
@@ -18,17 +21,20 @@ interface ProfileCardProps {
 export default function ProfileCard({
   name,
   location,
-  updatedAt,
   status,
+  createdByName,
+  updatedByName,
+  createdAt,
+  updatedAt,
   photoUrl,
   onClick,
 }: ProfileCardProps) {
-  const t = useTranslations("home");
+  const t = useTranslations("profile");
 
   return (
     <button
       onClick={onClick}
-      className="grid w-full grid-cols-[56px_1fr_auto] items-center gap-3 p-4 text-left transition active:bg-neutral-900"
+      className="grid w-full grid-cols-[56px_1fr_auto] items-start gap-3 p-4 text-left transition active:bg-neutral-900"
       aria-label={t("resultAria", { name })}
     >
       {photoUrl ? (
@@ -46,8 +52,12 @@ export default function ProfileCard({
         <span className="truncate text-base font-medium text-white">
           {name}
         </span>
-        <span className="truncate text-sm text-neutral-400">
-          {location} · {updatedAt}
+        <span className="truncate text-sm text-neutral-400">{location}</span>
+        <span className="truncate text-xs text-neutral-500">
+          {t("createdBy", { name: createdByName, date: createdAt })}
+        </span>
+        <span className="truncate text-xs text-neutral-500">
+          {t("updatedBy", { name: updatedByName, date: updatedAt })}
         </span>
       </div>
 

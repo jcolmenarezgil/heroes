@@ -10,6 +10,7 @@ import {
 } from "@/lib/api-response";
 import { db } from "@/lib/db/client";
 import { profiles } from "@/lib/db/schema";
+import { findProfileWithUsers, toProfileDTO } from "@/lib/profile-mapper";
 import {
     updateProfileSchema,
     uuidParamSchema,
@@ -41,9 +42,10 @@ export async function GET(_request: Request, context: RouteContext) {
     }
 
     try {
-        const profile = await getProfileOr404(parsedUuid.data);
-        if (!profile) return jsonNotFound("Profile not found");
-        return jsonOk(profile);
+        const row = await findProfileWithUsers(parsedUuid.data);
+        if (!row) return jsonNotFound("Profile not found");
+        const profileDto = toProfileDTO(row.profile, row.creator, row.updater);
+        return jsonOk(profileDto);
     } catch (error) {
         console.error("GET /api/profiles/[uuid] failed:", error);
         return jsonServerError();
@@ -98,11 +100,12 @@ export async function PUT(request: Request, context: RouteContext) {
 
         const [updated] = await db
             .update(profiles)
-            .set(updateData)
+            .set({ ...updateData, updatedBy: user.id })
             .where(eq(profiles.id, parsedUuid.data))
             .returning();
 
-        return jsonOk(updated);
+        const profileDto = toProfileDTO(updated, user, user);
+        return jsonOk(profileDto);
     } catch (error) {
         console.error("PUT /api/profiles/[uuid] failed:", error);
         return jsonServerError();

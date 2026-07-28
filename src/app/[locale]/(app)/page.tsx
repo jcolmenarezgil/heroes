@@ -104,22 +104,29 @@ export default function HomePage() {
 
         {isLoading ? (
           <div className="space-y-0 divide-y divide-neutral-900">
-            <Skeleton className="h-20 w-full" />
-            <Skeleton className="h-20 w-full" />
-            <Skeleton className="h-20 w-full" />
+            <Skeleton className="h-28 w-full" />
+            <Skeleton className="h-28 w-full" />
+            <Skeleton className="h-28 w-full" />
           </div>
         ) : results.length > 0 ? (
           <div className="divide-y divide-neutral-900">
-            {results.map((profile) => (
+              {results.map((profile) => (
               <ProfileCard
                 key={profile.id}
                 id={profile.id}
                 name={profile.name}
                 location={profile.lastKnownLocation}
-                updatedAt={format.relativeTime(new Date(profile.updatedAt), {
-                  now: new Date(),
-                })}
                 status={profile.status}
+                createdByName={profile.createdByName}
+                updatedByName={profile.updatedByName}
+                createdAt={format.dateTime(new Date(profile.createdAt), {
+                  day: "numeric",
+                  month: "short",
+                })}
+                updatedAt={format.dateTime(new Date(profile.updatedAt), {
+                  day: "numeric",
+                  month: "short",
+                })}
                 photoUrl={profile.photoUrl}
                 onClick={() => router.push(`/p/${profile.id}`)}
               />

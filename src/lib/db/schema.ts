@@ -87,6 +87,12 @@ export const profiles = pgTable("profiles", {
     userId: uuid("user_id")
         .notNull()
         .references(() => users.id, { onDelete: "cascade" }),
+    createdBy: uuid("created_by")
+        .notNull()
+        .references(() => users.id, { onDelete: "set null" }),
+    updatedBy: uuid("updated_by")
+        .notNull()
+        .references(() => users.id, { onDelete: "set null" }),
     name: text("name").notNull(),
     photoUrl: text("photo_url"),
     lastKnownLocation: text("last_known_location").notNull(),

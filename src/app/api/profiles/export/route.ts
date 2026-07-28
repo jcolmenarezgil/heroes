@@ -6,8 +6,8 @@ import {
     jsonServerError,
     jsonUnauthorized,
 } from "@/lib/api-response";
-import { db } from "@/lib/db/client";
 import { profiles } from "@/lib/db/schema";
+import { listProfilesWithUsers, toProfileDTO } from "@/lib/profile-mapper";
 
 export const dynamic = "force-dynamic";
 
@@ -17,14 +17,19 @@ export async function GET() {
     if (user.role !== "admin") return jsonForbidden("Admin only");
 
     try {
-        const rows = await db
-            .select()
-            .from(profiles)
-            .orderBy(desc(profiles.createdAt), desc(profiles.id));
+        const rows = await listProfilesWithUsers({
+            orderBy: [desc(profiles.createdAt), desc(profiles.id)],
+            limit: Number.MAX_SAFE_INTEGER,
+            offset: 0,
+        });
+
+        const profileDtos = rows.map(({ profile, creator, updater }) =>
+            toProfileDTO(profile, creator, updater)
+        );
 
         return jsonOk({
-            profiles: rows,
-            total: rows.length,
+            profiles: profileDtos,
+            total: profileDtos.length,
             exportedAt: new Date().toISOString(),
         });
     } catch (error) {

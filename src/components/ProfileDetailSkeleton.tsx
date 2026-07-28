@@ -39,6 +39,12 @@ export default function ProfileDetailSkeleton() {
               <Skeleton className="h-11 w-full rounded-lg" />
             </div>
           </div>
+
+          {/* Audit trail skeleton */}
+          <div className="border-t border-neutral-900 py-4">
+            <Skeleton className="h-4 w-3/4" />
+            <Skeleton className="mt-2 h-4 w-3/4" />
+          </div>
         </div>
       </div>
     </div>
