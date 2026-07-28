@@ -62,7 +62,7 @@ export function SyncProvider({ children }: { children: React.ReactNode }) {
 
             setIsSyncing(true);
             try {
-                const didSync = await syncProfiles(true);
+                const didSync = await syncProfiles(isOnline, force);
                 if (didSync || force) {
                     const updated = await getLastSync();
                     setLastSync(updated);
@@ -99,6 +99,22 @@ export function SyncProvider({ children }: { children: React.ReactNode }) {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    // Keep a stable ref to runSync so the periodic timer doesn't reset when
+    // isSyncing / isOnline change.
+    const runSyncRef = useRef(runSync);
+    useEffect(() => {
+        runSyncRef.current = runSync;
+    }, [runSync]);
+
+    // Periodic background sync when a non-zero interval is selected.
+    useEffect(() => {
+        if (interval <= 0) return;
+        const timer = window.setInterval(() => {
+            void runSyncRef.current(false);
+        }, interval);
+        return () => window.clearInterval(timer);
+    }, [interval]);
 
     const value = useMemo(
         () => ({

@@ -82,15 +82,21 @@ export async function searchCachedProfiles(
  * sync was skipped (offline, cache still fresh, or not authenticated — in
  * which case the existing cache is preserved). Throws on server errors so the
  * caller can surface them when there is no cached data to fall back to.
+ *
+ * @param isOnline - Whether the browser is currently online.
+ * @param force - Bypass the TTL check (used for manual sync).
  */
-export async function syncProfiles(isOnline: boolean): Promise<boolean> {
+export async function syncProfiles(
+    isOnline: boolean,
+    force = false
+): Promise<boolean> {
     if (!isOnline) return false;
 
     const ttl = getSyncInterval();
     const lastSync = await getLastSync();
 
     // ttl === 0 means "real-time": always sync when online
-    if (ttl > 0 && lastSync !== null && Date.now() - lastSync < ttl) {
+    if (!force && ttl > 0 && lastSync !== null && Date.now() - lastSync < ttl) {
         return false; // cache is still fresh
     }
 
@@ -114,8 +120,9 @@ export async function syncProfiles(isOnline: boolean): Promise<boolean> {
 
 /**
  * Inserts or updates a single profile in the cache.
- * Call this immediately after a successful create/edit mutation so the UI
- * reflects the change without waiting for the next background sync.
+ *
+ * Kept for future offline-write support; currently the home list only refreshes
+ * through the scheduled/manual sync so mutations do not call this directly.
  */
 export async function upsertProfile(profile: ProfileDTO): Promise<void> {
     await db.profiles.put(profile);

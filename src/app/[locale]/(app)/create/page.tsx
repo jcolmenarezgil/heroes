@@ -6,13 +6,14 @@ import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import ProfileForm, { ProfileFormData } from "@/components/ProfileForm";
 import Skeleton from "@/components/ui/Skeleton";
+import { useToast } from "@/components/providers/ToastProvider";
 import { ApiError, createProfile } from "@/lib/api-client";
-import { upsertProfile } from "@/lib/profiles-cache";
 
 export default function CreateProfilePage() {
   const t = useTranslations("profile");
   const router = useRouter();
   const { status: sessionStatus } = useSession();
+  const { addToast } = useToast();
 
   useEffect(() => {
     if (sessionStatus === "unauthenticated") {
@@ -32,9 +33,9 @@ export default function CreateProfilePage() {
         contactPhone: data.contactPhone || null,
         notes: data.notes || null,
       });
-      // Update local cache immediately so the new profile appears on home
-      // without waiting for the next background sync.
-      await upsertProfile(created);
+      // The home list is only updated on the scheduled/manual sync.
+      // Notify the user so the delay is not mistaken for a bug.
+      addToast(t("saveToast"), "success");
       router.push(`/p/${created.id}`);
     } catch (error) {
       if (error instanceof ApiError && error.status === 401) {
