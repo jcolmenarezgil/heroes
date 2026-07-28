@@ -6,6 +6,7 @@ import React, {
   useEffect,
   useMemo,
   useState,
+  useSyncExternalStore,
 } from "react";
 
 type ConnectivityContextValue = {
@@ -22,9 +23,24 @@ export function useConnectivity() {
   return useContext(ConnectivityContext);
 }
 
-function getInitialOnlineState() {
-  if (typeof navigator === "undefined") return true;
+function subscribe(callback: () => void) {
+  window.addEventListener("online", callback);
+  window.addEventListener("offline", callback);
+  return () => {
+    window.removeEventListener("online", callback);
+    window.removeEventListener("offline", callback);
+  };
+}
+
+function getSnapshot() {
   return navigator.onLine;
+}
+
+// During SSR and hydration we assume "online" so the server-rendered HTML
+// always matches the first client render; React re-renders with the real
+// value right after hydration.
+function getServerSnapshot() {
+  return true;
 }
 
 export function ConnectivityProvider({
@@ -32,37 +48,30 @@ export function ConnectivityProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [isOnline, setIsOnline] = useState(getInitialOnlineState);
-  const [showBanner, setShowBanner] = useState(
-    () => typeof navigator !== "undefined" && !navigator.onLine
+  const isOnline = useSyncExternalStore(
+    subscribe,
+    getSnapshot,
+    getServerSnapshot
   );
+  const [onlineFlash, setOnlineFlash] = useState(false);
 
+  // Brief "back online" flash, driven by the browser event only.
   useEffect(() => {
     const handleOnline = () => {
-      setIsOnline(true);
-      setShowBanner(true);
-      window.setTimeout(() => {
-        setShowBanner(false);
-      }, 3000);
+      setOnlineFlash(true);
+      window.setTimeout(() => setOnlineFlash(false), 3000);
     };
-
-    const handleOffline = () => {
-      setIsOnline(false);
-      setShowBanner(true);
-    };
-
     window.addEventListener("online", handleOnline);
-    window.addEventListener("offline", handleOffline);
-
-    return () => {
-      window.removeEventListener("online", handleOnline);
-      window.removeEventListener("offline", handleOffline);
-    };
+    return () => window.removeEventListener("online", handleOnline);
   }, []);
 
   const value = useMemo(
-    () => ({ isOnline, showBanner }),
-    [isOnline, showBanner]
+    () => ({
+      isOnline,
+      // banner is persistent while offline, transient when back online
+      showBanner: !isOnline || onlineFlash,
+    }),
+    [isOnline, onlineFlash]
   );
 
   return (

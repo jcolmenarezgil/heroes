@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { useFormatter, useTranslations } from "next-intl";
@@ -97,12 +96,12 @@ export default function UserMenu() {
                 aria-expanded={open}
             >
                 {user.image ? (
-                    <Image
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
                         src={user.image}
                         alt=""
-                        width={32}
-                        height={32}
                         className="h-full w-full object-cover"
+                        referrerPolicy="no-referrer"
                     />
                 ) : (
                     getInitials(user.name, user.email)
