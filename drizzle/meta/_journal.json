@@ -15,6 +15,20 @@
       "when": 1785245723711,
       "tag": "0001_faithful_killraven",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1785268944513,
+      "tag": "0002_burly_arclight",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1785271347366,
+      "tag": "0003_many_retro_girl",
+      "breakpoints": true
     }
   ]
 }

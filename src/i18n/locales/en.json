@@ -28,7 +28,6 @@
     "create": "Create profile",
     "noResults": "No results found",
     "createNew": "Create a new profile",
-    "resultAria": "Open profile for {name}",
     "photoHeader": "Photo",
     "personHeader": "Person",
     "statusHeader": "Status",
@@ -42,7 +41,6 @@
   "profile": {
     "createTitle": "Create Profile",
     "editTitle": "Edit Profile",
-    "detailTitle": "Profile",
     "status": {
       "active": "Active",
       "found": "Found",
@@ -83,11 +81,13 @@
     "backToHome": "Back to home",
     "noContact": "No contact provided",
     "noNotes": "No notes",
+    "resultAria": "Open profile for {name}",
     "qrAlt": "QR code for {name}",
-    "saveSuccess": "Profile saved",
+    "createdBy": "Created by {name} on {date}",
+    "updatedBy": "Updated by {name} on {date}",
+    "userNotFound": "User not found",
+    "saveToast": "Saved. The list will update on the next sync.",
     "saveError": "Could not save profile",
-    "createSuccess": "Profile created",
-    "updateSuccess": "Profile updated",
     "exportSuccess": "Profile exported",
     "suggestionComingSoon": "Update suggestions will be reviewed by a rescuer",
     "suggestionTitle": "Suggest an update",
@@ -136,6 +136,30 @@
     "label": "Language",
     "english": "English",
     "spanish": "Español"
+  },
+  "sync": {
+    "interval": {
+      "realtime": "Real-time",
+      "3min": "3 minutes",
+      "5min": "5 minutes",
+      "10min": "10 minutes"
+    }
+  },
+  "syncStatus": {
+    "online": "Online",
+    "offline": "Offline"
+  },
+  "userMenu": {
+    "openMenu": "Open user menu",
+    "lastSync": "Last sync: {time}",
+    "neverSynced": "Never synced",
+    "syncNow": "Sync now",
+    "syncing": "Syncing…",
+    "syncInterval": "Sync",
+    "myProfile": "My profile",
+    "adminDashboard": "Admin dashboard",
+    "comingSoon": "Coming soon",
+    "offlineSync": "You are offline. Connect to sync."
   },
   "errors": {
     "unauthorized": "You don't have permission to perform this action.",

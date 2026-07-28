@@ -167,23 +167,3 @@ export const XMarkIcon = ({ className }: IconProps) => (
     />
   </Icon>
 );
-
-export const ChevronDownIcon = ({ className }: IconProps) => (
-  <Icon className={className}>
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M19.5 8.25l-7.5 7.5-7.5-7.5"
-    />
-  </Icon>
-);
-
-export const CloudIcon = ({ className }: IconProps) => (
-  <Icon className={className}>
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M2.25 15a4.5 4.5 0 004.5-4.5H18a3 3 0 013 3v.008c0 .885-.402 1.661-1.008 2.127M2.25 15A4.5 4.5 0 016.75 10.5H18a3 3 0 013 3v.008c0 .885-.402 1.661-1.008 2.127M2.25 15A4.5 4.5 0 016.75 10.5H18a3 3 0 013 3v.008c0 .885-.402 1.661-1.008 2.127"
-    />
-  </Icon>
-);

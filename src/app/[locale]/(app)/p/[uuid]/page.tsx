@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
-import { useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 import QRCodeLib from "qrcode";
 import {
   ArrowDownTrayIcon,
@@ -16,13 +16,14 @@ import { Button } from "@/components/ui/Button";
 import AvatarPlaceholder from "@/components/ui/AvatarPlaceholder";
 import QRCode from "@/components/ui/QRCode";
 import StatusBadge from "@/components/ui/StatusBadge";
-import Skeleton from "@/components/ui/Skeleton";
+import ProfileDetailSkeleton from "@/components/ProfileDetailSkeleton";
 import { useToast } from "@/components/providers/ToastProvider";
 import { ApiError, getProfile } from "@/lib/api-client";
 import type { ProfileDTO } from "@/types/profile";
 
 export default function ProfileDetailPage() {
   const t = useTranslations("profile");
+  const format = useFormatter();
   const params = useParams();
   const { data: session } = useSession();
   const { addToast } = useToast();
@@ -70,13 +71,7 @@ export default function ProfileDetailPage() {
   }, [profileUrl]);
 
   if (isLoading) {
-    return (
-      <div className="mx-auto max-w-lg space-y-6 lg:max-w-4xl">
-        <Skeleton className="aspect-[3/4] w-full rounded-lg" />
-        <Skeleton className="h-8 w-2/3" />
-        <Skeleton className="h-24 w-full" />
-      </div>
-    );
+    return <ProfileDetailSkeleton />;
   }
 
   if (notFound || !profile) {
@@ -234,6 +229,34 @@ export default function ProfileDetailPage() {
                 </span>
               </Button>
             </div>
+          </div>
+
+          {/* Audit trail */}
+          <div className="border-t border-neutral-900 py-4 text-xs text-neutral-500">
+            <p>
+              {t("createdBy", {
+                name: profile.createdByName,
+                date: format.dateTime(new Date(profile.createdAt), {
+                  day: "numeric",
+                  month: "short",
+                  year: "numeric",
+                  hour: "numeric",
+                  minute: "numeric",
+                }),
+              })}
+            </p>
+            <p className="mt-1">
+              {t("updatedBy", {
+                name: profile.updatedByName,
+                date: format.dateTime(new Date(profile.updatedAt), {
+                  day: "numeric",
+                  month: "short",
+                  year: "numeric",
+                  hour: "numeric",
+                  minute: "numeric",
+                }),
+              })}
+            </p>
           </div>
         </div>
       </div>

@@ -28,7 +28,6 @@
     "create": "Crear perfil",
     "noResults": "No se encontraron resultados",
     "createNew": "Crear un nuevo perfil",
-    "resultAria": "Abrir perfil de {name}",
     "photoHeader": "Foto",
     "personHeader": "Persona",
     "statusHeader": "Estado",
@@ -42,7 +41,6 @@
   "profile": {
     "createTitle": "Crear Perfil",
     "editTitle": "Editar Perfil",
-    "detailTitle": "Perfil",
     "status": {
       "active": "Activo",
       "found": "Encontrado",
@@ -83,11 +81,13 @@
     "backToHome": "Volver al inicio",
     "noContact": "Sin teléfono de contacto",
     "noNotes": "Sin notas",
+    "resultAria": "Abrir perfil de {name}",
     "qrAlt": "Código QR para {name}",
-    "saveSuccess": "Perfil guardado",
+    "createdBy": "Creado por {name} el {date}",
+    "updatedBy": "Actualizado por {name} el {date}",
+    "userNotFound": "Usuario no encontrado",
+    "saveToast": "Guardado. La lista se actualizará en la próxima sincronización.",
     "saveError": "No se pudo guardar el perfil",
-    "createSuccess": "Perfil creado",
-    "updateSuccess": "Perfil actualizado",
     "exportSuccess": "Perfil exportado",
     "suggestionComingSoon": "Las sugerencias serán revisadas por un rescatista",
     "suggestionTitle": "Sugerir una actualización",
@@ -136,6 +136,30 @@
     "label": "Idioma",
     "english": "English",
     "spanish": "Español"
+  },
+  "sync": {
+    "interval": {
+      "realtime": "Tiempo real",
+      "3min": "3 minutos",
+      "5min": "5 minutos",
+      "10min": "10 minutos"
+    }
+  },
+  "syncStatus": {
+    "online": "En línea",
+    "offline": "Sin conexión"
+  },
+  "userMenu": {
+    "openMenu": "Abrir menú de usuario",
+    "lastSync": "Últ. sync: {time}",
+    "neverSynced": "Nunca sincronizado",
+    "syncNow": "Sincronizar ahora",
+    "syncing": "Sincronizando…",
+    "syncInterval": "Sincronizar",
+    "myProfile": "Mi perfil",
+    "adminDashboard": "Panel de administración",
+    "comingSoon": "Próximamente",
+    "offlineSync": "Sin conexión. Conéctate para sincronizar."
   },
   "errors": {
     "unauthorized": "No tienes permiso para realizar esta acción.",

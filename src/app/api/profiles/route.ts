@@ -8,6 +8,7 @@ import {
 } from "@/lib/api-response";
 import { db } from "@/lib/db/client";
 import { profiles } from "@/lib/db/schema";
+import { listProfilesWithUsers, toProfileDTO } from "@/lib/profile-mapper";
 import {
     createProfileSchema,
     listProfilesQuerySchema,
@@ -47,15 +48,18 @@ export async function GET(request: Request) {
         const total = countRow?.count ?? 0;
         const totalPages = total === 0 ? 0 : Math.ceil(total / limit);
 
-        const rows = await db
-            .select()
-            .from(profiles)
-            .where(where)
-            .orderBy(desc(profiles.createdAt), desc(profiles.id))
-            .limit(limit)
-            .offset((page - 1) * limit);
+        const rows = await listProfilesWithUsers({
+            where,
+            orderBy: [desc(profiles.createdAt), desc(profiles.id)],
+            limit,
+            offset: (page - 1) * limit,
+        });
 
-        return jsonOk({ profiles: rows, total, page, totalPages });
+        const profileDtos = rows.map(({ profile, creator, updater }) =>
+            toProfileDTO(profile, creator, updater)
+        );
+
+        return jsonOk({ profiles: profileDtos, total, page, totalPages });
     } catch (error) {
         console.error("GET /api/profiles failed:", error);
         return jsonServerError();
@@ -86,6 +90,8 @@ export async function POST(request: Request) {
             .insert(profiles)
             .values({
                 userId: user.id,
+                createdBy: user.id,
+                updatedBy: user.id,
                 name,
                 photoUrl: photoUrl ?? null,
                 lastKnownLocation,
@@ -95,7 +101,8 @@ export async function POST(request: Request) {
             })
             .returning();
 
-        return jsonOk(created, 201);
+        const profileDto = toProfileDTO(created, user, user);
+        return jsonOk(profileDto, 201);
     } catch (error) {
         console.error("POST /api/profiles failed:", error);
         return jsonServerError();

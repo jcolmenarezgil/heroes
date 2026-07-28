@@ -7,9 +7,9 @@ import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useRouter } from "@/i18n/navigation";
 import ProfileForm, { ProfileFormData } from "@/components/ProfileForm";
+import ProfileFormSkeleton from "@/components/ProfileFormSkeleton";
 import { Button } from "@/components/ui/Button";
 import { Textarea } from "@/components/ui/Field";
-import Skeleton from "@/components/ui/Skeleton";
 import { useToast } from "@/components/providers/ToastProvider";
 import { ApiError, getProfile, updateProfile } from "@/lib/api-client";
 import type { ProfileDTO } from "@/types/profile";
@@ -74,6 +74,9 @@ export default function EditProfilePage() {
         contactPhone: data.contactPhone || null,
         notes: data.notes || null,
       });
+      // The home list is only updated on the scheduled/manual sync.
+      // Notify the user so the delay is not mistaken for a bug.
+      addToast(t("saveToast"), "success");
       router.push(`/p/${profile.id}`);
     } catch (error) {
       if (error instanceof ApiError) {
@@ -91,13 +94,7 @@ export default function EditProfilePage() {
   };
 
   if (isLoading || sessionStatus === "loading") {
-    return (
-      <div className="mx-auto max-w-3xl space-y-6">
-        <Skeleton className="h-8 w-1/3" />
-        <Skeleton className="aspect-[3/4] w-full rounded-lg" />
-        <Skeleton className="h-12 w-full" />
-      </div>
-    );
+    return <ProfileFormSkeleton />;
   }
 
   if (notFound || !profile) {
@@ -112,7 +109,7 @@ export default function EditProfilePage() {
   }
 
   if (!canEditDirectly) {
-    return <SuggestionView profileId={profile.id} />;
+    return <SuggestionView />;
   }
 
   return (
@@ -138,14 +135,13 @@ export default function EditProfilePage() {
   );
 }
 
-function SuggestionView({ profileId }: { profileId: string }) {
+function SuggestionView() {
   const t = useTranslations("profile");
   const { addToast } = useToast();
   const [note, setNote] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Suggestion for", profileId, note);
     addToast(t("suggestionSubmitted"), "success");
     setNote("");
   };

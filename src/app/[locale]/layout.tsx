@@ -11,6 +11,7 @@ import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import AuthProvider from "@/components/providers/AuthProvider";
 import { ConnectivityProvider } from "@/components/providers/ConnectivityProvider";
+import { SyncProvider } from "@/components/providers/SyncProvider";
 import { ToastProvider } from "@/components/providers/ToastProvider";
 import "../globals.css";
 
@@ -64,11 +65,13 @@ export default async function LocaleLayout({
       <body className="min-h-full bg-background text-foreground font-sans antialiased selection:bg-white selection:text-black">
         <AuthProvider>
           <NextIntlClientProvider messages={messages}>
-            <ConnectivityProvider>
+          <ConnectivityProvider>
+            <SyncProvider>
               <ToastProvider>
                 {children}
               </ToastProvider>
-            </ConnectivityProvider>
+            </SyncProvider>
+          </ConnectivityProvider>
           </NextIntlClientProvider>
         </AuthProvider>
       </body>
