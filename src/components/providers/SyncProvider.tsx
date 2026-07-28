@@ -9,6 +9,8 @@ import React, {
     useRef,
     useState,
 } from "react";
+import { useLocale } from "next-intl";
+import { usePathname } from "@/i18n/navigation";
 import { useConnectivity } from "@/components/providers/ConnectivityProvider";
 import {
     getLastSync,
@@ -115,6 +117,34 @@ export function SyncProvider({ children }: { children: React.ReactNode }) {
         }, interval);
         return () => window.clearInterval(timer);
     }, [interval]);
+
+    const pathname = usePathname();
+    const locale = useLocale();
+    const prevPathnameRef = useRef(pathname);
+
+    // Sync when the user navigates back to the home screen. This makes the
+    // "real-time" interval feel instant and lets longer intervals refresh as
+    // soon as the list is viewed (respecting TTL).
+    useEffect(() => {
+        const prev = prevPathnameRef.current;
+        prevPathnameRef.current = pathname;
+        const isHomeNow = pathname === "/" || pathname === `/${locale}`;
+        if (isHomeNow && prev !== pathname) {
+            void runSync(false);
+        }
+    }, [pathname, locale, runSync]);
+
+    // Sync when the app/tab regains focus (respects TTL via runSync(false)).
+    useEffect(() => {
+        const handleVisibility = () => {
+            if (document.visibilityState === "visible") {
+                void runSyncRef.current(false);
+            }
+        };
+        document.addEventListener("visibilitychange", handleVisibility);
+        return () =>
+            document.removeEventListener("visibilitychange", handleVisibility);
+    }, []);
 
     const value = useMemo(
         () => ({
