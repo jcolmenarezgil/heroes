@@ -84,7 +84,6 @@
     "noContact": "No contact provided",
     "noNotes": "No notes",
     "qrAlt": "QR code for {name}",
-    "saveSuccess": "Profile saved",
     "saveToast": "Saved. The list will update on the next sync.",
     "saveError": "Could not save profile",
     "createSuccess": "Profile created",

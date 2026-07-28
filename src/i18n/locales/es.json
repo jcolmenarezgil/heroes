@@ -84,7 +84,6 @@
     "noContact": "Sin teléfono de contacto",
     "noNotes": "Sin notas",
     "qrAlt": "Código QR para {name}",
-    "saveSuccess": "Perfil guardado",
     "saveToast": "Guardado. La lista se actualizará en la próxima sincronización.",
     "saveError": "No se pudo guardar el perfil",
     "createSuccess": "Perfil creado",

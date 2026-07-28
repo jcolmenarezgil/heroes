@@ -89,7 +89,6 @@ export default function ProfileForm({
         },
         photoFile
       );
-      addToast(t("saveSuccess"), "success");
     } catch {
       addToast(t("saveError"), "error");
     } finally {
