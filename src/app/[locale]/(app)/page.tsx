@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
-import { useTranslations } from "next-intl";
+import React, { useEffect, useState } from "react";
+import { useFormatter, useTranslations } from "next-intl";
 import Link from "next/link";
 import { useRouter } from "@/i18n/navigation";
 import {
@@ -11,22 +11,58 @@ import {
 } from "@/components/icons";
 import ProfileCard from "@/components/ui/ProfileCard";
 import Skeleton from "@/components/ui/Skeleton";
-import { mockProfiles } from "@/lib/mock";
-import { normalizeText } from "@/lib/text";
+import { Button } from "@/components/ui/Button";
+import { useToast } from "@/components/providers/ToastProvider";
+import { listProfiles } from "@/lib/api-client";
+import type { ProfileListResponse } from "@/types/profile";
+
+const PAGE_SIZE = 20;
 
 export default function HomePage() {
   const t = useTranslations("home");
+  const format = useFormatter();
   const router = useRouter();
-  const [query, setQuery] = useState("");
-  const [isLoading] = useState(false); // placeholder for future fetch
+  const { addToast } = useToast();
 
-  const results = useMemo(() => {
-    const q = normalizeText(query.trim());
-    if (!q) return mockProfiles;
-    return mockProfiles.filter((profile) =>
-      normalizeText(profile.name).includes(q)
-    );
+  const [query, setQuery] = useState("");
+  const [debouncedQuery, setDebouncedQuery] = useState("");
+  const [page, setPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(true);
+  const [result, setResult] = useState<ProfileListResponse | null>(null);
+
+  // debounce search input ~300ms
+  useEffect(() => {
+    const id = setTimeout(() => {
+      setDebouncedQuery(query.trim());
+      setPage(1);
+    }, 300);
+    return () => clearTimeout(id);
   }, [query]);
+
+  useEffect(() => {
+    let cancelled = false;
+    // stale-while-revalidate: keep previous results visible while refetching
+    listProfiles({
+      q: debouncedQuery || undefined,
+      page,
+      limit: PAGE_SIZE,
+    })
+      .then((data) => {
+        if (!cancelled) setResult(data);
+      })
+      .catch(() => {
+        if (!cancelled) addToast(t("loadError"), "error");
+      })
+      .finally(() => {
+        if (!cancelled) setIsLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [debouncedQuery, page, addToast, t]);
+
+  const results = result?.profiles ?? [];
+  const totalPages = result?.totalPages ?? 0;
 
   return (
     <div className="flex flex-col">
@@ -74,7 +110,7 @@ export default function HomePage() {
                 id={profile.id}
                 name={profile.name}
                 location={profile.lastKnownLocation}
-                updatedAt={profile.updatedAt}
+                updatedAt={format.relativeTime(new Date(profile.updatedAt))}
                 status={profile.status}
                 photoUrl={profile.photoUrl}
                 onClick={() => router.push(`/p/${profile.id}`)}
@@ -96,6 +132,29 @@ export default function HomePage() {
           </div>
         )}
       </div>
+
+      {/* Pagination */}
+      {!isLoading && totalPages > 1 && (
+        <div className="mt-4 flex items-center justify-between">
+          <Button
+            variant="secondary"
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            disabled={page <= 1}
+          >
+            {t("pagination.previous")}
+          </Button>
+          <span className="text-sm text-neutral-400">
+            {t("pagination.pageOf", { page, total: totalPages })}
+          </span>
+          <Button
+            variant="secondary"
+            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+            disabled={page >= totalPages}
+          >
+            {t("pagination.next")}
+          </Button>
+        </div>
+      )}
 
       {/* Floating create button */}
       <Link

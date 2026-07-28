@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
@@ -9,31 +9,98 @@ import { useRouter } from "@/i18n/navigation";
 import ProfileForm, { ProfileFormData } from "@/components/ProfileForm";
 import { Button } from "@/components/ui/Button";
 import { Textarea } from "@/components/ui/Field";
+import Skeleton from "@/components/ui/Skeleton";
 import { useToast } from "@/components/providers/ToastProvider";
-import { findProfileById } from "@/lib/mock";
+import { ApiError, getProfile, updateProfile } from "@/lib/api-client";
+import type { ProfileDTO } from "@/types/profile";
 
 export default function EditProfilePage() {
   const t = useTranslations("profile");
+  const tErrors = useTranslations("errors");
   const params = useParams();
-  const { data: session } = useSession();
+  const { data: session, status: sessionStatus } = useSession();
   const router = useRouter();
   const { addToast } = useToast();
 
-  const profile = findProfileById(params.uuid as string);
+  const [profile, setProfile] = useState<ProfileDTO | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
+
+  const uuid = params.uuid as string;
+
+  useEffect(() => {
+    if (sessionStatus === "unauthenticated") {
+      router.push("/login");
+    }
+  }, [sessionStatus, router]);
+
+  useEffect(() => {
+    let cancelled = false;
+    getProfile(uuid)
+      .then((data) => {
+        if (!cancelled) setProfile(data);
+      })
+      .catch((error) => {
+        if (cancelled) return;
+        if (error instanceof ApiError && error.status === 404) {
+          setNotFound(true);
+        } else {
+          addToast(t("saveError"), "error");
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setIsLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [uuid, addToast, t]);
 
   const canEditDirectly =
     session?.user?.role === "admin" ||
     session?.user?.role === "rescuer" ||
     (session?.user?.id && session.user.id === profile?.userId);
 
-  const handleSubmit = async (data: ProfileFormData, file: File | null) => {
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    console.log("Updating profile:", data, file?.name);
-    addToast(t("updateSuccess"), "success");
-    router.push(`/p/${profile?.id}`);
+  const handleSubmit = async (data: ProfileFormData, _file: File | null) => {
+    void _file; // photo upload is not implemented yet
+    if (!profile) return;
+    try {
+      // photo upload is not implemented yet; blob previews are not persisted
+      await updateProfile(profile.id, {
+        name: data.name,
+        photoUrl: data.photoUrl?.startsWith("blob:") ? null : data.photoUrl,
+        lastKnownLocation: data.lastKnownLocation,
+        status: data.status,
+        contactPhone: data.contactPhone || null,
+        notes: data.notes || null,
+      });
+      router.push(`/p/${profile.id}`);
+    } catch (error) {
+      if (error instanceof ApiError) {
+        if (error.status === 401) {
+          router.push("/login");
+        }
+        if (error.status === 403) {
+          addToast(tErrors("unauthorized"), "error");
+          return;
+        }
+      }
+      // rethrow so ProfileForm shows the error toast
+      throw error;
+    }
   };
 
-  if (!profile) {
+  if (isLoading || sessionStatus === "loading") {
+    return (
+      <div className="mx-auto max-w-3xl space-y-6">
+        <Skeleton className="h-8 w-1/3" />
+        <Skeleton className="aspect-[3/4] w-full rounded-lg" />
+        <Skeleton className="h-12 w-full" />
+      </div>
+    );
+  }
+
+  if (notFound || !profile) {
     return (
       <div className="flex min-h-[50vh] flex-col items-center justify-center text-center">
         <p className="text-lg font-medium text-white">{t("notFound")}</p>

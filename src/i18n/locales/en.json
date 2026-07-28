@@ -31,7 +31,13 @@
     "resultAria": "Open profile for {name}",
     "photoHeader": "Photo",
     "personHeader": "Person",
-    "statusHeader": "Status"
+    "statusHeader": "Status",
+    "loadError": "Could not load profiles",
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next",
+      "pageOf": "Page {page} of {total}"
+    }
   },
   "profile": {
     "createTitle": "Create Profile",

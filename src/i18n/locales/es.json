@@ -31,7 +31,13 @@
     "resultAria": "Abrir perfil de {name}",
     "photoHeader": "Foto",
     "personHeader": "Persona",
-    "statusHeader": "Estado"
+    "statusHeader": "Estado",
+    "loadError": "No se pudieron cargar los perfiles",
+    "pagination": {
+      "previous": "Anterior",
+      "next": "Siguiente",
+      "pageOf": "Página {page} de {total}"
+    }
   },
   "profile": {
     "createTitle": "Crear Perfil",
