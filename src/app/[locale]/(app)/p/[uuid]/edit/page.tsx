@@ -7,9 +7,9 @@ import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useRouter } from "@/i18n/navigation";
 import ProfileForm, { ProfileFormData } from "@/components/ProfileForm";
+import ProfileFormSkeleton from "@/components/ProfileFormSkeleton";
 import { Button } from "@/components/ui/Button";
 import { Textarea } from "@/components/ui/Field";
-import Skeleton from "@/components/ui/Skeleton";
 import { useToast } from "@/components/providers/ToastProvider";
 import { ApiError, getProfile, updateProfile } from "@/lib/api-client";
 import type { ProfileDTO } from "@/types/profile";
@@ -94,13 +94,7 @@ export default function EditProfilePage() {
   };
 
   if (isLoading || sessionStatus === "loading") {
-    return (
-      <div className="mx-auto max-w-3xl space-y-6">
-        <Skeleton className="h-8 w-1/3" />
-        <Skeleton className="aspect-[3/4] w-full rounded-lg" />
-        <Skeleton className="h-12 w-full" />
-      </div>
-    );
+    return <ProfileFormSkeleton />;
   }
 
   if (notFound || !profile) {
