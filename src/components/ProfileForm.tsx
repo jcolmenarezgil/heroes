@@ -66,7 +66,7 @@ export default function ProfileForm({
     if (!name.trim()) next.name = t("validation.nameRequired");
     if (!lastKnownLocation.trim())
       next.lastKnownLocation = t("validation.locationRequired");
-    if (!photoPreview) next.photo = t("validation.photoRequired");
+    // photo is optional until file storage is implemented
     setErrors(next);
     return Object.keys(next).length === 0;
   };
@@ -103,7 +103,7 @@ export default function ProfileForm({
       className="mx-auto max-w-lg space-y-6 lg:grid lg:max-w-3xl lg:grid-cols-2 lg:gap-8 lg:space-y-0"
     >
       <div className="space-y-6">
-        <Field id="photo" label={t("fields.photo")} required error={errors.photo}>
+        <Field id="photo" label={t("fields.photo")} error={errors.photo}>
           <FileDropzone
             id="photo"
             value={photoPreview}

@@ -16,8 +16,10 @@ import { Button } from "@/components/ui/Button";
 import AvatarPlaceholder from "@/components/ui/AvatarPlaceholder";
 import QRCode from "@/components/ui/QRCode";
 import StatusBadge from "@/components/ui/StatusBadge";
+import Skeleton from "@/components/ui/Skeleton";
 import { useToast } from "@/components/providers/ToastProvider";
-import { findProfileById } from "@/lib/mock";
+import { ApiError, getProfile } from "@/lib/api-client";
+import type { ProfileDTO } from "@/types/profile";
 
 export default function ProfileDetailPage() {
   const t = useTranslations("profile");
@@ -25,8 +27,34 @@ export default function ProfileDetailPage() {
   const { data: session } = useSession();
   const { addToast } = useToast();
   const [qrUrl, setQrUrl] = useState<string | null>(null);
+  const [profile, setProfile] = useState<ProfileDTO | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
 
-  const profile = findProfileById(params.uuid as string);
+  const uuid = params.uuid as string;
+
+  useEffect(() => {
+    let cancelled = false;
+    getProfile(uuid)
+      .then((data) => {
+        if (!cancelled) setProfile(data);
+      })
+      .catch((error) => {
+        if (cancelled) return;
+        if (error instanceof ApiError && error.status === 404) {
+          setNotFound(true);
+        } else {
+          addToast(t("saveError"), "error");
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setIsLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [uuid, addToast, t]);
+
   const profileUrl =
     typeof window !== "undefined" && profile
       ? `${window.location.origin}/p/${profile.id}`
@@ -41,7 +69,17 @@ export default function ProfileDetailPage() {
     }).then(setQrUrl);
   }, [profileUrl]);
 
-  if (!profile) {
+  if (isLoading) {
+    return (
+      <div className="mx-auto max-w-lg space-y-6 lg:max-w-4xl">
+        <Skeleton className="aspect-[3/4] w-full rounded-lg" />
+        <Skeleton className="h-8 w-2/3" />
+        <Skeleton className="h-24 w-full" />
+      </div>
+    );
+  }
+
+  if (notFound || !profile) {
     return (
       <div className="flex min-h-[50vh] flex-col items-center justify-center text-center">
         <p className="text-lg font-medium text-white">{t("notFound")}</p>
