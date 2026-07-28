@@ -29,6 +29,12 @@ export default function EditProfilePage() {
   const uuid = params.uuid as string;
 
   useEffect(() => {
+    if (sessionStatus === "unauthenticated") {
+      router.push("/login");
+    }
+  }, [sessionStatus, router]);
+
+  useEffect(() => {
     let cancelled = false;
     getProfile(uuid)
       .then((data) => {
@@ -73,7 +79,6 @@ export default function EditProfilePage() {
       if (error instanceof ApiError) {
         if (error.status === 401) {
           router.push("/login");
-          return;
         }
         if (error.status === 403) {
           addToast(tErrors("unauthorized"), "error");

@@ -1,14 +1,23 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
+import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import ProfileForm, { ProfileFormData } from "@/components/ProfileForm";
+import Skeleton from "@/components/ui/Skeleton";
 import { ApiError, createProfile } from "@/lib/api-client";
 
 export default function CreateProfilePage() {
   const t = useTranslations("profile");
   const router = useRouter();
+  const { status: sessionStatus } = useSession();
+
+  useEffect(() => {
+    if (sessionStatus === "unauthenticated") {
+      router.push("/login");
+    }
+  }, [sessionStatus, router]);
 
   const handleSubmit = async (data: ProfileFormData, _file: File | null) => {
     void _file; // photo upload is not implemented yet
@@ -26,12 +35,21 @@ export default function CreateProfilePage() {
     } catch (error) {
       if (error instanceof ApiError && error.status === 401) {
         router.push("/login");
-        return;
       }
       // rethrow so ProfileForm shows the error toast
       throw error;
     }
   };
+
+  if (sessionStatus !== "authenticated") {
+    return (
+      <div className="mx-auto max-w-3xl space-y-6">
+        <Skeleton className="h-8 w-1/3" />
+        <Skeleton className="aspect-[3/4] w-full rounded-lg" />
+        <Skeleton className="h-12 w-full" />
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto max-w-3xl">
