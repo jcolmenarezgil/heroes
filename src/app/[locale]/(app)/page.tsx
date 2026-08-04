@@ -6,12 +6,12 @@ import Link from "next/link";
 import { useRouter } from "@/i18n/navigation";
 import {
   MagnifyingGlassIcon,
-  PlusIcon,
   SearchEmptyIcon,
 } from "@/components/icons";
 import ProfileCard from "@/components/ui/ProfileCard";
 import Skeleton from "@/components/ui/Skeleton";
 import { Button } from "@/components/ui/Button";
+import FabCreate from "@/components/ui/FabCreate";
 import { useToast } from "@/components/providers/ToastProvider";
 import { useSync } from "@/components/providers/SyncProvider";
 import { searchCachedProfiles } from "@/lib/profiles-cache";
@@ -42,7 +42,6 @@ export default function HomePage() {
   }, [query]);
 
   // Read from IndexedDB first; the SyncProvider handles background server sync.
-  // We also re-read when lastSync changes so manual/auto syncs reflect here.
   useEffect(() => {
     let cancelled = false;
 
@@ -63,7 +62,6 @@ export default function HomePage() {
   }, [debouncedQuery, lastSync, addToast, t]);
 
   const totalPages = Math.ceil(profiles.length / PAGE_SIZE);
-  // clamp in case a background sync shrinks the list while on a later page
   const currentPage = Math.min(page, Math.max(totalPages, 1));
   const results = profiles.slice(
     (currentPage - 1) * PAGE_SIZE,
@@ -110,7 +108,7 @@ export default function HomePage() {
           </div>
         ) : results.length > 0 ? (
           <div className="divide-y divide-neutral-900">
-              {results.map((profile) => (
+            {results.map((profile) => (
               <ProfileCard
                 key={profile.id}
                 id={profile.id}
@@ -171,14 +169,7 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* Floating create button */}
-      <Link
-        href="/create"
-        className="fixed bottom-6 right-6 z-50 flex min-h-14 min-w-14 items-center justify-center rounded-full bg-white px-5 py-4 text-xl font-medium text-black shadow-lg shadow-black/50 transition hover:bg-neutral-200 active:scale-[0.98]"
-        aria-label={t("create")}
-      >
-        <PlusIcon className="h-6 w-6" />
-      </Link>
+      <FabCreate />
     </div>
   );
 }
