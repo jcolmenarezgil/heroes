@@ -15,6 +15,7 @@ import {
 import { Button } from "@/components/ui/Button";
 import AvatarPlaceholder from "@/components/ui/AvatarPlaceholder";
 import QRCode from "@/components/ui/QRCode";
+import Section from "@/components/ui/Section";
 import StatusBadge from "@/components/ui/StatusBadge";
 import ProfileDetailSkeleton from "@/components/ProfileDetailSkeleton";
 import { useToast } from "@/components/providers/ToastProvider";
@@ -264,19 +265,3 @@ export default function ProfileDetailPage() {
   );
 }
 
-function Section({
-  label,
-  value,
-  first = false,
-}: {
-  label: string;
-  value: string;
-  first?: boolean;
-}) {
-  return (
-    <div className={`py-4 ${first ? "" : "border-t border-neutral-900"}`}>
-      <p className="text-sm text-neutral-400">{label}</p>
-      <p className="mt-1 text-base text-white">{value}</p>
-    </div>
-  );
-}

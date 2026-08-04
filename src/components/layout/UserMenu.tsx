@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { Link as LocalizedLink } from "@/i18n/navigation";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { useFormatter, useTranslations } from "next-intl";
 import { useConnectivity } from "@/components/providers/ConnectivityProvider";
@@ -178,17 +179,13 @@ export default function UserMenu() {
                     <div className="my-1 border-t border-neutral-800" />
 
                     {/* Actions */}
-                    <Link
-                        href="#"
-                        onClick={(e) => {
-                            e.preventDefault();
-                            addToast(t("userMenu.comingSoon"), "warning");
-                            setOpen(false);
-                        }}
+                    <LocalizedLink
+                        href="/me"
+                        onClick={() => setOpen(false)}
                         className="block rounded-md px-3 py-2 text-sm text-white hover:bg-neutral-900"
                     >
                         {t("userMenu.myProfile")}
-                    </Link>
+                    </LocalizedLink>
                     {isAdmin && (
                         <Link
                             href="/admin"

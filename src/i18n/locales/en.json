@@ -163,6 +163,77 @@
     "comingSoon": "Coming soon",
     "offlineSync": "You are offline. Connect to sync."
   },
+  "myProfile": {
+    "title": "My profile",
+    "editTitle": "Edit profile",
+    "sections": {
+      "demographics": "Demographics",
+      "phones": "Phone numbers",
+      "myReports": "My reports"
+    },
+    "fields": {
+      "fullName": "Full name",
+      "name": "Display name",
+      "email": "Email",
+      "dob": "Date of birth",
+      "gender": "Gender",
+      "phones": "Phone numbers",
+      "phoneNumber": "Phone number",
+      "phoneLabel": "Label",
+      "preferredPhone": "Preferred"
+    },
+    "gender": {
+      "unspecified": "Not specified",
+      "male": "Male",
+      "female": "Female"
+    },
+    "phoneLabels": {
+      "personal": "Personal",
+      "work": "Work",
+      "emergency": "Emergency",
+      "other": "Other"
+    },
+    "placeholders": {
+      "fullName": "Enter your full name",
+      "name": "Enter your display name",
+      "phone": "+1 787-555-0199"
+    },
+    "actions": {
+      "edit": "Edit",
+      "save": "Save changes",
+      "cancel": "Cancel",
+      "export": "Export my data",
+      "addPhone": "Add phone",
+      "removePhone": "Remove phone"
+    },
+    "validation": {
+      "fullNameRequired": "Full name is required",
+      "nameRequired": "Display name is required",
+      "phoneNumberRequired": "Phone number cannot be empty",
+      "onePreferred": "Only one phone can be preferred"
+    },
+    "emptyStates": {
+      "noPhones": "No phone numbers added.",
+      "noReports": "You haven't created any reports yet.",
+      "createReport": "Create a report"
+    },
+    "notSpecified": "Not specified",
+    "emailReadOnly": "Email is linked to your Google account and cannot be changed.",
+    "googlePhotoCaption": "Your photo is synced from Google.",
+    "preferredPhone": "Preferred",
+    "loadError": "Could not load profile",
+    "saveError": "Could not save profile",
+    "saveSuccess": "Profile saved",
+    "exportSuccess": "Data exported",
+    "backToHome": "Back to home",
+    "memberSince": "Member since {date}",
+    "updatedAt": "Profile updated {date}",
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next",
+      "pageOf": "Page {page} of {total}"
+    }
+  },
   "errors": {
     "unauthorized": "You don't have permission to perform this action.",
     "generic": "Something went wrong. Please try again."
