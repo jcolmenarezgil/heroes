@@ -10,11 +10,13 @@
     "crisisResponse": "Respuesta a Crisis",
     "missingPersonsLocator": "y Localizador de Personas Desaparecidas"
   },
-  "nav": {
-    "home": "Inicio",
-    "signIn": "Iniciar sesión",
-    "signOut": "Cerrar sesión"
-  },
+"nav": {
+  "home": "Inicio",
+  "create": "Reportar",
+  "search": "Buscar",
+  "signIn": "Iniciar sesión",
+  "signOut": "Cerrar sesión"
+},
   "auth": {
     "loginWithGoogle": "Iniciar sesión con Google",
     "signOut": "Cerrar sesión",

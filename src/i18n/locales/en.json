@@ -10,11 +10,13 @@
     "crisisResponse": "Crisis Response",
     "missingPersonsLocator": "& Missing Persons Locator"
   },
-  "nav": {
-    "home": "Home",
-    "signIn": "Sign in",
-    "signOut": "Sign out"
-  },
+"nav": {
+  "home": "Home",
+  "create": "Report",
+  "search": "Search",
+  "signIn": "Sign in",
+  "signOut": "Sign out"
+},
   "auth": {
     "loginWithGoogle": "Sign in with Google",
     "signOut": "Sign Out",
