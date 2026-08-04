@@ -16,6 +16,7 @@ export const updateProfileSchema = createProfileSchema.partial();
 export const listProfilesQuerySchema = z.object({
     q: z.string().trim().min(1).max(200).optional(),
     status: profileStatusSchema.optional(),
+    createdBy: z.string().uuid().optional(),
     limit: z.coerce.number().int().min(1).max(200).default(20),
     page: z.coerce.number().int().min(1).default(1),
 });

@@ -2,7 +2,9 @@ import type {
     CreateProfileInput,
     UpdateProfileInput,
 } from "@/lib/validations/profile";
+import type { UpdateUserInput } from "@/lib/validations/user";
 import type { ProfileDTO, ProfileListResponse } from "@/types/profile";
+import type { UserDTO } from "@/types/user";
 
 export class ApiError extends Error {
     constructor(
@@ -43,6 +45,7 @@ async function request<T>(
 export interface ListProfilesParams {
     q?: string;
     status?: "active" | "found" | "deceased";
+    createdBy?: string;
     page?: number;
     limit?: number;
 }
@@ -53,6 +56,7 @@ export function listProfiles(
     const search = new URLSearchParams();
     if (params.q) search.set("q", params.q);
     if (params.status) search.set("status", params.status);
+    if (params.createdBy) search.set("createdBy", params.createdBy);
     if (params.page) search.set("page", String(params.page));
     if (params.limit) search.set("limit", String(params.limit));
 
@@ -79,6 +83,17 @@ export function updateProfile(
 ): Promise<ProfileDTO> {
     return request<ProfileDTO>(`/api/profiles/${id}`, {
         method: "PUT",
+        body: JSON.stringify(data),
+    });
+}
+
+export function getMe(): Promise<UserDTO> {
+    return request<UserDTO>("/api/users/me");
+}
+
+export function updateMe(data: UpdateUserInput): Promise<UserDTO> {
+    return request<UserDTO>("/api/users/me", {
+        method: "PATCH",
         body: JSON.stringify(data),
     });
 }
