@@ -163,6 +163,77 @@
     "comingSoon": "Próximamente",
     "offlineSync": "Sin conexión. Conéctate para sincronizar."
   },
+  "myProfile": {
+    "title": "Mi perfil",
+    "editTitle": "Editar perfil",
+    "sections": {
+      "demographics": "Datos demográficos",
+      "phones": "Teléfonos",
+      "myReports": "Mis reportes"
+    },
+    "fields": {
+      "fullName": "Nombre completo",
+      "name": "Nombre visible",
+      "email": "Correo electrónico",
+      "dob": "Fecha de nacimiento",
+      "gender": "Género",
+      "phones": "Teléfonos",
+      "phoneNumber": "Teléfono",
+      "phoneLabel": "Etiqueta",
+      "preferredPhone": "Preferido"
+    },
+    "gender": {
+      "unspecified": "No especificado",
+      "male": "Masculino",
+      "female": "Femenino"
+    },
+    "phoneLabels": {
+      "personal": "Personal",
+      "work": "Trabajo",
+      "emergency": "Emergencia",
+      "other": "Otro"
+    },
+    "placeholders": {
+      "fullName": "Ingresa tu nombre completo",
+      "name": "Ingresa tu nombre visible",
+      "phone": "+1 787-555-0199"
+    },
+    "actions": {
+      "edit": "Editar",
+      "save": "Guardar cambios",
+      "cancel": "Cancelar",
+      "export": "Exportar mis datos",
+      "addPhone": "Añadir teléfono",
+      "removePhone": "Eliminar teléfono"
+    },
+    "validation": {
+      "fullNameRequired": "El nombre completo es obligatorio",
+      "nameRequired": "El nombre visible es obligatorio",
+      "phoneNumberRequired": "El teléfono no puede estar vacío",
+      "onePreferred": "Solo un teléfono puede ser preferido"
+    },
+    "emptyStates": {
+      "noPhones": "No hay teléfonos añadidos.",
+      "noReports": "Aún no has creado reportes.",
+      "createReport": "Crear un reporte"
+    },
+    "notSpecified": "No especificado",
+    "emailReadOnly": "El correo está vinculado a tu cuenta de Google y no se puede cambiar.",
+    "googlePhotoCaption": "Tu foto se sincroniza desde Google.",
+    "preferredPhone": "Preferido",
+    "loadError": "No se pudo cargar el perfil",
+    "saveError": "No se pudo guardar el perfil",
+    "saveSuccess": "Perfil guardado",
+    "exportSuccess": "Datos exportados",
+    "backToHome": "Volver al inicio",
+    "memberSince": "Miembro desde {date}",
+    "updatedAt": "Perfil actualizado {date}",
+    "pagination": {
+      "previous": "Anterior",
+      "next": "Siguiente",
+      "pageOf": "Página {page} de {total}"
+    }
+  },
   "errors": {
     "unauthorized": "No tienes permiso para realizar esta acción.",
     "generic": "Algo salió mal. Por favor, inténtalo de nuevo."
