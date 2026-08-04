@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, date, pgEnum, jsonb, integer, primaryKey, uuid } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, date, pgEnum, jsonb, integer, primaryKey, uuid, doublePrecision } from "drizzle-orm/pg-core";
 import { AdapterAccount } from "next-auth/adapters";
 
 // Definición física del Enum para el género en PostgreSQL
@@ -102,3 +102,18 @@ export const profiles = pgTable("profiles", {
         .notNull(),
 });
 
+// Tabla de Negocio: Refugios y Puntos de Control Activos en la Crisis
+export const EmergencyShelter = pgTable("emergency_shelter", {
+    id: uuid("id").defaultRandom().primaryKey(),
+    name: text("name").notNull(),
+    capacity: integer("capacity"),
+    occupancy: integer("occupancy").default(0),
+    status: text("status").notNull().default("active"), // 'active', 'full', 'closed'
+    latitude: doublePrecision("latitude").notNull(),
+    longitude: doublePrecision("longitude").notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+    createdByUserId: uuid("user_id")
+        .references(() => users.id, { onDelete: "cascade" })
+        .notNull(),
+});
