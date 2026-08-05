@@ -90,6 +90,10 @@ export const profiles = pgTable("profiles", {
         .references(() => users.id, { onDelete: "set null" }),
     name: text("name").notNull(),
     photoUrl: text("photo_url"),
+    // References photos.id (a UUID), not a filesystem path. The misleading
+    // "Path" name is kept to avoid a wide-reaching rename across the schema,
+    // API, and mappers. Stored client-side as the photos.id returned by the
+    // upload endpoint and resolved via GET /api/photos/[id].
     photoPath: text("photo_path"),
     isMinor: boolean("is_minor").default(false).notNull(),
     lastKnownLocation: text("last_known_location").notNull(),

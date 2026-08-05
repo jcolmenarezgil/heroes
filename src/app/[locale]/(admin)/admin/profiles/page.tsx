@@ -48,7 +48,6 @@ export default function AdminProfilesPage() {
   const [showMergeModal, setShowMergeModal] = useState(false);
   const [mergeTarget, setMergeTarget] = useState<string | null>(null);
   const [isMerging, setIsMerging] = useState(false);
-  const [reloadKey, setReloadKey] = useState(0);
 
   const [debouncedSearch, setDebouncedSearch] = useState("");
   useEffect(() => {
@@ -82,7 +81,7 @@ export default function AdminProfilesPage() {
     return () => {
       cancelled = true;
     };
-  }, [page, debouncedSearch, statusFilter, addToast, t, reloadKey]);
+  }, [page, debouncedSearch, statusFilter, addToast, t]);
 
   const toggleSelect = (id: string) => {
     setSelected((prev) => {
@@ -150,7 +149,6 @@ export default function AdminProfilesPage() {
       setSelected(new Set());
       setMergeTarget(null);
       setPage(1);
-      setReloadKey((k) => k + 1);
     } catch {
       addToast(t("mergeError"), "error");
     } finally {

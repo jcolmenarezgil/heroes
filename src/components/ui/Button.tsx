@@ -53,18 +53,3 @@ export function Button({
     </button>
   );
 }
-
-export function FloatingActionButton({
-  children,
-  className = "",
-  ...props
-}: React.ButtonHTMLAttributes<HTMLButtonElement>) {
-  return (
-    <button
-      className={`fixed bottom-6 right-6 z-50 flex min-h-14 min-w-14 items-center justify-center rounded-full bg-white px-5 py-4 text-xl font-medium text-black shadow-lg shadow-black/50 transition hover:bg-neutral-200 active:scale-[0.98] ${className}`}
-      {...props}
-    >
-      {children}
-    </button>
-  );
-}
