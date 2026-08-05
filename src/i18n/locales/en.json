@@ -81,8 +81,11 @@
       "share": "Share via QR",
       "download": "Download PNG",
       "export": "Export as JSON",
-      "suggestUpdate": "Suggest update"
+      "suggestUpdate": "Suggest update",
+      "signInToHelp": "Sign in to help"
     },
+    "minorDisclaimer": "This person is a minor. Sensitive location details are hidden on the public view.",
+    "lastUpdated": "Last updated {date}",
     "notFound": "Profile not found",
     "backToHome": "Back to home",
     "noContact": "No contact provided",

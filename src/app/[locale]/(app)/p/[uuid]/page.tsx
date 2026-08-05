@@ -20,17 +20,17 @@ import Section from "@/components/ui/Section";
 import StatusBadge from "@/components/ui/StatusBadge";
 import ProfileDetailSkeleton from "@/components/ProfileDetailSkeleton";
 import { useToast } from "@/components/providers/ToastProvider";
-import { ApiError, getProfile } from "@/lib/api-client";
-import type { ProfileDTO } from "@/types/profile";
+import { ApiError, getPublicProfile } from "@/lib/api-client";
+import type { PublicProfileDTO } from "@/types/profile";
 
 export default function ProfileDetailPage() {
   const t = useTranslations("profile");
   const format = useFormatter();
   const params = useParams();
-  const { data: session } = useSession();
+  const { status: sessionStatus } = useSession();
   const { addToast } = useToast();
   const [qrUrl, setQrUrl] = useState<string | null>(null);
-  const [profile, setProfile] = useState<ProfileDTO | null>(null);
+  const [profile, setProfile] = useState<PublicProfileDTO | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
 
@@ -38,7 +38,7 @@ export default function ProfileDetailPage() {
 
   useEffect(() => {
     let cancelled = false;
-    getProfile(uuid)
+    getPublicProfile(uuid)
       .then((data) => {
         if (!cancelled) setProfile(data);
       })
@@ -87,10 +87,7 @@ export default function ProfileDetailPage() {
     );
   }
 
-  const canEditDirectly =
-    session?.user?.role === "admin" ||
-    session?.user?.role === "rescuer" ||
-    session?.user?.id === profile.userId;
+  const canEditDirectly = profile.canEdit;
 
   const canShare =
     typeof navigator !== "undefined" && "share" in navigator;
@@ -151,7 +148,7 @@ export default function ProfileDetailPage() {
             <PencilSquareIcon className="h-5 w-5" />
             <span className="text-sm font-medium">{t("actions.edit")}</span>
           </Link>
-        ) : (
+        ) : sessionStatus === "authenticated" ? (
           <button
             onClick={() => addToast(t("suggestionComingSoon"), "warning")}
             className="flex h-11 min-w-11 items-center gap-2 rounded-lg border border-neutral-700 px-3 text-white transition hover:bg-neutral-900"
@@ -161,6 +158,16 @@ export default function ProfileDetailPage() {
               {t("actions.suggestUpdate")}
             </span>
           </button>
+        ) : (
+          <Link
+            href="/login"
+            className="flex h-11 min-w-11 items-center gap-2 rounded-lg border border-neutral-700 px-3 text-white transition hover:bg-neutral-900"
+          >
+            <PencilSquareIcon className="h-5 w-5" />
+            <span className="text-sm font-medium">
+              {t("actions.signInToHelp")}
+            </span>
+          </Link>
         )}
       </div>
 
@@ -190,6 +197,12 @@ export default function ProfileDetailPage() {
             </h1>
             <StatusBadge status={profile.status} />
           </div>
+
+          {profile.isMinor && (
+            <p className="rounded-lg border border-neutral-900 bg-neutral-950 px-3 py-2 text-xs text-neutral-400">
+              {t("minorDisclaimer")}
+            </p>
+          )}
 
           <Button variant="secondary" onClick={handleExportJson}>
             <span className="flex items-center gap-2">
@@ -251,18 +264,19 @@ export default function ProfileDetailPage() {
                 }),
               })}
             </p>
-            <p className="mt-1">
-              {t("updatedBy", {
-                name: profile.updatedByName,
-                date: format.dateTime(new Date(profile.updatedAt), {
-                  day: "numeric",
-                  month: "short",
-                  year: "numeric",
-                  hour: "numeric",
-                  minute: "numeric",
-                }),
-              })}
-            </p>
+            {profile.updatedAt !== profile.createdAt && (
+              <p className="mt-1">
+                {t("lastUpdated", {
+                  date: format.dateTime(new Date(profile.updatedAt), {
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric",
+                    hour: "numeric",
+                    minute: "numeric",
+                  }),
+                })}
+              </p>
+            )}
           </div>
         </div>
       </div>

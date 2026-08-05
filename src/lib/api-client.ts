@@ -3,7 +3,7 @@ import type {
     UpdateProfileInput,
 } from "@/lib/validations/profile";
 import type { UpdateUserInput } from "@/lib/validations/user";
-import type { ProfileDTO, ProfileListResponse } from "@/types/profile";
+import type { ProfileDTO, PublicProfileDTO, ProfileListResponse } from "@/types/profile";
 import type { UserDTO } from "@/types/user";
 
 export class ApiError extends Error {
@@ -73,6 +73,10 @@ export function listProfiles(
 
 export function getProfile(id: string): Promise<ProfileDTO> {
     return request<ProfileDTO>(`/api/profiles/${id}`);
+}
+
+export function getPublicProfile(id: string): Promise<PublicProfileDTO> {
+    return request<PublicProfileDTO>(`/api/public/profiles/${id}`);
 }
 
 export function createProfile(data: CreateProfileInput): Promise<ProfileDTO> {

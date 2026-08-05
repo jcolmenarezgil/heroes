@@ -81,8 +81,11 @@
       "share": "Compartir por QR",
       "download": "Descargar PNG",
       "export": "Exportar como JSON",
-      "suggestUpdate": "Sugerir actualización"
+      "suggestUpdate": "Sugerir actualización",
+      "signInToHelp": "Inicia sesión para ayudar"
     },
+    "minorDisclaimer": "Esta persona es menor de edad. Los detalles sensibles de ubicación se ocultan en la vista pública.",
+    "lastUpdated": "Última actualización {date}",
     "notFound": "Perfil no encontrado",
     "backToHome": "Volver al inicio",
     "noContact": "Sin teléfono de contacto",
