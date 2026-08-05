@@ -240,6 +240,12 @@
   },
   "errors": {
     "unauthorized": "No tienes permiso para realizar esta acción.",
-    "generic": "Algo salió mal. Por favor, inténtalo de nuevo."
+    "generic": "Algo salió mal. Por favor, inténtalo de nuevo.",
+    "notFoundTitle": "Página no encontrada",
+    "notFoundDescription": "La página que buscas no existe o fue movida.",
+    "errorTitle": "Algo salió mal",
+    "errorDescription": "Ocurrió un error inesperado al renderizar esta página.",
+    "retry": "Intentar de nuevo",
+    "backToHome": "Volver al inicio"
   }
 }

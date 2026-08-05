@@ -240,6 +240,12 @@
   },
   "errors": {
     "unauthorized": "You don't have permission to perform this action.",
-    "generic": "Something went wrong. Please try again."
+    "generic": "Something went wrong. Please try again.",
+    "notFoundTitle": "Page not found",
+    "notFoundDescription": "The page you were looking for doesn't exist or has moved.",
+    "errorTitle": "Something went wrong",
+    "errorDescription": "An unexpected error occurred while rendering this page.",
+    "retry": "Try again",
+    "backToHome": "Back to home"
   }
 }
