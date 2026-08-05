@@ -179,3 +179,25 @@ export function rejectSuggestion(
         { method: "POST" }
     );
 }
+
+export function verifyProfile(uuid: string): Promise<ProfileDTO> {
+    return request<ProfileDTO>(`/api/admin/profiles/${uuid}/verify`, {
+        method: "POST",
+    });
+}
+
+export function unverifyProfile(uuid: string): Promise<ProfileDTO> {
+    return request<ProfileDTO>(`/api/admin/profiles/${uuid}/unverify`, {
+        method: "POST",
+    });
+}
+
+export function mergeProfiles(
+    source: string,
+    target: string
+): Promise<{ merged: boolean; source: string; target: string }> {
+    return request(`/api/admin/profiles/merge`, {
+        method: "POST",
+        body: JSON.stringify({ source, target }),
+    });
+}
