@@ -136,6 +136,16 @@
   },
   "admin": {
     "dashboardTitle": "Panel",
+    "dashboardSubtitle": "Resumen de la actividad de la plataforma.",
+    "dashboard": {
+      "totalProfiles": "Perfiles totales",
+      "active": "Activos",
+      "found": "Encontrados",
+      "deceased": "Fallecidos",
+      "verified": "Verificados",
+      "pendingSuggestions": "Sugerencias pendientes",
+      "totalUsers": "Usuarios"
+    },
     "usersTitle": "Usuarios",
     "profilesTitle": "Perfiles",
     "profilesSubtitle": "Gestiona, verifica y combina perfiles de personas desaparecidas.",
