@@ -389,18 +389,6 @@ export default function AdminProfilesPage() {
                     </td>
                     <td className="px-2 py-3">
                       <div className="flex items-center justify-end gap-1.5">
-                        <Link
-                          href={`/p/${profile.id}`}
-                          className="rounded-md border border-neutral-700 px-2 py-1 text-xs text-white transition hover:bg-neutral-900"
-                        >
-                          {t("view")}
-                        </Link>
-                        <Link
-                          href={`/p/${profile.id}/edit`}
-                          className="rounded-md border border-neutral-700 px-2 py-1 text-xs text-white transition hover:bg-neutral-900"
-                        >
-                          {t("edit")}
-                        </Link>
                         {profile.verified ? (
                           <button
                             onClick={() => handleUnverify(profile)}
@@ -418,6 +406,18 @@ export default function AdminProfilesPage() {
                             {t("verify")}
                           </button>
                         )}
+                        <Link
+                          href={`/p/${profile.id}/edit`}
+                          className="rounded-md border border-neutral-700 px-2 py-1 text-xs text-white transition hover:bg-neutral-900"
+                        >
+                          {t("edit")}
+                        </Link>
+                        <Link
+                          href={`/p/${profile.id}`}
+                          className="rounded-md border border-neutral-700 px-2 py-1 text-xs text-white transition hover:bg-neutral-900"
+                        >
+                          {t("view")}
+                        </Link>
                       </div>
                     </td>
                   </tr>
