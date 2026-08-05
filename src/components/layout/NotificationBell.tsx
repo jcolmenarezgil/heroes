@@ -164,7 +164,7 @@ export default function NotificationBell() {
                         return !v;
                     });
                 }}
-                className="relative flex h-8 w-8 items-center justify-center rounded-full text-white hover:bg-neutral-900 focus:outline-none focus:ring-2 focus:ring-white"
+                className="relative flex h-8 w-8 items-center justify-center rounded-full text-white focus:outline-none"
                 aria-label={t("openMenu")}
                 aria-expanded={open}
             >
