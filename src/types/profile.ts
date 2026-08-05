@@ -5,7 +5,7 @@ import type { profiles } from "@/lib/db/schema";
  */
 export type ProfileDTO = Omit<
     typeof profiles.$inferSelect,
-    "verified" | "createdAt" | "updatedAt"
+    "photoPath" | "verified" | "createdAt" | "updatedAt"
 > & {
     verified: string | null;
     createdAt: string;

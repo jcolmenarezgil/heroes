@@ -84,7 +84,7 @@ export async function POST(request: Request) {
         return jsonBadRequest("Invalid profile data", parsed.error.issues);
     }
 
-    const { name, photoUrl, lastKnownLocation, status, contactPhone, notes } =
+    const { name, photoUrl, photoPath, isMinor, lastKnownLocation, status, contactPhone, notes } =
         parsed.data;
 
     try {
@@ -96,6 +96,8 @@ export async function POST(request: Request) {
                 updatedBy: user.id,
                 name,
                 photoUrl: photoUrl ?? null,
+                photoPath: photoPath ?? null,
+                isMinor,
                 lastKnownLocation,
                 status,
                 contactPhone: contactPhone ?? null,

@@ -7,7 +7,7 @@ import { useRouter } from "@/i18n/navigation";
 import ProfileForm, { ProfileFormData } from "@/components/ProfileForm";
 import ProfileFormSkeleton from "@/components/ProfileFormSkeleton";
 import { useToast } from "@/components/providers/ToastProvider";
-import { ApiError, createProfile } from "@/lib/api-client";
+import { ApiError, createProfile, uploadProfilePhoto } from "@/lib/api-client";
 
 export default function CreateProfilePage() {
   const t = useTranslations("profile");
@@ -21,27 +21,33 @@ export default function CreateProfilePage() {
     }
   }, [sessionStatus, router]);
 
-  const handleSubmit = async (data: ProfileFormData, _file: File | null) => {
-    void _file; // photo upload is not implemented yet
+  const handleSubmit = async (data: ProfileFormData, file: File | null) => {
     try {
-      // photo upload is not implemented yet; blob previews are not persisted
+      let photoUrl = data.photoUrl;
+      let photoPath = data.photoPath;
+
+      if (file) {
+        const uploaded = await uploadProfilePhoto(file);
+        photoUrl = uploaded.url;
+        photoPath = uploaded.path;
+      }
+
       const created = await createProfile({
         name: data.name,
-        photoUrl: null,
+        photoUrl,
+        photoPath,
+        isMinor: data.isMinor,
         lastKnownLocation: data.lastKnownLocation,
         status: data.status,
         contactPhone: data.contactPhone || null,
         notes: data.notes || null,
       });
-      // The home list is only updated on the scheduled/manual sync.
-      // Notify the user so the delay is not mistaken for a bug.
       addToast(t("saveToast"), "success");
       router.push(`/p/${created.id}`);
     } catch (error) {
       if (error instanceof ApiError && error.status === 401) {
         router.push("/login");
       }
-      // rethrow so ProfileForm shows the error toast
       throw error;
     }
   };
@@ -59,6 +65,8 @@ export default function CreateProfilePage() {
         initialData={{
           name: "",
           photoUrl: null,
+          photoPath: null,
+          isMinor: false,
           lastKnownLocation: "",
           status: "active",
           contactPhone: "",

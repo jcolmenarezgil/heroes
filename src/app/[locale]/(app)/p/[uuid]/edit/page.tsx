@@ -11,7 +11,7 @@ import ProfileFormSkeleton from "@/components/ProfileFormSkeleton";
 import { Button } from "@/components/ui/Button";
 import { Textarea } from "@/components/ui/Field";
 import { useToast } from "@/components/providers/ToastProvider";
-import { ApiError, getProfile, updateProfile } from "@/lib/api-client";
+import { ApiError, getProfile, updateProfile, uploadProfilePhoto } from "@/lib/api-client";
 import type { ProfileDTO } from "@/types/profile";
 
 export default function EditProfilePage() {
@@ -61,21 +61,28 @@ export default function EditProfilePage() {
     session?.user?.role === "rescuer" ||
     (session?.user?.id && session.user.id === profile?.userId);
 
-  const handleSubmit = async (data: ProfileFormData, _file: File | null) => {
-    void _file; // photo upload is not implemented yet
+  const handleSubmit = async (data: ProfileFormData, file: File | null) => {
     if (!profile) return;
     try {
-      // photo upload is not implemented yet; blob previews are not persisted
+      let photoUrl = data.photoUrl;
+      let photoPath = data.photoPath;
+
+      if (file) {
+        const uploaded = await uploadProfilePhoto(file);
+        photoUrl = uploaded.url;
+        photoPath = uploaded.path;
+      }
+
       await updateProfile(profile.id, {
         name: data.name,
-        photoUrl: data.photoUrl?.startsWith("blob:") ? null : data.photoUrl,
+        photoUrl,
+        photoPath,
+        isMinor: data.isMinor,
         lastKnownLocation: data.lastKnownLocation,
         status: data.status,
         contactPhone: data.contactPhone || null,
         notes: data.notes || null,
       });
-      // The home list is only updated on the scheduled/manual sync.
-      // Notify the user so the delay is not mistaken for a bug.
       addToast(t("saveToast"), "success");
       router.push(`/p/${profile.id}`);
     } catch (error) {
@@ -88,7 +95,6 @@ export default function EditProfilePage() {
           return;
         }
       }
-      // rethrow so ProfileForm shows the error toast
       throw error;
     }
   };
@@ -122,6 +128,8 @@ export default function EditProfilePage() {
           id: profile.id,
           name: profile.name,
           photoUrl: profile.photoUrl,
+          photoPath: null,
+          isMinor: profile.isMinor,
           lastKnownLocation: profile.lastKnownLocation,
           status: profile.status,
           contactPhone: profile.contactPhone || "",

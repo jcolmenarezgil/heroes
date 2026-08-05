@@ -19,8 +19,19 @@ export function toProfileDTO(
     creator: { name: string | null; fullName: string } | null,
     updater: { name: string | null; fullName: string } | null
 ): ProfileDTO {
+    // photoPath is an internal storage handle and must not leak to clients.
     return {
-        ...profile,
+        id: profile.id,
+        userId: profile.userId,
+        createdBy: profile.createdBy,
+        updatedBy: profile.updatedBy,
+        name: profile.name,
+        photoUrl: profile.photoUrl,
+        isMinor: profile.isMinor,
+        lastKnownLocation: profile.lastKnownLocation,
+        status: profile.status,
+        contactPhone: profile.contactPhone,
+        notes: profile.notes,
         verified: profile.verified ? profile.verified.toISOString() : null,
         createdAt: profile.createdAt.toISOString(),
         updatedAt: profile.updatedAt.toISOString(),

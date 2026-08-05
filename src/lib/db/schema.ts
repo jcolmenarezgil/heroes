@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, date, pgEnum, jsonb, integer, primaryKey, uuid } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, date, pgEnum, jsonb, integer, primaryKey, uuid, boolean } from "drizzle-orm/pg-core";
 import { AdapterAccount } from "next-auth/adapters";
 
 // Definición física del Enum para el género en PostgreSQL
@@ -90,6 +90,8 @@ export const profiles = pgTable("profiles", {
         .references(() => users.id, { onDelete: "set null" }),
     name: text("name").notNull(),
     photoUrl: text("photo_url"),
+    photoPath: text("photo_path"),
+    isMinor: boolean("is_minor").default(false).notNull(),
     lastKnownLocation: text("last_known_location").notNull(),
     status: profileStatusEnum("status").default("active").notNull(),
     contactPhone: text("contact_phone"),

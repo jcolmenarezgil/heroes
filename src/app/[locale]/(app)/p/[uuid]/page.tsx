@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useFormatter, useTranslations } from "next-intl";
 import QRCodeLib from "qrcode";
+import Image from "next/image";
 import {
   ArrowDownTrayIcon,
   ArrowLeftIcon,
@@ -167,12 +168,16 @@ export default function ProfileDetailPage() {
         {/* Left column */}
         <div className="space-y-6">
           {profile.photoUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={profile.photoUrl}
-              alt={profile.name}
-              className="aspect-[3/4] w-full rounded-lg bg-neutral-900 object-cover"
-            />
+            <div className="relative aspect-[3/4] w-full overflow-hidden rounded-lg bg-neutral-900">
+              <Image
+                src={profile.photoUrl}
+                alt={profile.name}
+                fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                className="object-cover"
+                referrerPolicy="no-referrer"
+              />
+            </div>
           ) : (
             <div className="flex aspect-[3/4] w-full items-center justify-center rounded-lg bg-neutral-900">
               <AvatarPlaceholder size="lg" />

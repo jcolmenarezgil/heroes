@@ -1,3 +1,4 @@
+import { del } from "@vercel/blob";
 import { eq } from "drizzle-orm";
 import { canModifyProfile, getAuthUser } from "@/lib/api-auth";
 import {
@@ -86,23 +87,50 @@ export async function PUT(request: Request, context: RouteContext) {
             return jsonForbidden("You can only modify your own profiles");
         }
 
-        const updateData: Record<string, unknown> = {};
-        const { name, photoUrl, lastKnownLocation, status, contactPhone, notes } =
-            parsed.data;
+const updateData: Record<string, unknown> = {};
+    const {
+        name,
+        photoUrl,
+        photoPath,
+        isMinor,
+        lastKnownLocation,
+        status,
+        contactPhone,
+        notes,
+    } = parsed.data;
 
-        if (name !== undefined) updateData.name = name;
-        if (photoUrl !== undefined) updateData.photoUrl = photoUrl;
-        if (lastKnownLocation !== undefined)
-            updateData.lastKnownLocation = lastKnownLocation;
-        if (status !== undefined) updateData.status = status;
-        if (contactPhone !== undefined) updateData.contactPhone = contactPhone;
-        if (notes !== undefined) updateData.notes = notes;
+    if (name !== undefined) updateData.name = name;
+    if (photoUrl !== undefined) updateData.photoUrl = photoUrl;
+    if (photoPath !== undefined) updateData.photoPath = photoPath;
+    if (isMinor !== undefined) updateData.isMinor = isMinor;
+    if (lastKnownLocation !== undefined)
+        updateData.lastKnownLocation = lastKnownLocation;
+    if (status !== undefined) updateData.status = status;
+    if (contactPhone !== undefined) updateData.contactPhone = contactPhone;
+    if (notes !== undefined) updateData.notes = notes;
 
-        const [updated] = await db
-            .update(profiles)
-            .set({ ...updateData, updatedBy: user.id })
-            .where(eq(profiles.id, parsedUuid.data))
-            .returning();
+    // If a new photo replaces an existing one, delete the old blob to avoid
+    // orphaned storage. Skip when photoPath is unchanged (kept unmodified).
+    const oldPhotoPath = profile.photoPath;
+    const newPhotoPath =
+        photoPath !== undefined ? photoPath : profile.photoPath;
+    if (
+        oldPhotoPath &&
+        newPhotoPath !== oldPhotoPath &&
+        process.env.BLOB_READ_WRITE_TOKEN
+    ) {
+        try {
+            await del(oldPhotoPath);
+        } catch (err) {
+            console.error("Failed to delete old blob:", err);
+        }
+    }
+
+    const [updated] = await db
+        .update(profiles)
+        .set({ ...updateData, updatedBy: user.id })
+        .where(eq(profiles.id, parsedUuid.data))
+        .returning();
 
         const profileDto = toProfileDTO(updated, user, user);
         return jsonOk(profileDto);
@@ -129,6 +157,15 @@ export async function DELETE(_request: Request, context: RouteContext) {
         // owner can delete their own profile; rescuer/admin can delete any
         if (!canModifyProfile(user, profile.userId)) {
             return jsonForbidden("You can only delete your own profiles");
+        }
+
+        // Delete the associated blob (best-effort) before removing the row.
+        if (profile.photoPath && process.env.BLOB_READ_WRITE_TOKEN) {
+            try {
+                await del(profile.photoPath);
+            } catch (err) {
+                console.error("Failed to delete blob:", err);
+            }
         }
 
         await db.delete(profiles).where(eq(profiles.id, parsedUuid.data));

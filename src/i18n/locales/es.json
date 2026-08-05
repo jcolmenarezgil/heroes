@@ -54,7 +54,10 @@
       "location": "Última ubicación conocida",
       "status": "Estado",
       "contact": "Teléfono de contacto",
-      "notes": "Notas"
+      "notes": "Notas",
+      "isMinor": "Menor de edad",
+      "isMinorHint": "Esta persona es menor de 18. Se ocultarán detalles sensibles en la vista pública.",
+      "authorization": "Confirmo que tengo autorización para publicar la imagen de esta persona."
     },
     "placeholders": {
       "name": "Ingresa el nombre completo",
@@ -64,8 +67,9 @@
     },
     "validation": {
       "nameRequired": "El nombre es obligatorio",
-      "locationRequired": "La ubicación es obligatoria",
-      "photoRequired": "La foto es obligatoria"
+      "locationRequired": "La ubicación debe tener al menos 3 caracteres",
+      "photoRequired": "La foto es obligatoria",
+      "authorizationRequired": "Debes confirmar la autorización de la imagen para subir"
     },
     "dropzone": "Toca para subir una foto",
     "photoPreview": "Vista previa de la foto",

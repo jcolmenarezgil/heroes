@@ -33,7 +33,6 @@ Copy the example file and fill in your values:
 
 ```bash
 cp .env.example .env
-cp .env.example .env.local   # Drizzle Kit reads from .env.local
 ```
 
 - `DATABASE_URL` — PostgreSQL connection string
@@ -43,16 +42,16 @@ cp .env.example .env.local   # Drizzle Kit reads from .env.local
 - `ADMIN_EMAILS` — Comma-separated list of admin email addresses
 - `BLOB_READ_WRITE_TOKEN` — Vercel Blob token for photo uploads
 
-The `.env` and `.env.local` files are gitignored.
+The `.env` file is gitignored.
 
 ## Getting Started
 
 ```bash
 pnpm install
 pnpm dev            # starts dev server with Turbopack
-pnpm db:generate    # generate migrations (reads .env.local)
-pnpm db:migrate     # apply migrations to the database (reads .env.local)
-pnpm db:studio      # open Drizzle Studio (reads .env.local)
+pnpm db:generate    # generate migrations (reads .env)
+pnpm db:migrate     # apply migrations to the database (reads .env)
+pnpm db:studio      # open Drizzle Studio (reads .env)
 ```
 
 ## Participants

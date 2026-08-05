@@ -54,7 +54,10 @@
       "location": "Last known location",
       "status": "Status",
       "contact": "Contact phone",
-      "notes": "Notes"
+      "notes": "Notes",
+      "isMinor": "Minor",
+      "isMinorHint": "This person is under 18. Sensitive details will be hidden on the public view.",
+      "authorization": "I confirm I have authorization to publish this person's image."
     },
     "placeholders": {
       "name": "Enter full name",
@@ -64,8 +67,9 @@
     },
     "validation": {
       "nameRequired": "Name is required",
-      "locationRequired": "Location is required",
-      "photoRequired": "Photo is required"
+      "locationRequired": "Location must be at least 3 characters",
+      "photoRequired": "Photo is required",
+      "authorizationRequired": "You must confirm image authorization to upload"
     },
     "dropzone": "Tap to upload a photo",
     "photoPreview": "Photo preview",

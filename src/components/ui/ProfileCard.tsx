@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 import StatusBadge from "./StatusBadge";
 import AvatarPlaceholder from "./AvatarPlaceholder";
@@ -38,12 +39,16 @@ export default function ProfileCard({
       aria-label={t("resultAria", { name })}
     >
       {photoUrl ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={photoUrl}
-          alt={name}
-          className="aspect-square h-14 w-14 rounded-md bg-neutral-900 object-cover"
-        />
+        <div className="relative aspect-square h-14 w-14 overflow-hidden rounded-md bg-neutral-900">
+          <Image
+            src={photoUrl}
+            alt={name}
+            fill
+            sizes="56px"
+            className="object-cover"
+            referrerPolicy="no-referrer"
+          />
+        </div>
       ) : (
         <AvatarPlaceholder size="sm" />
       )}

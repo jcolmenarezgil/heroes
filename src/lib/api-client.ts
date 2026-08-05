@@ -20,12 +20,17 @@ async function request<T>(
     path: string,
     init?: RequestInit
 ): Promise<T> {
+    const isFormData =
+        typeof FormData !== "undefined" && init?.body instanceof FormData;
+
     const res = await fetch(path, {
         ...init,
-        headers: {
-            "Content-Type": "application/json",
-            ...init?.headers,
-        },
+        headers: isFormData
+            ? init?.headers
+            : {
+                  "Content-Type": "application/json",
+                  ...init?.headers,
+              },
     });
 
     const body = (await res.json().catch(() => null)) as
@@ -84,6 +89,23 @@ export function updateProfile(
     return request<ProfileDTO>(`/api/profiles/${id}`, {
         method: "PUT",
         body: JSON.stringify(data),
+    });
+}
+
+export interface UploadPhotoResponse {
+    url: string;
+    path: string;
+}
+
+export function uploadProfilePhoto(
+    file: File
+): Promise<UploadPhotoResponse> {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("hasAuthorization", "true");
+    return request<UploadPhotoResponse>("/api/profiles/upload", {
+        method: "POST",
+        body: formData,
     });
 }
 
