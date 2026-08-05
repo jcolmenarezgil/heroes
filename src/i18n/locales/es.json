@@ -142,7 +142,8 @@
     "nav": {
       "dashboard": "Panel",
       "profiles": "Perfiles",
-      "users": "Usuarios"
+      "users": "Usuarios",
+      "backToApp": "Volver a la app"
     },
     "profiles": {
       "searchPlaceholder": "Buscar por nombre...",

@@ -12,7 +12,7 @@ export default function VerifiedBadge({ verified, className }: VerifiedBadgeProp
 
   return (
     <span
-      className={`inline-flex items-center gap-1 rounded-md bg-blue-700 px-2 py-1 text-sm font-medium text-white ${className ?? ""}`}
+      className={`inline-flex items-center gap-1 rounded-md bg-blue-700 px-1 text-sm font-medium text-white ${className ?? ""}`}
       title={t("verifiedTooltip")}
     >
       <svg

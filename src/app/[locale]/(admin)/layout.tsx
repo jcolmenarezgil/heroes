@@ -27,7 +27,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     <div className="flex min-h-screen bg-black text-white">
       <NavBar />
 
-      <aside className="fixed left-0 top-14 z-30 hidden w-64 flex-col border-r border-neutral-900 bg-neutral-950 md:flex">
+      <aside className="fixed bottom-0 left-0 top-14 z-30 hidden w-64 flex-col border-r border-neutral-900 bg-neutral-950 md:flex">
         <nav className="flex-1 space-y-1 px-4 py-4">
           {navItems.map((item) => (
             <Link
@@ -43,6 +43,28 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </Link>
           ))}
         </nav>
+        <div className="border-t border-neutral-900 px-4 py-4">
+          <Link
+            href="/"
+            className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-neutral-400 transition hover:bg-neutral-900 hover:text-white"
+          >
+            <svg
+              className="h-4 w-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+              aria-hidden="true"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M10 19l-7-7m0 0l7-7m-7 7h18"
+              />
+            </svg>
+            {t("backToApp")}
+          </Link>
+        </div>
       </aside>
 
       <div className="flex flex-1 flex-col md:pl-64">
