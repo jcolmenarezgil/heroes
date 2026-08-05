@@ -129,28 +129,32 @@ export default function EditProfilePage() {
   }
 
   return (
-    <div className="mx-auto max-w-3xl">
-      <h1 className="mb-6 text-2xl font-semibold text-white">
-        {t("editTitle")}
-      </h1>
-      <ProfileForm
-        initialData={{
-          id: profile.id,
-          name: profile.name,
-          photoUrl: profile.photoUrl,
-          photoPath: null,
-          isMinor: profile.isMinor,
-          lastKnownLocation: profile.lastKnownLocation,
-          status: profile.status,
-          contactPhone: profile.contactPhone || "",
-          notes: profile.notes || "",
-        }}
-        onSubmit={handleSubmit}
-        submitLabel={t("actions.save")}
-        cancelHref={`/p/${profile.id}`}
-      />
+    <div className="mx-auto max-w-5xl lg:grid lg:grid-cols-[1fr_20rem] lg:gap-8 lg:items-start">
+      <div>
+        <h1 className="mb-6 text-2xl font-semibold text-white">
+          {t("editTitle")}
+        </h1>
+        <ProfileForm
+          initialData={{
+            id: profile.id,
+            name: profile.name,
+            photoUrl: profile.photoUrl,
+            photoPath: null,
+            isMinor: profile.isMinor,
+            lastKnownLocation: profile.lastKnownLocation,
+            status: profile.status,
+            contactPhone: profile.contactPhone || "",
+            notes: profile.notes || "",
+          }}
+          onSubmit={handleSubmit}
+          submitLabel={t("actions.save")}
+          cancelHref={`/p/${profile.id}`}
+        />
+      </div>
 
-      <PendingSuggestions profileId={profile.id} />
+      <aside className="mt-8 lg:sticky lg:top-6 lg:mt-0">
+        <PendingSuggestions profileId={profile.id} />
+      </aside>
     </div>
   );
 }

@@ -1,6 +1,12 @@
 import React from "react";
 
-type ButtonVariant = "primary" | "secondary" | "destructive" | "icon";
+type ButtonVariant =
+  | "primary"
+  | "secondary"
+  | "destructive"
+  | "icon"
+  | "approve"
+  | "reject";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
@@ -19,6 +25,10 @@ const variantClasses: Record<ButtonVariant, string> = {
     "btn-destructive",
   icon:
     "h-11 w-11 min-h-touch min-w-touch rounded-lg p-2 text-white hover:bg-neutral-900",
+  approve:
+    "btn-approve",
+  reject:
+    "btn-reject",
 };
 
 export function Button({

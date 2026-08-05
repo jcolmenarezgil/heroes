@@ -67,17 +67,17 @@ export default function PendingSuggestions({
     if (items.length === 0) return null;
 
     return (
-        <div className="mx-auto mt-8 max-w-3xl space-y-3">
-            <h2 className="text-lg font-semibold text-white">
+        <div className="space-y-2">
+            <h2 className="text-sm font-semibold text-white">
                 {t("suggestionPendingCount", { count: items.length })}
             </h2>
-            <ul className="space-y-3">
+            <ul className="space-y-2">
                 {items.map((s) => (
                     <li
                         key={s.id}
-                        className="rounded-lg border border-neutral-900 bg-neutral-950 p-4"
+                        className="rounded-lg border border-neutral-800 bg-neutral-950 p-3"
                     >
-                        <p className="text-sm text-neutral-400">
+                        <p className="text-xs text-neutral-400">
                             {t("suggestionBy", {
                                 name: s.submitterDisplayName ?? t("suggestionAnon"),
                             })}{" "}
@@ -90,23 +90,23 @@ export default function PendingSuggestions({
                             })}
                         </p>
                         {s.submitterContact && (
-                            <p className="mt-1 text-xs text-neutral-500">
+                            <p className="mt-0.5 text-xs text-neutral-500">
                                 {s.submitterContact}
                             </p>
                         )}
                         <p className="mt-2 whitespace-pre-wrap text-sm text-white">
                             {s.note}
                         </p>
-                        <div className="mt-3 flex gap-2">
+                        <div className="mt-2 flex gap-2">
                             <Button
-                                variant="secondary"
+                                variant="approve"
                                 onClick={() => resolve(s.id, "approve")}
                                 disabled={busyId === s.id}
                             >
                                 {t("suggestionApprove")}
                             </Button>
                             <Button
-                                variant="secondary"
+                                variant="reject"
                                 onClick={() => resolve(s.id, "reject")}
                                 disabled={busyId === s.id}
                             >
