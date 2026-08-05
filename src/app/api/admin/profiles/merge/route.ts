@@ -10,6 +10,7 @@ import {
 } from "@/lib/api-response";
 import { db } from "@/lib/db/client";
 import { photos, profileSuggestions, profiles } from "@/lib/db/schema";
+import { createNotification } from "@/lib/notification-helpers";
 import { mergeProfilesSchema } from "@/lib/validations/admin";
 
 export const dynamic = "force-dynamic";
@@ -108,6 +109,20 @@ export async function POST(request: Request) {
             }
 
             await tx.delete(profiles).where(eq(profiles.id, source));
+
+            // Notify the source profile owner.
+            if (sourceRow.userId && sourceRow.userId !== user.id) {
+                await createNotification(tx, {
+                    userId: sourceRow.userId,
+                    type: "profile.merged",
+                    profileId: source,
+                    actorId: user.id,
+                    payload: {
+                        sourceProfileName: sourceRow.name ?? "",
+                        targetProfileName: targetRow.name ?? "",
+                    },
+                });
+            }
 
             return jsonOk({ merged: true, source, target });
         });

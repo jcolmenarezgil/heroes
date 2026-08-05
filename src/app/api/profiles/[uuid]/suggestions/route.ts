@@ -10,6 +10,7 @@ import {
 } from "@/lib/api-response";
 import { db } from "@/lib/db/client";
 import { profileSuggestions, profiles } from "@/lib/db/schema";
+import { createNotification } from "@/lib/notification-helpers";
 import {
     listProfileSuggestionsWithUsers,
     profileExists,
@@ -72,9 +73,22 @@ export async function POST(request: Request, context: RouteContext) {
             })
             .returning();
 
-        // Resolve display names for the response. The edge cases where the
-        // submitter is anonymous or the resolver is null are handled by the
-        // mapper itself.
+        // Notify the profile owner.
+        const profileOwner = await db
+            .select({ userId: profiles.userId, name: profiles.name })
+            .from(profiles)
+            .where(eq(profiles.id, uuid))
+            .limit(1);
+        if (profileOwner[0]?.userId) {
+            await createNotification(db, {
+                userId: profileOwner[0].userId,
+                type: "suggestion.created",
+                profileId: uuid,
+                actorId: authUser?.id ?? undefined,
+                payload: { profileName: profileOwner[0].name },
+            });
+        }
+
         const submitter = authUser
             ? {
                   name: authUser.name,
