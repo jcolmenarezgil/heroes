@@ -86,6 +86,8 @@
     },
     "minorDisclaimer": "Esta persona es menor de edad. Los detalles sensibles de ubicación se ocultan en la vista pública.",
     "lastUpdated": "Última actualización {date}",
+    "verified": "Verificado",
+    "verifiedTooltip": "Este perfil ha sido verificado por un administrador.",
     "notFound": "Perfil no encontrado",
     "backToHome": "Volver al inicio",
     "noContact": "Sin teléfono de contacto",

@@ -86,6 +86,8 @@
     },
     "minorDisclaimer": "This person is a minor. Sensitive location details are hidden on the public view.",
     "lastUpdated": "Last updated {date}",
+    "verified": "Verified",
+    "verifiedTooltip": "This profile has been verified by an administrator.",
     "notFound": "Profile not found",
     "backToHome": "Back to home",
     "noContact": "No contact provided",

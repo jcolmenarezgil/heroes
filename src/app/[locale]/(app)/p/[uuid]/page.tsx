@@ -18,6 +18,7 @@ import AvatarPlaceholder from "@/components/ui/AvatarPlaceholder";
 import QRCode from "@/components/ui/QRCode";
 import Section from "@/components/ui/Section";
 import StatusBadge from "@/components/ui/StatusBadge";
+import VerifiedBadge from "@/components/ui/VerifiedBadge";
 import ProfileDetailSkeleton from "@/components/ProfileDetailSkeleton";
 import { useToast } from "@/components/providers/ToastProvider";
 import { ApiError, getPublicProfile, listSuggestions } from "@/lib/api-client";
@@ -206,7 +207,10 @@ export default function ProfileDetailPage() {
             <h1 className="text-2xl font-semibold text-white">
               {profile.name}
             </h1>
-            <StatusBadge status={profile.status} />
+            <div className="flex items-center gap-2">
+              {profile.verified && <VerifiedBadge verified={profile.verified} />}
+              <StatusBadge status={profile.status} />
+            </div>
           </div>
 
           {profile.isMinor && (

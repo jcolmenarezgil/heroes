@@ -2,6 +2,7 @@ import React from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import StatusBadge from "./StatusBadge";
+import VerifiedBadge from "./VerifiedBadge";
 import AvatarPlaceholder from "./AvatarPlaceholder";
 
 type ProfileStatus = "active" | "found" | "deceased";
@@ -16,6 +17,7 @@ interface ProfileCardProps {
   createdAt: string;
   updatedAt: string;
   photoUrl?: string | null;
+  verified?: string | null;
   onClick?: () => void;
 }
 
@@ -28,6 +30,7 @@ export default function ProfileCard({
   createdAt,
   updatedAt,
   photoUrl,
+  verified,
   onClick,
 }: ProfileCardProps) {
   const t = useTranslations("profile");
@@ -56,6 +59,11 @@ export default function ProfileCard({
       <div className="flex min-w-0 flex-col">
         <span className="truncate text-base font-medium text-white">
           {name}
+          {verified && (
+            <span className="ml-1 align-middle">
+              <VerifiedBadge verified={verified} />
+            </span>
+          )}
         </span>
         <span className="truncate text-sm text-neutral-400">{location}</span>
         <span className="truncate text-xs text-neutral-500">

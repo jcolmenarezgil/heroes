@@ -11,6 +11,7 @@ import ProfileFormSkeleton from "@/components/ProfileFormSkeleton";
 import { Button } from "@/components/ui/Button";
 import { Textarea } from "@/components/ui/Field";
 import { useToast } from "@/components/providers/ToastProvider";
+import PendingSuggestions from "@/components/PendingSuggestions";
 import {
   ApiError,
   createSuggestion,
@@ -145,6 +146,8 @@ export default function EditProfilePage() {
         submitLabel={t("actions.save")}
         cancelHref={`/p/${profile.id}`}
       />
+
+      <PendingSuggestions profileId={profile.id} />
     </div>
   );
 }
