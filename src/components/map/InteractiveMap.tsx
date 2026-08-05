@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents, useMap } from "react-leaflet";
 import L from "leaflet";
 import type { LeafletMouseEvent } from "leaflet";
+import { useTranslations } from "next-intl";
 import "leaflet/dist/leaflet.css";
 
 import { useRouter } from "@/i18n/navigation";
@@ -34,6 +35,7 @@ function MapController({ center }: { center: Coordinates }) {
 }
 
 function LocationMarker({ onSelectCoords }: { onSelectCoords: (coords: Coordinates) => void }) {
+    const t = useTranslations("map");
     const [position, setPosition] = useState<L.LatLng | null>(null);
 
     useMapEvents({
@@ -45,12 +47,13 @@ function LocationMarker({ onSelectCoords }: { onSelectCoords: (coords: Coordinat
 
     return position === null ? null : (
         <Marker position={position} icon={customMarkerIcon}>
-            <Popup>Punto seleccionado para reporte</Popup>
+            <Popup>{t("markerPopupReport")}</Popup>
         </Marker>
     );
 }
 
 export default function InteractiveMap({ userLocation }: { userLocation: Coordinates }) {
+    const t = useTranslations("map");
     const router = useRouter();
     const [centers, setCenters] = useState<HealthCenter[]>([]);
     const [selectedCoords, setSelectedCoords] = useState<Coordinates | null>(null);
@@ -94,7 +97,7 @@ export default function InteractiveMap({ userLocation }: { userLocation: Coordin
                                 <p className="font-bold text-sm">{center.name}</p>
                                 <p className="text-xs text-neutral-600">{center.address}</p>
                                 <span className="mt-1 inline-block rounded bg-red-100 px-1.5 py-0.5 text-[10px] font-semibold text-red-800">
-                                    {center.type === "hospital" ? "Hospital" : "Centro Médico"}
+                                    {center.type === "hospital" ? t("types.hospital") : t("types.clinic")}
                                 </span>
                             </div>
                         </Popup>
@@ -105,7 +108,7 @@ export default function InteractiveMap({ userLocation }: { userLocation: Coordin
             {selectedCoords && (
                 <div className="absolute bottom-4 left-4 right-4 z-10 flex items-center justify-between rounded-lg border border-neutral-700 bg-neutral-900/95 p-4 backdrop-blur-md shadow-xl">
                     <div className="text-xs text-neutral-200">
-                        <p className="font-semibold text-red-400">Punto seleccionado</p>
+                        <p className="font-semibold text-red-400">{t("selectedPoint")}</p>
                         <p className="text-neutral-400 font-mono">
                             {selectedCoords.latitude.toFixed(4)}, {selectedCoords.longitude.toFixed(4)}
                         </p>
@@ -114,7 +117,7 @@ export default function InteractiveMap({ userLocation }: { userLocation: Coordin
                         onClick={handleCreateReportAtLocation}
                         className="rounded-md bg-red-600 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-red-500"
                     >
-                        Crear Reporte Aquí
+                        {t("createReportHere")}
                     </button>
                 </div>
             )}

@@ -1,16 +1,6 @@
 import Dexie, { type EntityTable } from "dexie";
 import type { ProfileDTO } from "@/types/profile";
 
-/**
- * Local-first read cache for profiles (IndexedDB via Dexie).
- *
- * - The home/search UI reads from this cache first.
- * - `syncProfiles` refreshes it in the background when online, throttled by the
- *   user-configurable sync interval; it fully replaces the cached rows so profiles
- *   deleted on the server disappear locally too.
- * - When offline (or logged out), the previous cache is kept as-is.
- */
-
 export const SYNC_INTERVALS = [
     { labelKey: "sync.interval.realtime", value: 0 },
     { labelKey: "sync.interval.3min", value: 3 * 60 * 1000 },
@@ -38,6 +28,11 @@ db.version(1).stores({
     meta: "key",
 });
 
+db.version(2).stores({
+    profiles: "id, name, updatedAt, latitude",
+    meta: "key",
+});
+
 export function getSyncInterval(): number {
     if (typeof window === "undefined") return DEFAULT_SYNC_INTERVAL;
     const raw = window.localStorage.getItem(SYNC_INTERVAL_KEY);
@@ -57,10 +52,13 @@ export async function getLastSync(): Promise<number | null> {
     return Number.isFinite(millis) ? millis : null;
 }
 
-/**
- * Case-insensitive search over the cached profiles, newest first
- * (mirrors the server ordering: createdAt desc, id desc).
- */
+export async function getCachedProfilesWithCoords(): Promise<ProfileDTO[]> {
+    const all = await db.profiles.toArray();
+    return all.filter(
+        (p) => typeof p.latitude === "number" && typeof p.longitude === "number"
+    );
+}
+
 export async function searchCachedProfiles(
     query = ""
 ): Promise<ProfileDTO[]> {
@@ -75,17 +73,6 @@ export async function searchCachedProfiles(
     );
 }
 
-/**
- * Fetches the newest profiles from the server and replaces the local cache.
- *
- * Returns true when the cache was actually refreshed. Returns false when the
- * sync was skipped (offline, cache still fresh, or not authenticated — in
- * which case the existing cache is preserved). Throws on server errors so the
- * caller can surface them when there is no cached data to fall back to.
- *
- * @param isOnline - Whether the browser is currently online.
- * @param force - Bypass the TTL check (used for manual sync).
- */
 export async function syncProfiles(
     isOnline: boolean,
     force = false
@@ -95,13 +82,12 @@ export async function syncProfiles(
     const ttl = getSyncInterval();
     const lastSync = await getLastSync();
 
-    // ttl === 0 means "real-time": always sync when online
     if (!force && ttl > 0 && lastSync !== null && Date.now() - lastSync < ttl) {
-        return false; // cache is still fresh
+        return false;
     }
 
     const res = await fetch(`/api/profiles?limit=${SYNC_LIMIT}`);
-    if (res.status === 401) return false; // logged out: keep existing cache
+    if (res.status === 401) return false;
     if (!res.ok) throw new Error(`Profile sync failed: ${res.status}`);
 
     const body = (await res.json()) as {
@@ -110,7 +96,7 @@ export async function syncProfiles(
     const rows = body.data?.profiles ?? [];
 
     await db.transaction("rw", db.profiles, db.meta, async () => {
-        await db.profiles.clear(); // drops profiles deleted on the server
+        await db.profiles.clear();
         await db.profiles.bulkPut(rows);
         await db.meta.put({ key: LAST_SYNC_KEY, value: String(Date.now()) });
     });
@@ -118,12 +104,6 @@ export async function syncProfiles(
     return true;
 }
 
-/**
- * Inserts or updates a single profile in the cache.
- *
- * Kept for future offline-write support; currently the home list only refreshes
- * through the scheduled/manual sync so mutations do not call this directly.
- */
 export async function upsertProfile(profile: ProfileDTO): Promise<void> {
     await db.profiles.put(profile);
 }

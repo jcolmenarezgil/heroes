@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { useTranslations } from "next-intl";
 import { useUserLocation } from "@/hooks/useUserLocation";
 
 const InteractiveMap = dynamic(
@@ -9,15 +10,16 @@ const InteractiveMap = dynamic(
 );
 
 export default function MapPage() {
+    const t = useTranslations("map");
     const { location, error, isLoading, requestLocation } = useUserLocation();
 
     return (
         <section className="space-y-4 p-4">
             <header className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-xl font-bold text-neutral-100">Mapa de Emergencias</h1>
+                    <h1 className="text-xl font-bold text-neutral-100">{t("title")}</h1>
                     <p className="text-xs text-neutral-400">
-                        Centros médicos cercanos y selección de puntos de paradero
+                        {t("subtitle")}
                     </p>
                 </div>
                 {!location && (
@@ -26,7 +28,7 @@ export default function MapPage() {
                         disabled={isLoading}
                         className="rounded-md bg-neutral-800 px-3 py-1.5 text-xs text-neutral-200 hover:bg-neutral-700"
                     >
-                        {isLoading ? "Obteniendo ubicación..." : "Mi Ubicación"}
+                        {isLoading ? t("gettingLocation") : t("myLocation")}
                     </button>
                 )}
             </header>
@@ -42,13 +44,13 @@ export default function MapPage() {
             ) : (
                 <div className="flex h-64 flex-col items-center justify-center rounded-xl border border-dashed border-neutral-800 text-center p-6">
                     <p className="text-sm text-neutral-400">
-                        Activa tu ubicación para cargar los centros médicos y navegar por el mapa.
+                        {t("locationRequiredNotice")}
                     </p>
                     <button
                         onClick={requestLocation}
                         className="mt-3 rounded-md bg-red-600 px-4 py-2 text-xs font-semibold text-white hover:bg-red-500"
                     >
-                        Permitir Ubicación
+                        {t("allowLocation")}
                     </button>
                 </div>
             )}

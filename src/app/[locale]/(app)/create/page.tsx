@@ -8,12 +8,25 @@ import ProfileForm, { ProfileFormData } from "@/components/ProfileForm";
 import ProfileFormSkeleton from "@/components/ProfileFormSkeleton";
 import { useToast } from "@/components/providers/ToastProvider";
 import { ApiError, createProfile } from "@/lib/api-client";
+import { useSearchParams } from "next/navigation";
 
 export default function CreateProfilePage() {
   const t = useTranslations("profile");
   const router = useRouter();
   const { status: sessionStatus } = useSession();
   const { addToast } = useToast();
+  const searchParams = useSearchParams();
+
+  // Lectura con validación para evitar NaN
+  const rawLat = searchParams.get("lat");
+  const rawLng = searchParams.get("lng");
+
+  const initialLat = rawLat && !Number.isNaN(parseFloat(rawLat))
+    ? parseFloat(rawLat)
+    : null;
+  const initialLng = rawLng && !Number.isNaN(parseFloat(rawLng))
+    ? parseFloat(rawLng)
+    : null;
 
   useEffect(() => {
     if (sessionStatus === "unauthenticated") {
@@ -22,19 +35,19 @@ export default function CreateProfilePage() {
   }, [sessionStatus, router]);
 
   const handleSubmit = async (data: ProfileFormData, _file: File | null) => {
-    void _file; // photo upload is not implemented yet
+    void _file;
     try {
-      // photo upload is not implemented yet; blob previews are not persisted
       const created = await createProfile({
         name: data.name,
         photoUrl: null,
         lastKnownLocation: data.lastKnownLocation,
+        latitude: data.latitude ?? null,
+        longitude: data.longitude ?? null,
         status: data.status,
         contactPhone: data.contactPhone || null,
         notes: data.notes || null,
       });
-      // The home list is only updated on the scheduled/manual sync.
-      // Notify the user so the delay is not mistaken for a bug.
+
       addToast(t("saveToast"), "success");
       router.push(`/p/${created.id}`);
     } catch (error) {
@@ -60,6 +73,8 @@ export default function CreateProfilePage() {
           name: "",
           photoUrl: null,
           lastKnownLocation: "",
+          latitude: initialLat,
+          longitude: initialLng,
           status: "active",
           contactPhone: "",
           notes: "",

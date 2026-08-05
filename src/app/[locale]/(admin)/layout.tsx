@@ -26,7 +26,9 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         <header className="flex h-14 items-center justify-between border-b border-neutral-900 bg-black px-4 md:px-8">
           <h1 className="text-sm font-medium text-white">Control Panel</h1>
         </header>
-        <main className="flex-1 p-4 md:p-8">{children}</main>
+        <main className="mx-auto w-full max-w-7xl flex-1 px-4 pt-16 pb-24 md:pt-20 md:pb-8">
+          {children}
+        </main>
       </div>
     </div>
   );

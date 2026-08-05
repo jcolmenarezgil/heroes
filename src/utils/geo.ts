@@ -5,7 +5,7 @@ export function calculateHaversineDistance(
     coord1: Coordinates,
     coord2: Coordinates
 ): number {
-    const R = 6371e3; // Radio de la Tierra en metros
+    const R = 6371e3;
     const rad = (deg: number) => (deg * Math.PI) / 180;
 
     const dLat = rad(coord2.latitude - coord1.latitude);

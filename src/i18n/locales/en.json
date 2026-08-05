@@ -14,9 +14,26 @@
   "home": "Home",
   "create": "Report",
   "search": "Search",
-  "map": "Emergency Map",
+  "map": "Local Map",
   "signIn": "Sign in",
   "signOut": "Sign out"
+},
+"map": {
+  "title": "Emergency Map",
+  "subtitle": "Nearby medical centers and location selection points",
+  "myLocation": "My Location",
+  "gettingLocation": "Getting location...",
+  "locationRequiredNotice": "Enable your location to load medical centers and navigate the map.",
+  "allowLocation": "Allow Location",
+  "selectedPoint": "Selected point",
+  "createReportHere": "Create Report Here",
+  "markerPopupReport": "Selected point for report",
+  "coordinatesPinned": "Coordinates pinned:",
+  "unlinkCoordinates": "Unlink coordinates",
+  "types": {
+    "hospital": "Hospital",
+    "clinic": "Medical Center"
+  }
 },
   "auth": {
     "loginWithGoogle": "Sign in with Google",

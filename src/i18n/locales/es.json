@@ -14,9 +14,26 @@
   "home": "Inicio",
   "create": "Reportar",
   "search": "Buscar",
-  "map": "Mapa de Emergencia",
+  "map": "Mapa Local",
   "signIn": "Iniciar sesión",
   "signOut": "Cerrar sesión"
+},
+"map": {
+  "title": "Mapa de Emergencia",
+  "subtitle": "Centros médicos cercanos y selección de puntos de paradero",
+  "myLocation": "Mi Ubicación",
+  "gettingLocation": "Obteniendo ubicación...",
+  "locationRequiredNotice": "Activa tu ubicación para cargar los centros médicos y navegar por el mapa.",
+  "allowLocation": "Permitir Ubicación",
+  "selectedPoint": "Punto seleccionado",
+  "createReportHere": "Crear Reporte Aquí",
+  "markerPopupReport": "Punto seleccionado para reporte",
+  "coordinatesPinned": "Coordenadas fijadas:",
+  "unlinkCoordinates": "Desvincular coordenadas",
+  "types": {
+    "hospital": "Hospital",
+    "clinic": "Centro Médico"
+  }
 },
   "auth": {
     "loginWithGoogle": "Iniciar sesión con Google",

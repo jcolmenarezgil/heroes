@@ -90,7 +90,12 @@ export const profiles = pgTable("profiles", {
         .references(() => users.id, { onDelete: "set null" }),
     name: text("name").notNull(),
     photoUrl: text("photo_url"),
+
     lastKnownLocation: text("last_known_location").notNull(),
+
+    latitude: doublePrecision("latitude"),
+    longitude: doublePrecision("longitude"),
+
     status: profileStatusEnum("status").default("active").notNull(),
     contactPhone: text("contact_phone"),
     notes: text("notes"),
@@ -102,13 +107,12 @@ export const profiles = pgTable("profiles", {
         .notNull(),
 });
 
-// Tabla de Negocio: Refugios y Puntos de Control Activos en la Crisis
 export const EmergencyShelter = pgTable("emergency_shelter", {
     id: uuid("id").defaultRandom().primaryKey(),
     name: text("name").notNull(),
     capacity: integer("capacity"),
     occupancy: integer("occupancy").default(0),
-    status: text("status").notNull().default("active"), // 'active', 'full', 'closed'
+    status: text("status").notNull().default("active"),
     latitude: doublePrecision("latitude").notNull(),
     longitude: doublePrecision("longitude").notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),

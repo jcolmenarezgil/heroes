@@ -15,6 +15,8 @@ export interface ProfileFormData {
   name: string;
   photoUrl: string | null;
   lastKnownLocation: string;
+  latitude?: number | null;
+  longitude?: number | null;
   status: ProfileStatus;
   contactPhone: string;
   notes: string;
@@ -34,12 +36,21 @@ export default function ProfileForm({
   cancelHref = "/",
 }: ProfileFormProps) {
   const t = useTranslations("profile");
+  const tMap = useTranslations("map");
   const { addToast } = useToast();
 
   const [name, setName] = useState(initialData.name);
   const [lastKnownLocation, setLastKnownLocation] = useState(
     initialData.lastKnownLocation
   );
+
+  const [latitude, setLatitude] = useState<number | null>(
+    initialData.latitude ?? null
+  );
+  const [longitude, setLongitude] = useState<number | null>(
+    initialData.longitude ?? null
+  );
+
   const [status, setStatus] = useState<ProfileStatus>(initialData.status);
   const [contactPhone, setContactPhone] = useState(initialData.contactPhone);
   const [notes, setNotes] = useState(initialData.notes);
@@ -66,7 +77,6 @@ export default function ProfileForm({
     if (!name.trim()) next.name = t("validation.nameRequired");
     if (!lastKnownLocation.trim())
       next.lastKnownLocation = t("validation.locationRequired");
-    // photo is optional until file storage is implemented
     setErrors(next);
     return Object.keys(next).length === 0;
   };
@@ -82,6 +92,8 @@ export default function ProfileForm({
           ...initialData,
           name,
           lastKnownLocation,
+          latitude,
+          longitude,
           status,
           contactPhone,
           notes,
@@ -94,6 +106,11 @@ export default function ProfileForm({
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleRemoveCoords = () => {
+    setLatitude(null);
+    setLongitude(null);
   };
 
   return (
@@ -124,23 +141,48 @@ export default function ProfileForm({
           />
         </Field>
 
-        <Field
-          id="location"
-          label={t("fields.location")}
-          required
-          error={errors.lastKnownLocation}
-        >
-          <Input
+        <div className="space-y-2">
+          <Field
             id="location"
-            value={lastKnownLocation}
-            onChange={(e) => setLastKnownLocation(e.target.value)}
-            placeholder={t("placeholders.location")}
-            aria-invalid={!!errors.lastKnownLocation}
-            aria-describedby={
-              errors.lastKnownLocation ? "location-error" : undefined
-            }
-          />
-        </Field>
+            label={t("fields.location")}
+            required
+            error={errors.lastKnownLocation}
+          >
+            <Input
+              id="location"
+              value={lastKnownLocation}
+              onChange={(e) => setLastKnownLocation(e.target.value)}
+              placeholder={t("placeholders.location")}
+              aria-invalid={!!errors.lastKnownLocation}
+              aria-describedby={
+                errors.lastKnownLocation ? "location-error" : undefined
+              }
+            />
+          </Field>
+
+          {/* Indicador visual dinamizado sin texto hardcoded */}
+          {latitude !== null && longitude !== null && (
+            <div className="flex items-center justify-between rounded-md border border-neutral-800 bg-neutral-900/60 px-3 py-1.5 text-xs text-neutral-300">
+              <div className="flex items-center space-x-1.5">
+                <span className="inline-block h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                <span>
+                  {tMap("coordinatesPinned")}{" "}
+                  <span className="font-mono text-neutral-200">
+                    {latitude.toFixed(5)}, {longitude.toFixed(5)}
+                  </span>
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={handleRemoveCoords}
+                className="text-neutral-400 hover:text-red-400 transition-colors"
+                title={tMap("unlinkCoordinates")}
+              >
+                ✕
+              </button>
+            </div>
+          )}
+        </div>
 
         <Field id="status" label={t("fields.status")}>
           <Select
