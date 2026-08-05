@@ -54,7 +54,10 @@
       "location": "Last known location",
       "status": "Status",
       "contact": "Contact phone",
-      "notes": "Notes"
+      "notes": "Notes",
+      "isMinor": "Minor",
+      "isMinorHint": "This person is under 18. Sensitive details will be hidden on the public view.",
+      "authorization": "I confirm I have authorization to publish this person's image."
     },
     "placeholders": {
       "name": "Enter full name",
@@ -64,8 +67,9 @@
     },
     "validation": {
       "nameRequired": "Name is required",
-      "locationRequired": "Location is required",
-      "photoRequired": "Photo is required"
+      "locationRequired": "Location must be at least 3 characters",
+      "photoRequired": "Photo is required",
+      "authorizationRequired": "You must confirm image authorization to upload"
     },
     "dropzone": "Tap to upload a photo",
     "photoPreview": "Photo preview",
@@ -77,8 +81,13 @@
       "share": "Share via QR",
       "download": "Download PNG",
       "export": "Export as JSON",
-      "suggestUpdate": "Suggest update"
+      "suggestUpdate": "Suggest update",
+      "signInToHelp": "Sign in to help"
     },
+    "minorDisclaimer": "This person is a minor. Sensitive location details are hidden on the public view.",
+    "lastUpdated": "Last updated {date}",
+    "verified": "Verified",
+    "verifiedTooltip": "This profile has been verified by an administrator.",
     "notFound": "Profile not found",
     "backToHome": "Back to home",
     "noContact": "No contact provided",
@@ -94,8 +103,27 @@
     "suggestionComingSoon": "Update suggestions will be reviewed by a rescuer",
     "suggestionTitle": "Suggest an update",
     "suggestionDescription": "You can suggest changes to this profile. A rescuer or admin will review your request.",
+    "suggestionAnonDescription": "Share any information you have about this person. Your contact will only be visible to the profile owner and rescuers.",
     "suggestionPlaceholder": "Describe the change you want to suggest…",
+    "suggestionNameLabel": "Your name",
+    "suggestionNamePlaceholder": "How should we credit you?",
+    "suggestionContactLabel": "Contact (optional)",
+    "suggestionContactPlaceholder": "Phone or email so the rescuer can reach you",
     "suggestionSubmitted": "Suggestion submitted for review",
+    "suggestionLoadError": "Could not load suggestions",
+    "suggestionResolveError": "Could not resolve suggestion",
+    "suggestionApprove": "Approve",
+    "suggestionReject": "Reject",
+    "suggestionPendingCount": "{count, plural, =0{No pending suggestions} one{# pending suggestion} other{# pending suggestions}}",
+    "suggestionEmpty": "No pending suggestions for this profile.",
+    "suggestionBy": "By {name}",
+    "suggestionAnon": "Anonymous",
+    "suggestionResolvedBy": "Resolved by {name}",
+    "suggestionStatus": {
+      "pending": "Pending",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    },
     "sections": {
       "lastKnownLocation": "Last known location",
       "contact": "Contact",
@@ -107,8 +135,52 @@
     "offline": "You are offline — showing cached results"
   },
   "admin": {
-    "dashboardTitle": "Dashboard",
-    "usersTitle": "Users",
+    "profilesTitle": "Profiles",
+    "profilesSubtitle": "Manage, verify, and merge missing person profiles.",
+    "nav": {
+      "profiles": "Profiles",
+      "users": "Users",
+      "backToApp": "Back to app"
+    },
+    "profiles": {
+      "searchPlaceholder": "Search by name...",
+      "labelSearch": "Search",
+      "labelStatus": "Status",
+      "labelVerified": "Verified",
+      "filterAll": "All",
+      "filterVerified": "Verified",
+      "filterUnverified": "Unverified",
+      "columnName": "Name",
+      "columnStatus": "Status",
+      "columnVerified": "Verified",
+      "columnCreatedBy": "Created by",
+      "columnCreated": "Created",
+      "columnActions": "Actions",
+      "verify": "Verify",
+      "unverify": "Unverify",
+      "view": "View",
+      "edit": "Edit",
+      "merge": "Merge Selected",
+      "mergeTitle": "Merge duplicate profiles",
+      "mergeDescription": "Select which profile to keep (target) and which to delete (source). The source's pending suggestions and photo (if the target has none) will be moved to the target. This action cannot be undone.",
+      "mergeTarget": "Keep",
+      "mergeSource": "Delete",
+      "mergeConfirm": "Confirm Merge",
+      "mergeCancel": "Cancel",
+      "mergeSuccess": "Profiles merged successfully",
+      "mergeError": "Failed to merge profiles",
+      "mergeSelectTwo": "Select exactly two profiles to merge",
+      "noResults": "No profiles found",
+      "loading": "Loading...",
+      "prevPage": "Previous",
+      "nextPage": "Next",
+      "page": "Page {page} of {totalPages}",
+      "verifySuccess": "Profile verified",
+      "unverifySuccess": "Profile unverified",
+      "verifyError": "Failed to verify profile",
+      "unverifyError": "Failed to unverify profile",
+      "selected": "{count} selected"
+    },
     "roles": {
       "viewer": "Viewer",
       "rescuer": "Rescuer",
@@ -236,6 +308,12 @@
   },
   "errors": {
     "unauthorized": "You don't have permission to perform this action.",
-    "generic": "Something went wrong. Please try again."
+    "generic": "Something went wrong. Please try again.",
+    "notFoundTitle": "Page not found",
+    "notFoundDescription": "The page you were looking for doesn't exist or has moved.",
+    "errorTitle": "Something went wrong",
+    "errorDescription": "An unexpected error occurred while rendering this page.",
+    "retry": "Try again",
+    "backToHome": "Back to home"
   }
 }

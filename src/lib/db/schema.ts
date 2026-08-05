@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, date, pgEnum, jsonb, integer, primaryKey, uuid } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, date, pgEnum, jsonb, integer, primaryKey, uuid, boolean } from "drizzle-orm/pg-core";
 import { AdapterAccount } from "next-auth/adapters";
 
 // Definición física del Enum para el género en PostgreSQL
@@ -90,6 +90,12 @@ export const profiles = pgTable("profiles", {
         .references(() => users.id, { onDelete: "set null" }),
     name: text("name").notNull(),
     photoUrl: text("photo_url"),
+    // References photos.id (a UUID), not a filesystem path. The misleading
+    // "Path" name is kept to avoid a wide-reaching rename across the schema,
+    // API, and mappers. Stored client-side as the photos.id returned by the
+    // upload endpoint and resolved via GET /api/photos/[id].
+    photoPath: text("photo_path"),
+    isMinor: boolean("is_minor").default(false).notNull(),
     lastKnownLocation: text("last_known_location").notNull(),
     status: profileStatusEnum("status").default("active").notNull(),
     contactPhone: text("contact_phone"),
@@ -99,6 +105,46 @@ export const profiles = pgTable("profiles", {
     updatedAt: timestamp("updated_at", { mode: "date" })
         .defaultNow()
         .$onUpdate(() => new Date())
+        .notNull(),
+});
+
+export const photos = pgTable("photos", {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: uuid("user_id")
+        .notNull()
+        .references(() => users.id, { onDelete: "cascade" }),
+    mime: text("mime").notNull(),
+    // Base64-encoded image bytes. Kept small by client-side WebP compression.
+    data: text("data").notNull(),
+    size: integer("size").notNull(),
+    createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+});
+
+export const suggestionStatusEnum = pgEnum("suggestion_status_enum", [
+    "pending",
+    "approved",
+    "rejected",
+]);
+
+export const profileSuggestions = pgTable("profile_suggestions", {
+    id: uuid("id").defaultRandom().primaryKey(),
+    profileId: uuid("profile_id")
+        .notNull()
+        .references(() => profiles.id, { onDelete: "cascade" }),
+    // Nullable: anonymous suggestions are allowed (rate-limited server-side).
+    userId: uuid("user_id").references(() => users.id, {
+        onDelete: "set null",
+    }),
+    submitterName: text("submitter_name"),
+    submitterContact: text("submitter_contact"),
+    note: text("note").notNull(),
+    status: suggestionStatusEnum("status").default("pending").notNull(),
+    resolvedAt: timestamp("resolved_at", { mode: "date" }),
+    resolvedBy: uuid("resolved_by").references(() => users.id, {
+        onDelete: "set null",
+    }),
+    createdAt: timestamp("created_at", { mode: "date" })
+        .defaultNow()
         .notNull(),
 });
 

@@ -14,6 +14,8 @@ export interface ProfileFormData {
   id?: string;
   name: string;
   photoUrl: string | null;
+  photoPath: string | null;
+  isMinor: boolean;
   lastKnownLocation: string;
   status: ProfileStatus;
   contactPhone: string;
@@ -47,6 +49,11 @@ export default function ProfileForm({
   const [photoPreview, setPhotoPreview] = useState<string | null>(
     initialData.photoUrl
   );
+  const [photoPath, setPhotoPath] = useState<string | null>(
+    initialData.photoPath
+  );
+  const [isMinor, setIsMinor] = useState(initialData.isMinor);
+  const [hasAuthorization, setHasAuthorization] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -56,45 +63,51 @@ export default function ProfileForm({
     { value: "deceased", label: t("status.deceased") },
   ];
 
-  const handlePhotoChange = (file: File | null, preview: string | null) => {
+const handlePhotoChange = (file: File | null, preview: string | null) => {
     setPhotoFile(file);
     setPhotoPreview(preview);
-  };
+    // A new file means the previous photo row is replaced; clear the stored
+    // id so the parent knows it must upload the new file before saving.
+    if (file) setPhotoPath(null);
+};
 
-  const validate = () => {
+const validate = () => {
     const next: Record<string, string> = {};
     if (!name.trim()) next.name = t("validation.nameRequired");
-    if (!lastKnownLocation.trim())
-      next.lastKnownLocation = t("validation.locationRequired");
-    // photo is optional until file storage is implemented
+    if (!lastKnownLocation.trim() || lastKnownLocation.trim().length < 3)
+        next.lastKnownLocation = t("validation.locationRequired");
+    if (photoFile && !hasAuthorization)
+        next.hasAuthorization = t("validation.authorizationRequired");
     setErrors(next);
     return Object.keys(next).length === 0;
-  };
+};
 
-  const handleSubmit = async (e: React.FormEvent) => {
+const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
 
     setIsSubmitting(true);
     try {
-      await onSubmit(
-        {
-          ...initialData,
-          name,
-          lastKnownLocation,
-          status,
-          contactPhone,
-          notes,
-          photoUrl: photoPreview,
-        },
-        photoFile
-      );
+        await onSubmit(
+            {
+                ...initialData,
+                name,
+                lastKnownLocation,
+                status,
+                contactPhone,
+                notes,
+                photoUrl: photoPreview,
+                photoPath,
+                isMinor,
+            },
+            photoFile
+        );
     } catch {
-      addToast(t("saveError"), "error");
+        addToast(t("saveError"), "error");
     } finally {
-      setIsSubmitting(false);
+        setIsSubmitting(false);
     }
-  };
+};
 
   return (
     <form
@@ -151,6 +164,19 @@ export default function ProfileForm({
           />
         </Field>
 
+        <Field id="isMinor" label={t("fields.isMinor")}>
+          <label className="flex items-center gap-2 text-sm text-white">
+            <input
+              id="isMinor"
+              type="checkbox"
+              checked={isMinor}
+              onChange={(e) => setIsMinor(e.target.checked)}
+              className="h-4 w-4 rounded border-neutral-700 bg-neutral-900"
+            />
+            {t("fields.isMinorHint")}
+          </label>
+        </Field>
+
         <Field id="contact" label={t("fields.contact")}>
           <Input
             id="contact"
@@ -172,6 +198,25 @@ export default function ProfileForm({
       </div>
 
       <div className="col-span-full space-y-3">
+        {photoFile && (
+          <div className="rounded-lg border border-neutral-900 bg-neutral-950 p-3">
+            <label className="flex items-start gap-2 text-sm text-white">
+              <input
+                type="checkbox"
+                checked={hasAuthorization}
+                onChange={(e) => setHasAuthorization(e.target.checked)}
+                className="mt-0.5 h-4 w-4 rounded border-neutral-700 bg-neutral-900"
+              />
+              <span>{t("fields.authorization")}</span>
+            </label>
+            {errors.hasAuthorization && (
+              <p className="mt-1 text-sm text-red-400">
+                {errors.hasAuthorization}
+              </p>
+            )}
+          </div>
+        )}
+
         <Button type="submit" isLoading={isSubmitting}>
           {submitLabel}
         </Button>

@@ -29,6 +29,27 @@
       "when": 1785271347366,
       "tag": "0003_many_retro_girl",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1785942592254,
+      "tag": "0004_easy_legion",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1785945500803,
+      "tag": "0005_rare_annihilus",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1785947057081,
+      "tag": "0006_skinny_vision",
+      "breakpoints": true
     }
   ]
 }

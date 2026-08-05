@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
@@ -8,10 +8,15 @@ import Link from "next/link";
 import { useRouter } from "@/i18n/navigation";
 import ProfileForm, { ProfileFormData } from "@/components/ProfileForm";
 import ProfileFormSkeleton from "@/components/ProfileFormSkeleton";
-import { Button } from "@/components/ui/Button";
-import { Textarea } from "@/components/ui/Field";
 import { useToast } from "@/components/providers/ToastProvider";
-import { ApiError, getProfile, updateProfile } from "@/lib/api-client";
+import PendingSuggestions from "@/components/PendingSuggestions";
+import SuggestionForm from "@/components/SuggestionForm";
+import {
+  ApiError,
+  getProfile,
+  updateProfile,
+  uploadProfilePhoto,
+} from "@/lib/api-client";
 import type { ProfileDTO } from "@/types/profile";
 
 export default function EditProfilePage() {
@@ -61,21 +66,28 @@ export default function EditProfilePage() {
     session?.user?.role === "rescuer" ||
     (session?.user?.id && session.user.id === profile?.userId);
 
-  const handleSubmit = async (data: ProfileFormData, _file: File | null) => {
-    void _file; // photo upload is not implemented yet
+  const handleSubmit = async (data: ProfileFormData, file: File | null) => {
     if (!profile) return;
     try {
-      // photo upload is not implemented yet; blob previews are not persisted
+      let photoUrl = data.photoUrl;
+      let photoPath = data.photoPath;
+
+      if (file) {
+        const uploaded = await uploadProfilePhoto(file);
+        photoUrl = uploaded.url;
+        photoPath = uploaded.path;
+      }
+
       await updateProfile(profile.id, {
         name: data.name,
-        photoUrl: data.photoUrl?.startsWith("blob:") ? null : data.photoUrl,
+        photoUrl,
+        photoPath,
+        isMinor: data.isMinor,
         lastKnownLocation: data.lastKnownLocation,
         status: data.status,
         contactPhone: data.contactPhone || null,
         notes: data.notes || null,
       });
-      // The home list is only updated on the scheduled/manual sync.
-      // Notify the user so the delay is not mistaken for a bug.
       addToast(t("saveToast"), "success");
       router.push(`/p/${profile.id}`);
     } catch (error) {
@@ -88,7 +100,6 @@ export default function EditProfilePage() {
           return;
         }
       }
-      // rethrow so ProfileForm shows the error toast
       throw error;
     }
   };
@@ -109,58 +120,41 @@ export default function EditProfilePage() {
   }
 
   if (!canEditDirectly) {
-    return <SuggestionView />;
+    return (
+      <div className="mx-auto max-w-lg space-y-6">
+        <SuggestionForm profileId={profile.id} />
+        <PendingSuggestions profileId={profile.id} />
+      </div>
+    );
   }
 
   return (
-    <div className="mx-auto max-w-3xl">
-      <h1 className="mb-6 text-2xl font-semibold text-white">
-        {t("editTitle")}
-      </h1>
-      <ProfileForm
-        initialData={{
-          id: profile.id,
-          name: profile.name,
-          photoUrl: profile.photoUrl,
-          lastKnownLocation: profile.lastKnownLocation,
-          status: profile.status,
-          contactPhone: profile.contactPhone || "",
-          notes: profile.notes || "",
-        }}
-        onSubmit={handleSubmit}
-        submitLabel={t("actions.save")}
-        cancelHref={`/p/${profile.id}`}
-      />
-    </div>
-  );
-}
-
-function SuggestionView() {
-  const t = useTranslations("profile");
-  const { addToast } = useToast();
-  const [note, setNote] = useState("");
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    addToast(t("suggestionSubmitted"), "success");
-    setNote("");
-  };
-
-  return (
-    <div className="mx-auto max-w-lg space-y-6">
-      <h1 className="text-2xl font-semibold text-white">
-        {t("suggestionTitle")}
-      </h1>
-      <p className="text-sm text-neutral-400">{t("suggestionDescription")}</p>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <Textarea
-          value={note}
-          onChange={(e) => setNote(e.target.value)}
-          placeholder={t("suggestionPlaceholder")}
-          className="min-h-32"
+    <div className="mx-auto max-w-5xl lg:grid lg:grid-cols-[1fr_20rem] lg:gap-8 lg:items-start">
+      <div>
+        <h1 className="mb-6 text-2xl font-semibold text-white">
+          {t("editTitle")}
+        </h1>
+        <ProfileForm
+          initialData={{
+            id: profile.id,
+            name: profile.name,
+            photoUrl: profile.photoUrl,
+            photoPath: null,
+            isMinor: profile.isMinor,
+            lastKnownLocation: profile.lastKnownLocation,
+            status: profile.status,
+            contactPhone: profile.contactPhone || "",
+            notes: profile.notes || "",
+          }}
+          onSubmit={handleSubmit}
+          submitLabel={t("actions.save")}
+          cancelHref={`/p/${profile.id}`}
         />
-        <Button type="submit">{t("actions.suggestUpdate")}</Button>
-      </form>
+      </div>
+
+      <aside className="mt-8 lg:sticky lg:top-6 lg:mt-0">
+        <PendingSuggestions profileId={profile.id} />
+      </aside>
     </div>
   );
 }

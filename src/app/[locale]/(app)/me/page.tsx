@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { useFormatter, useTranslations } from "next-intl";
 import { ArrowDownTrayIcon, ArrowLeftIcon, PencilSquareIcon } from "@/components/icons";
@@ -127,13 +128,16 @@ export default function MyProfilePage() {
           {/* Left column */}
           <div className="space-y-6">
             {user.image ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={user.image}
-                alt=""
-                className="h-40 w-40 rounded-full object-cover"
-                referrerPolicy="no-referrer"
-              />
+              <div className="relative h-40 w-40 overflow-hidden rounded-full">
+                <Image
+                  src={user.image}
+                  alt=""
+                  fill
+                  sizes="160px"
+                  className="object-cover"
+                  referrerPolicy="no-referrer"
+                />
+              </div>
             ) : (
               <div className="flex h-40 w-40 items-center justify-center rounded-full bg-neutral-900 text-4xl font-medium text-neutral-500">
                 {initials}
@@ -236,6 +240,7 @@ export default function MyProfilePage() {
                     month: "short",
                   })}
                   photoUrl={profile.photoUrl}
+                  verified={profile.verified}
                   onClick={() => router.push(`/p/${profile.id}`)}
                 />
               ))}
