@@ -49,7 +49,7 @@ export async function POST(_request: Request, context: RouteContext) {
                 type: "profile.unverified",
                 profileId: parsedUuid.data,
                 actorId: user.id,
-                payload: { profileName: updated.name ?? "" },
+                payload: { profileName: updated.name ?? "", href: `/p/${parsedUuid.data}` },
             });
         }
 

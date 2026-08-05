@@ -120,6 +120,7 @@ export async function POST(request: Request) {
                     payload: {
                         sourceProfileName: sourceRow.name ?? "",
                         targetProfileName: targetRow.name ?? "",
+                        href: `/p/${target}`,
                     },
                 });
             }

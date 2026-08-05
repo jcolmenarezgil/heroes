@@ -76,6 +76,7 @@ export async function POST(
         });
 
         // Notify the submitter (if authenticated) and the profile owner.
+        const profileHref = `/p/${parsedUuid.data}`;
         if (row.submitter?.id && row.submitter.id !== user.id) {
             await createNotification(db, {
                 userId: row.submitter.id,
@@ -85,6 +86,7 @@ export async function POST(
                 payload: {
                     profileName: profileRow.name,
                     resolution: "approved",
+                    href: profileHref,
                 },
             });
         }
@@ -97,6 +99,7 @@ export async function POST(
                 payload: {
                     profileName: profileRow.name,
                     resolution: "approved",
+                    href: profileHref,
                 },
             });
         }
