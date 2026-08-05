@@ -1,4 +1,3 @@
-import { del } from "@vercel/blob";
 import { eq } from "drizzle-orm";
 import { canModifyProfile, getAuthUser } from "@/lib/api-auth";
 import {
@@ -10,7 +9,7 @@ import {
     jsonUnauthorized,
 } from "@/lib/api-response";
 import { db } from "@/lib/db/client";
-import { profiles } from "@/lib/db/schema";
+import { photos, profiles } from "@/lib/db/schema";
 import { findProfileWithUsers, toProfileDTO } from "@/lib/profile-mapper";
 import {
     updateProfileSchema,
@@ -109,20 +108,15 @@ const updateData: Record<string, unknown> = {};
     if (contactPhone !== undefined) updateData.contactPhone = contactPhone;
     if (notes !== undefined) updateData.notes = notes;
 
-    // If a new photo replaces an existing one, delete the old blob to avoid
-    // orphaned storage. Skip when photoPath is unchanged (kept unmodified).
-    const oldPhotoPath = profile.photoPath;
-    const newPhotoPath =
-        photoPath !== undefined ? photoPath : profile.photoPath;
-    if (
-        oldPhotoPath &&
-        newPhotoPath !== oldPhotoPath &&
-        process.env.BLOB_READ_WRITE_TOKEN
-    ) {
+    // If a new photo replaces an existing one, delete the old photo row to
+    // avoid orphaned storage. Skip when photoPath is unchanged (kept unmodified).
+    const oldPhotoId = profile.photoPath;
+    const newPhotoPath = photoPath !== undefined ? photoPath : profile.photoPath;
+    if (oldPhotoId && newPhotoPath !== oldPhotoId) {
         try {
-            await del(oldPhotoPath);
+            await db.delete(photos).where(eq(photos.id, oldPhotoId));
         } catch (err) {
-            console.error("Failed to delete old blob:", err);
+            console.error("Failed to delete old photo:", err);
         }
     }
 
@@ -159,12 +153,14 @@ export async function DELETE(_request: Request, context: RouteContext) {
             return jsonForbidden("You can only delete your own profiles");
         }
 
-        // Delete the associated blob (best-effort) before removing the row.
-        if (profile.photoPath && process.env.BLOB_READ_WRITE_TOKEN) {
+        // Delete the associated photo (best-effort) before removing the row.
+        if (profile.photoPath) {
             try {
-                await del(profile.photoPath);
+                await db
+                    .delete(photos)
+                    .where(eq(photos.id, profile.photoPath));
             } catch (err) {
-                console.error("Failed to delete blob:", err);
+                console.error("Failed to delete photo:", err);
             }
         }
 

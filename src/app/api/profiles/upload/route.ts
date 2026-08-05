@@ -1,4 +1,5 @@
-import { put } from "@vercel/blob";
+import { db } from "@/lib/db/client";
+import { photos } from "@/lib/db/schema";
 import { getAuthUser } from "@/lib/api-auth";
 import {
     jsonBadRequest,
@@ -10,8 +11,12 @@ import {
 
 export const dynamic = "force-dynamic";
 
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
-const ALLOWED_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
+const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2 MB (after client-side compression)
+const ALLOWED_TYPES = new Set([
+    "image/jpeg",
+    "image/png",
+    "image/webp",
+]);
 
 export async function POST(request: Request) {
     const user = await getAuthUser();
@@ -40,18 +45,30 @@ export async function POST(request: Request) {
     }
 
     if (file.size > MAX_FILE_SIZE) {
-        return jsonBadRequest("File too large. Max size: 5 MB.");
+        return jsonBadRequest("File too large. Max size: 2 MB.");
     }
 
     try {
-        const uniqueName = `${user.id}/${crypto.randomUUID()}-${file.name}`;
-        const blob = await put(uniqueName, file, {
-            access: "public",
-            addRandomSuffix: false,
-            contentType: file.type,
-        });
+        const arrayBuffer = await file.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
+        const base64 = buffer.toString("base64");
 
-        return jsonOk({ url: blob.url, path: blob.pathname });
+        const [row] = await db
+            .insert(photos)
+            .values({
+                userId: user.id,
+                mime: file.type,
+                data: base64,
+                size: buffer.length,
+            })
+            .returning({ id: photos.id });
+
+        if (!row) return jsonServerError("Could not store photo");
+
+        return jsonOk({
+            url: `/api/photos/${row.id}`,
+            path: row.id,
+        });
     } catch (error) {
         console.error("POST /api/profiles/upload failed:", error);
         return jsonServerError();

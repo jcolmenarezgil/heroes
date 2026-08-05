@@ -40,7 +40,6 @@ cp .env.example .env
 - `NEXTAUTH_SECRET` — Random string (32+ chars) for session encryption (`openssl rand -base64 32`)
 - `NEXTAUTH_URL` — App base URL (e.g. `http://localhost:3000`)
 - `ADMIN_EMAILS` — Comma-separated list of admin email addresses
-- `BLOB_READ_WRITE_TOKEN` — Vercel Blob token for photo uploads
 
 The `.env` file is gitignored.
 

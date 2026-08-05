@@ -104,3 +104,15 @@ export const profiles = pgTable("profiles", {
         .notNull(),
 });
 
+export const photos = pgTable("photos", {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: uuid("user_id")
+        .notNull()
+        .references(() => users.id, { onDelete: "cascade" }),
+    mime: text("mime").notNull(),
+    // Base64-encoded image bytes. Kept small by client-side WebP compression.
+    data: text("data").notNull(),
+    size: integer("size").notNull(),
+    createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+});
+

@@ -4,6 +4,7 @@ import type {
 } from "@/lib/validations/profile";
 import type { UpdateUserInput } from "@/lib/validations/user";
 import type { ProfileDTO, PublicProfileDTO, ProfileListResponse } from "@/types/profile";
+import { compressImage } from "@/lib/compress-image";
 import type { UserDTO } from "@/types/user";
 
 export class ApiError extends Error {
@@ -101,11 +102,12 @@ export interface UploadPhotoResponse {
     path: string;
 }
 
-export function uploadProfilePhoto(
+export async function uploadProfilePhoto(
     file: File
 ): Promise<UploadPhotoResponse> {
+    const compressed = await compressImage(file);
     const formData = new FormData();
-    formData.append("file", file);
+    formData.append("file", compressed);
     formData.append("hasAuthorization", "true");
     return request<UploadPhotoResponse>("/api/profiles/upload", {
         method: "POST",

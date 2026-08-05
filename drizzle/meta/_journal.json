@@ -36,6 +36,13 @@
       "when": 1785942592254,
       "tag": "0004_easy_legion",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1785945500803,
+      "tag": "0005_rare_annihilus",
+      "breakpoints": true
     }
   ]
 }
