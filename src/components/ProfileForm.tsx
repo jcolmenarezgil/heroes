@@ -66,8 +66,8 @@ export default function ProfileForm({
 const handlePhotoChange = (file: File | null, preview: string | null) => {
     setPhotoFile(file);
     setPhotoPreview(preview);
-    // A new file means the previous blob (if any) is replaced; clear the stored
-    // path so the parent knows it must upload the new file before saving.
+    // A new file means the previous photo row is replaced; clear the stored
+    // id so the parent knows it must upload the new file before saving.
     if (file) setPhotoPath(null);
 };
 
