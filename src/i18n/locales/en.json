@@ -138,6 +138,7 @@
     "dashboardTitle": "Dashboard",
     "usersTitle": "Users",
     "profilesTitle": "Profiles",
+    "profilesSubtitle": "Manage, verify, and merge missing person profiles.",
     "nav": {
       "dashboard": "Dashboard",
       "profiles": "Profiles",
@@ -145,6 +146,9 @@
     },
     "profiles": {
       "searchPlaceholder": "Search by name...",
+      "labelSearch": "Search",
+      "labelStatus": "Status",
+      "labelVerified": "Verified",
       "filterAll": "All",
       "filterVerified": "Verified",
       "filterUnverified": "Unverified",

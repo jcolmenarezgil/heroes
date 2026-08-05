@@ -177,60 +177,93 @@ export default function AdminProfilesPage() {
   }, [profiles, verifiedFilter]);
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-4">
+      <div>
         <h1 className="text-2xl font-semibold text-white">
           {tAdmin("profilesTitle")}
         </h1>
-        {selected.size > 0 && (
-          <div className="flex items-center gap-3">
-            <span className="text-sm text-neutral-400">
-              {t("selected", { count: selected.size })}
-            </span>
-            <Button
-              variant="secondary"
-              onClick={openMergeModal}
-              className="px-4 py-2 text-sm"
-            >
-              {t("merge")}
-            </Button>
-          </div>
-        )}
+        <p className="mt-1 text-sm text-neutral-400">
+          {tAdmin("profilesSubtitle")}
+        </p>
       </div>
 
-      {/* Filters */}
-      <div className="flex flex-wrap gap-3">
-        <input
-          type="text"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder={t("searchPlaceholder")}
-          className="input-field max-w-xs"
-        />
-        <select
-          value={statusFilter}
-          onChange={(e) => {
-            setStatusFilter(e.target.value as "active" | "found" | "deceased" | "");
-            setPage(1);
-          }}
-          className="input-field max-w-[180px]"
-        >
-          <option value="">{t("filterAll")}</option>
-          <option value="active">Active</option>
-          <option value="found">Found</option>
-          <option value="deceased">Deceased</option>
-        </select>
-        <select
-          value={verifiedFilter}
-          onChange={(e) =>
-            setVerifiedFilter(e.target.value as VerifiedFilter)
-          }
-          className="input-field max-w-[180px]"
-        >
-          <option value="all">{t("filterAll")}</option>
-          <option value="verified">{t("filterVerified")}</option>
-          <option value="unverified">{t("filterUnverified")}</option>
-        </select>
+      {/* Search + filters */}
+      <div className="space-y-3 border-b border-neutral-800 pb-4">
+        <div className="flex flex-wrap items-end gap-3">
+          <div className="flex flex-col gap-1">
+            <label
+              htmlFor="admin-search"
+              className="text-xs font-medium text-neutral-500"
+            >
+              {t("labelSearch")}
+            </label>
+            <input
+              id="admin-search"
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder={t("searchPlaceholder")}
+              className="input-field max-w-xs py-2"
+            />
+          </div>
+          <div className="flex flex-col gap-1">
+            <label
+              htmlFor="admin-status"
+              className="text-xs font-medium text-neutral-500"
+            >
+              {t("labelStatus")}
+            </label>
+            <select
+              id="admin-status"
+              value={statusFilter}
+              onChange={(e) => {
+                setStatusFilter(
+                  e.target.value as "active" | "found" | "deceased" | ""
+                );
+                setPage(1);
+              }}
+              className="input-field max-w-[180px] py-2"
+            >
+              <option value="">{t("filterAll")}</option>
+              <option value="active">Active</option>
+              <option value="found">Found</option>
+              <option value="deceased">Deceased</option>
+            </select>
+          </div>
+          <div className="flex flex-col gap-1">
+            <label
+              htmlFor="admin-verified"
+              className="text-xs font-medium text-neutral-500"
+            >
+              {t("labelVerified")}
+            </label>
+            <select
+              id="admin-verified"
+              value={verifiedFilter}
+              onChange={(e) =>
+                setVerifiedFilter(e.target.value as VerifiedFilter)
+              }
+              className="input-field max-w-[180px] py-2"
+            >
+              <option value="all">{t("filterAll")}</option>
+              <option value="verified">{t("filterVerified")}</option>
+              <option value="unverified">{t("filterUnverified")}</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Selection bar */}
+        {selected.size > 0 && (
+          <div className="flex items-center gap-2 text-xs text-neutral-400">
+            <span>{t("selected", { count: selected.size })}</span>
+            <button
+              onClick={openMergeModal}
+              className="rounded-md border border-neutral-700 px-2 py-1 text-xs text-white transition hover:bg-neutral-900"
+            >
+              {t("merge")}
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Table */}
@@ -372,7 +405,7 @@ export default function AdminProfilesPage() {
                           <button
                             onClick={() => handleUnverify(profile)}
                             disabled={busyId === profile.id}
-                            className="rounded-md border border-yellow-700 px-2 py-1 text-xs text-yellow-500 transition hover:bg-yellow-950 disabled:opacity-50"
+                            className="rounded-md bg-yellow-600 px-2 py-1 text-xs font-medium text-white transition hover:bg-yellow-700 disabled:opacity-50"
                           >
                             {t("unverify")}
                           </button>
@@ -380,7 +413,7 @@ export default function AdminProfilesPage() {
                           <button
                             onClick={() => handleVerify(profile)}
                             disabled={busyId === profile.id}
-                            className="rounded-md border border-blue-700 px-2 py-1 text-xs text-blue-400 transition hover:bg-blue-950 disabled:opacity-50"
+                            className="rounded-md bg-blue-700 px-2 py-1 text-xs font-medium text-white transition hover:bg-blue-800 disabled:opacity-50"
                           >
                             {t("verify")}
                           </button>

@@ -4,6 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { usePathname } from "next/navigation";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 const navItems: {
   href: string;
@@ -29,7 +30,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <span className="text-lg font-semibold tracking-tight text-white">
             Heroes
           </span>
-          <span className="rounded border border-red-800 bg-red-950 px-2 py-0.5 text-xs font-medium text-red-400">
+          <span className="rounded border border-amber-800 bg-amber-950 px-2 py-0.5 text-xs font-medium text-amber-400">
             Admin
           </span>
         </div>
@@ -48,6 +49,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </Link>
           ))}
         </nav>
+        <div className="border-t border-neutral-900 px-4 py-4">
+          <LanguageSwitcher />
+        </div>
       </aside>
 
       <div className="flex flex-1 flex-col md:pl-64">

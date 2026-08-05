@@ -138,6 +138,7 @@
     "dashboardTitle": "Panel",
     "usersTitle": "Usuarios",
     "profilesTitle": "Perfiles",
+    "profilesSubtitle": "Gestiona, verifica y combina perfiles de personas desaparecidas.",
     "nav": {
       "dashboard": "Panel",
       "profiles": "Perfiles",
@@ -145,6 +146,9 @@
     },
     "profiles": {
       "searchPlaceholder": "Buscar por nombre...",
+      "labelSearch": "Buscar",
+      "labelStatus": "Estado",
+      "labelVerified": "Verificado",
       "filterAll": "Todos",
       "filterVerified": "Verificados",
       "filterUnverified": "No verificados",
