@@ -2,7 +2,7 @@
 
 ## Tech Stack
 
-- **Framework:** Next.js 15 (App Router)
+- **Framework:** Next.js 16 (App Router)
 - **Package Manager:** pnpm
 - **Styling:** Tailwind CSS
 - **Database:** PostgreSQL + Drizzle ORM
@@ -33,21 +33,26 @@ Copy the example file and fill in your values:
 
 ```bash
 cp .env.example .env
+cp .env.example .env.local   # Drizzle Kit reads from .env.local
 ```
 
 - `DATABASE_URL` — PostgreSQL connection string
-- `NEXTAUTH_SECRET` — Random string (32+ chars) for session encryption
+- `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` — Google OAuth credentials (Google Cloud Console)
+- `NEXTAUTH_SECRET` — Random string (32+ chars) for session encryption (`openssl rand -base64 32`)
 - `NEXTAUTH_URL` — App base URL (e.g. `http://localhost:3000`)
+- `ADMIN_EMAILS` — Comma-separated list of admin email addresses
+- `BLOB_READ_WRITE_TOKEN` — Vercel Blob token for photo uploads
 
-The `.env` file is gitignored.
+The `.env` and `.env.local` files are gitignored.
 
 ## Getting Started
 
 ```bash
 pnpm install
 pnpm dev            # starts dev server with Turbopack
-pnpm db:generate    # generate migrations
-pnpm db:push       # push schema to database
+pnpm db:generate    # generate migrations (reads .env.local)
+pnpm db:migrate     # apply migrations to the database (reads .env.local)
+pnpm db:studio      # open Drizzle Studio (reads .env.local)
 ```
 
 ## Participants
