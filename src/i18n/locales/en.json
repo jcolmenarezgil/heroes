@@ -210,6 +210,31 @@
       "selfAdminError": "You cannot demote yourself"
     }
   },
+  "notifications": {
+    "title": "Notifications",
+    "subtitle": "Updates about your profiles and suggestions.",
+    "openMenu": "Open notifications",
+    "empty": "No notifications yet",
+    "markAllRead": "Mark all as read",
+    "viewAll": "View all",
+    "unreadOnly": "Unread only",
+    "page": "Page {page} of {totalPages}",
+    "prevPage": "Previous",
+    "nextPage": "Next",
+    "loadError": "Could not load notifications",
+    "markReadError": "Could not mark as read",
+    "type": {
+      "suggestionCreated": "New suggestion on {profile}",
+      "suggestionResolved": "Your suggestion on {profile} was {resolution}",
+      "profileVerified": "{profile} was verified",
+      "profileUnverified": "{profile} was unverified",
+      "profileMerged": "{source} was merged into {target}",
+      "resolution": {
+        "approved": "approved",
+        "rejected": "rejected"
+      }
+    }
+  },
   "onboarding": {
     "continueWithoutAccount": "Continue without Account",
     "hintLabel": "Hint:",

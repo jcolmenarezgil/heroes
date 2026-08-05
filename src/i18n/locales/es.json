@@ -210,6 +210,31 @@
       "selfAdminError": "No puedes degradarte a ti mismo"
     }
   },
+  "notifications": {
+    "title": "Notificaciones",
+    "subtitle": "Actualizaciones sobre tus perfiles y sugerencias.",
+    "openMenu": "Abrir notificaciones",
+    "empty": "Aún no hay notificaciones",
+    "markAllRead": "Marcar todas como leídas",
+    "viewAll": "Ver todas",
+    "unreadOnly": "Solo no leídas",
+    "page": "Página {page} de {totalPages}",
+    "prevPage": "Anterior",
+    "nextPage": "Siguiente",
+    "loadError": "No se pudieron cargar las notificaciones",
+    "markReadError": "No se pudieron marcar como leídas",
+    "type": {
+      "suggestionCreated": "Nueva sugerencia en {profile}",
+      "suggestionResolved": "Tu sugerencia en {profile} fue {resolution}",
+      "profileVerified": "{profile} fue verificado",
+      "profileUnverified": "Se quitó la verificación de {profile}",
+      "profileMerged": "{source} fue combinado en {target}",
+      "resolution": {
+        "approved": "aprobada",
+        "rejected": "rechazada"
+      }
+    }
+  },
   "onboarding": {
     "continueWithoutAccount": "Continuar sin cuenta",
     "hintLabel": "Consejo:",

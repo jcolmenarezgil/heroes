@@ -10,6 +10,7 @@ import type {
 } from "@/types/profile-suggestion";
 import { compressImage } from "@/lib/compress-image";
 import type { UserDTO, AdminUserListResponse } from "@/types/user";
+import type { NotificationListResponse } from "@/lib/notification-mapper";
 
 export class ApiError extends Error {
     constructor(
@@ -231,5 +232,35 @@ export function updateUserRole(
     return request<UserDTO>(`/api/admin/users/${userId}/role`, {
         method: "PATCH",
         body: JSON.stringify({ role }),
+    });
+}
+
+export interface ListNotificationsParams {
+    limit?: number;
+    page?: number;
+    unreadOnly?: boolean;
+}
+
+export function getNotifications(
+    params: ListNotificationsParams = {}
+): Promise<NotificationListResponse> {
+    const search = new URLSearchParams();
+    if (params.limit) search.set("limit", String(params.limit));
+    if (params.page) search.set("page", String(params.page));
+    if (params.unreadOnly) search.set("unreadOnly", "true");
+
+    const qs = search.toString();
+    return request<NotificationListResponse>(
+        `/api/notifications${qs ? `?${qs}` : ""}`
+    );
+}
+
+export function markNotificationsRead(input: {
+    ids?: string[];
+    all?: true;
+}): Promise<{ updated: number }> {
+    return request<{ updated: number }>(`/api/notifications/mark-read`, {
+        method: "POST",
+        body: JSON.stringify(input),
     });
 }
