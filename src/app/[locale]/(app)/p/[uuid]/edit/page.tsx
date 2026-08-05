@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
@@ -8,13 +8,11 @@ import Link from "next/link";
 import { useRouter } from "@/i18n/navigation";
 import ProfileForm, { ProfileFormData } from "@/components/ProfileForm";
 import ProfileFormSkeleton from "@/components/ProfileFormSkeleton";
-import { Button } from "@/components/ui/Button";
-import { Textarea } from "@/components/ui/Field";
 import { useToast } from "@/components/providers/ToastProvider";
 import PendingSuggestions from "@/components/PendingSuggestions";
+import SuggestionForm from "@/components/SuggestionForm";
 import {
   ApiError,
-  createSuggestion,
   getProfile,
   updateProfile,
   uploadProfilePhoto,
@@ -122,7 +120,12 @@ export default function EditProfilePage() {
   }
 
   if (!canEditDirectly) {
-    return <SuggestionView profileId={profile.id} />;
+    return (
+      <div className="mx-auto max-w-lg space-y-6">
+        <SuggestionForm profileId={profile.id} />
+        <PendingSuggestions profileId={profile.id} />
+      </div>
+    );
   }
 
   return (
@@ -148,93 +151,6 @@ export default function EditProfilePage() {
       />
 
       <PendingSuggestions profileId={profile.id} />
-    </div>
-  );
-}
-
-function SuggestionView({ profileId }: { profileId: string }) {
-  const t = useTranslations("profile");
-  const { addToast } = useToast();
-  const { status: sessionStatus } = useSession();
-  const [note, setNote] = useState("");
-  const [submitterName, setSubmitterName] = useState("");
-  const [submitterContact, setSubmitterContact] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!note.trim()) return;
-    setIsSubmitting(true);
-    try {
-      await createSuggestion(profileId, {
-        note: note.trim(),
-        submitterName: submitterName.trim() || undefined,
-        submitterContact: submitterContact.trim() || undefined,
-      });
-      addToast(t("suggestionSubmitted"), "success");
-      setNote("");
-      setSubmitterName("");
-      setSubmitterContact("");
-    } catch {
-      addToast(t("saveError"), "error");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  return (
-    <div className="mx-auto max-w-lg space-y-6">
-      <h1 className="text-2xl font-semibold text-white">
-        {t("suggestionTitle")}
-      </h1>
-      <p className="text-sm text-neutral-400">
-        {sessionStatus === "authenticated"
-          ? t("suggestionDescription")
-          : t("suggestionAnonDescription")}
-      </p>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {sessionStatus !== "authenticated" && (
-          <div className="space-y-2">
-            <label htmlFor="submitterName" className="text-sm text-neutral-300">
-              {t("suggestionNameLabel")}
-            </label>
-            <input
-              id="submitterName"
-              type="text"
-              value={submitterName}
-              onChange={(e) => setSubmitterName(e.target.value)}
-              placeholder={t("suggestionNamePlaceholder")}
-              required
-              className="input-field w-full rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2 text-white"
-            />
-          </div>
-        )}
-        {sessionStatus !== "authenticated" && (
-          <div className="space-y-2">
-            <label htmlFor="submitterContact" className="text-sm text-neutral-300">
-              {t("suggestionContactLabel")}
-            </label>
-            <input
-              id="submitterContact"
-              type="text"
-              value={submitterContact}
-              onChange={(e) => setSubmitterContact(e.target.value)}
-              placeholder={t("suggestionContactPlaceholder")}
-              className="input-field w-full rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2 text-white"
-            />
-          </div>
-        )}
-        <Textarea
-          value={note}
-          onChange={(e) => setNote(e.target.value)}
-          placeholder={t("suggestionPlaceholder")}
-          className="min-h-32"
-          required
-        />
-        <Button type="submit" isLoading={isSubmitting}>
-          {t("actions.suggestUpdate")}
-        </Button>
-      </form>
     </div>
   );
 }

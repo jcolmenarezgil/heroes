@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
 import { useFormatter, useTranslations } from "next-intl";
 import QRCodeLib from "qrcode";
 import Image from "next/image";
@@ -28,7 +27,6 @@ export default function ProfileDetailPage() {
   const t = useTranslations("profile");
   const format = useFormatter();
   const params = useParams();
-  const { status: sessionStatus } = useSession();
   const { addToast } = useToast();
   const [qrUrl, setQrUrl] = useState<string | null>(null);
   const [profile, setProfile] = useState<PublicProfileDTO | null>(null);
@@ -160,24 +158,14 @@ export default function ProfileDetailPage() {
             <PencilSquareIcon className="h-5 w-5" />
             <span className="text-sm font-medium">{t("actions.edit")}</span>
           </Link>
-        ) : sessionStatus === "authenticated" ? (
-          <button
-            onClick={() => addToast(t("suggestionComingSoon"), "warning")}
+        ) : (
+          <Link
+            href={`/p/${profile.id}/suggest`}
             className="flex h-11 min-w-11 items-center gap-2 rounded-lg border border-neutral-700 px-3 text-white transition hover:bg-neutral-900"
           >
             <PencilSquareIcon className="h-5 w-5" />
             <span className="text-sm font-medium">
               {t("actions.suggestUpdate")}
-            </span>
-          </button>
-        ) : (
-          <Link
-            href="/login"
-            className="flex h-11 min-w-11 items-center gap-2 rounded-lg border border-neutral-700 px-3 text-white transition hover:bg-neutral-900"
-          >
-            <PencilSquareIcon className="h-5 w-5" />
-            <span className="text-sm font-medium">
-              {t("actions.signInToHelp")}
             </span>
           </Link>
         )}
