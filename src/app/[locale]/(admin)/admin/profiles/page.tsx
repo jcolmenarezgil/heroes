@@ -11,6 +11,10 @@ import Skeleton from "@/components/ui/Skeleton";
 import { Button } from "@/components/ui/Button";
 import { useToast } from "@/components/providers/ToastProvider";
 import {
+  MagnifyingGlassIcon,
+  SearchEmptyIcon,
+} from "@/components/icons";
+import {
   listProfiles,
   mergeProfiles,
   unverifyProfile,
@@ -24,6 +28,7 @@ type VerifiedFilter = "all" | "verified" | "unverified";
 export default function AdminProfilesPage() {
   const t = useTranslations("admin.profiles");
   const tAdmin = useTranslations("admin");
+  const tProfile = useTranslations("profile");
   const format = useFormatter();
   const { addToast } = useToast();
 
@@ -46,7 +51,6 @@ export default function AdminProfilesPage() {
   const [isMerging, setIsMerging] = useState(false);
   const [reloadKey, setReloadKey] = useState(0);
 
-  // Debounced search
   const [debouncedSearch, setDebouncedSearch] = useState("");
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -177,8 +181,9 @@ export default function AdminProfilesPage() {
   }, [profiles, verifiedFilter]);
 
   return (
-    <div className="space-y-4">
-      <div>
+    <div className="flex flex-col">
+      {/* Title */}
+      <div className="mb-4">
         <h1 className="text-2xl font-semibold text-white">
           {tAdmin("profilesTitle")}
         </h1>
@@ -190,21 +195,24 @@ export default function AdminProfilesPage() {
       {/* Search + filters */}
       <div className="space-y-3 border-b border-neutral-800 pb-4">
         <div className="flex flex-wrap items-end gap-3">
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-1 flex-col gap-1">
             <label
               htmlFor="admin-search"
               className="text-xs font-medium text-neutral-500"
             >
               {t("labelSearch")}
             </label>
-            <input
-              id="admin-search"
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder={t("searchPlaceholder")}
-              className="input-field max-w-xs py-2"
-            />
+            <div className="relative flex-1">
+              <MagnifyingGlassIcon className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-neutral-400" />
+              <input
+                id="admin-search"
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder={t("searchPlaceholder")}
+                className="input-field w-full rounded-lg py-2 pl-10"
+              />
+            </div>
           </div>
           <div className="flex flex-col gap-1">
             <label
@@ -222,7 +230,7 @@ export default function AdminProfilesPage() {
                 );
                 setPage(1);
               }}
-              className="input-field max-w-[180px] py-2"
+              className="input-field max-w-[160px] py-2"
             >
               <option value="">{t("filterAll")}</option>
               <option value="active">Active</option>
@@ -243,7 +251,7 @@ export default function AdminProfilesPage() {
               onChange={(e) =>
                 setVerifiedFilter(e.target.value as VerifiedFilter)
               }
-              className="input-field max-w-[180px] py-2"
+              className="input-field max-w-[160px] py-2"
             >
               <option value="all">{t("filterAll")}</option>
               <option value="verified">{t("filterVerified")}</option>
@@ -266,188 +274,161 @@ export default function AdminProfilesPage() {
         )}
       </div>
 
-      {/* Table */}
-      <div className="overflow-x-auto">
-        <table className="w-full border-collapse">
-          <thead>
-            <tr className="border-b border-neutral-800 text-left text-xs font-medium text-neutral-400">
-              <th className="w-10 px-2 py-3" />
-              <th className="px-2 py-3">{t("columnName")}</th>
-              <th className="px-2 py-3">{t("columnStatus")}</th>
-              <th className="px-2 py-3">{t("columnVerified")}</th>
-              <th className="hidden px-2 py-3 md:table-cell">
-                {t("columnCreatedBy")}
-              </th>
-              <th className="hidden px-2 py-3 lg:table-cell">
-                {t("columnCreated")}
-              </th>
-              <th className="px-2 py-3 text-right">{t("columnActions")}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {isLoading
-              ? Array.from({ length: 8 }).map((_, i) => (
-                  <tr key={i} className="border-b border-neutral-900">
-                    <td className="px-2 py-3">
-                      <Skeleton className="h-4 w-4 rounded" />
-                    </td>
-                    <td className="px-2 py-3">
-                      <div className="flex items-center gap-2">
-                        <Skeleton className="h-8 w-8 rounded-full" />
-                        <Skeleton className="h-4 w-32" />
-                      </div>
-                    </td>
-                    <td className="px-2 py-3">
-                      <Skeleton className="h-5 w-16 rounded-md" />
-                    </td>
-                    <td className="px-2 py-3">
-                      <Skeleton className="h-5 w-20 rounded-full" />
-                    </td>
-                    <td className="hidden px-2 py-3 md:table-cell">
-                      <Skeleton className="h-4 w-24" />
-                    </td>
-                    <td className="hidden px-2 py-3 lg:table-cell">
-                      <Skeleton className="h-4 w-20" />
-                    </td>
-                    <td className="px-2 py-3">
-                      <Skeleton className="h-7 w-20 rounded-lg" />
-                    </td>
-                  </tr>
-                ))
-              : filteredProfiles.length === 0
-              ? (
-                <tr>
-                  <td
-                    colSpan={7}
-                    className="py-12 text-center text-sm text-neutral-500"
-                  >
-                    {t("noResults")}
-                  </td>
-                </tr>
-              )
-              : filteredProfiles.map((profile) => (
-                  <tr
-                    key={profile.id}
-                    className={`border-b border-neutral-900 transition hover:bg-neutral-950 ${
-                      selected.has(profile.id) ? "bg-neutral-900" : ""
-                    }`}
-                  >
-                    <td className="px-2 py-3">
-                      <input
-                        type="checkbox"
-                        checked={selected.has(profile.id)}
-                        onChange={() => toggleSelect(profile.id)}
-                        className="h-4 w-4 rounded border-neutral-600 bg-neutral-900"
-                      />
-                    </td>
-                    <td className="px-2 py-3">
-                      <div className="flex items-center gap-2">
-                        {profile.photoUrl ? (
-                          <Image
-                            src={profile.photoUrl}
-                            alt={profile.name}
-                            width={32}
-                            height={32}
-                            className="h-8 w-8 rounded-full object-cover"
-                            unoptimized
-                          />
-                        ) : (
-                          <div className="h-8 w-8 overflow-hidden rounded-full ring-1 ring-inset ring-neutral-800">
-                            <AvatarPlaceholder
-                              size="sm"
-                              className="!h-8 !w-8 rounded-full"
-                            />
-                          </div>
-                        )}
-                        <Link
-                          href={`/p/${profile.id}`}
-                          className="text-sm font-medium text-white hover:underline"
-                        >
-                          {profile.name}
-                        </Link>
-                      </div>
-                    </td>
-                    <td className="px-2 py-3">
-                      <StatusBadge status={profile.status} />
-                    </td>
-                    <td className="px-2 py-3">
-                      {profile.verified ? (
+      {/* Results */}
+      <div className="mt-4 overflow-hidden rounded-lg border border-neutral-900">
+        {/* Grid header */}
+        <div className="grid grid-cols-[40px_56px_1fr_auto] items-center gap-3 border-b border-neutral-900 bg-neutral-950 px-4 py-2 text-xs font-medium uppercase tracking-wider text-neutral-400">
+          <span />
+          <span className="sr-only">{t("columnVerified")}</span>
+          <span>{t("columnName")}</span>
+          <span className="text-right">{t("columnStatus")}</span>
+        </div>
+
+        {isLoading ? (
+          <div className="space-y-0 divide-y divide-neutral-900">
+            <Skeleton className="h-28 w-full" />
+            <Skeleton className="h-28 w-full" />
+            <Skeleton className="h-28 w-full" />
+          </div>
+        ) : filteredProfiles.length === 0 ? (
+          <div className="flex flex-col items-center py-16 text-center">
+            <SearchEmptyIcon
+              className="h-12 w-12 text-neutral-500"
+              aria-hidden="true"
+            />
+            <p className="mt-4 text-base font-medium text-white">
+              {t("noResults")}
+            </p>
+          </div>
+        ) : (
+          <div className="divide-y divide-neutral-900">
+            {filteredProfiles.map((profile) => (
+              <div
+                key={profile.id}
+                className={`grid grid-cols-[40px_56px_1fr_auto] items-start gap-3 p-4 transition hover:bg-neutral-950 ${
+                  selected.has(profile.id) ? "bg-neutral-900" : ""
+                }`}
+              >
+                {/* Checkbox */}
+                <input
+                  type="checkbox"
+                  checked={selected.has(profile.id)}
+                  onChange={() => toggleSelect(profile.id)}
+                  className="mt-1 h-4 w-4 rounded border-neutral-600 bg-neutral-900"
+                />
+
+                {/* Photo */}
+                {profile.photoUrl ? (
+                  <div className="relative aspect-square h-14 w-14 overflow-hidden rounded-md bg-neutral-900">
+                    <Image
+                      src={profile.photoUrl}
+                      alt={profile.name}
+                      fill
+                      sizes="56px"
+                      className="object-cover"
+                      referrerPolicy="no-referrer"
+                    />
+                  </div>
+                ) : (
+                  <AvatarPlaceholder size="sm" />
+                )}
+
+                {/* Info */}
+                <div className="flex min-w-0 flex-col">
+                  <span className="truncate text-base font-medium text-white">
+                    {profile.name}
+                    {profile.verified && (
+                      <span className="ml-2 align-middle">
                         <VerifiedBadge verified={profile.verified} />
-                      ) : (
-                        <span className="text-xs text-neutral-600">&mdash;</span>
-                      )}
-                    </td>
-                    <td className="hidden px-2 py-3 text-sm text-neutral-400 md:table-cell">
-                      {profile.createdByName}
-                    </td>
-                    <td className="hidden px-2 py-3 text-sm text-neutral-400 lg:table-cell">
-                      {format.dateTime(new Date(profile.createdAt), {
+                      </span>
+                    )}
+                  </span>
+                  <span className="truncate text-sm text-neutral-400">
+                    {profile.lastKnownLocation}
+                  </span>
+                  <span className="truncate text-xs text-neutral-500">
+                    {tProfile("createdBy", {
+                      name: profile.createdByName,
+                      date: format.dateTime(new Date(profile.createdAt), {
                         day: "numeric",
                         month: "short",
-                        year: "numeric",
-                      })}
-                    </td>
-                    <td className="px-2 py-3">
-                      <div className="flex items-center justify-end gap-1.5">
-                        {profile.verified ? (
-                          <button
-                            onClick={() => handleUnverify(profile)}
-                            disabled={busyId === profile.id}
-                            className="rounded-md bg-yellow-600 px-2 py-1 text-xs font-medium text-white transition hover:bg-yellow-700 disabled:opacity-50"
-                          >
-                            {t("unverify")}
-                          </button>
-                        ) : (
-                          <button
-                            onClick={() => handleVerify(profile)}
-                            disabled={busyId === profile.id}
-                            className="rounded-md bg-blue-700 px-2 py-1 text-xs font-medium text-white transition hover:bg-blue-800 disabled:opacity-50"
-                          >
-                            {t("verify")}
-                          </button>
-                        )}
-                        <Link
-                          href={`/p/${profile.id}/edit`}
-                          className="rounded-md border border-neutral-700 px-2 py-1 text-xs text-white transition hover:bg-neutral-900"
-                        >
-                          {t("edit")}
-                        </Link>
-                        <Link
-                          href={`/p/${profile.id}`}
-                          className="rounded-md border border-neutral-700 px-2 py-1 text-xs text-white transition hover:bg-neutral-900"
-                        >
-                          {t("view")}
-                        </Link>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-          </tbody>
-        </table>
+                      }),
+                    })}
+                  </span>
+                  <span className="truncate text-xs text-neutral-500">
+                    {tProfile("updatedBy", {
+                      name: profile.updatedByName,
+                      date: format.dateTime(new Date(profile.updatedAt), {
+                        day: "numeric",
+                        month: "short",
+                      }),
+                    })}
+                  </span>
+
+                  {/* Actions */}
+                  <div className="mt-2 flex items-center gap-1.5">
+                    {profile.verified ? (
+                      <button
+                        onClick={() => handleUnverify(profile)}
+                        disabled={busyId === profile.id}
+                        className="rounded-md bg-yellow-600 px-2 py-1 text-xs font-medium text-white transition hover:bg-yellow-700 disabled:opacity-50"
+                      >
+                        {t("unverify")}
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => handleVerify(profile)}
+                        disabled={busyId === profile.id}
+                        className="rounded-md bg-blue-700 px-2 py-1 text-xs font-medium text-white transition hover:bg-blue-800 disabled:opacity-50"
+                      >
+                        {t("verify")}
+                      </button>
+                    )}
+                    <Link
+                      href={`/p/${profile.id}/edit`}
+                      className="rounded-md border border-neutral-700 px-2 py-1 text-xs text-white transition hover:bg-neutral-900"
+                    >
+                      {t("edit")}
+                    </Link>
+                    <Link
+                      href={`/p/${profile.id}`}
+                      className="rounded-md border border-neutral-700 px-2 py-1 text-xs text-white transition hover:bg-neutral-900"
+                    >
+                      {t("view")}
+                    </Link>
+                  </div>
+                </div>
+
+                {/* Status */}
+                <div className="flex-shrink-0 justify-self-end">
+                  <StatusBadge status={profile.status} />
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Pagination */}
       {!isLoading && totalPages > 1 && (
-        <div className="flex items-center justify-between">
-          <p className="text-sm text-neutral-400">
+        <div className="mt-4 flex items-center justify-between">
+          <Button
+            variant="secondary"
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            disabled={page <= 1}
+          >
+            {t("prevPage")}
+          </Button>
+          <span className="text-sm text-neutral-400">
             {t("page", { page, totalPages })}
-          </p>
-          <div className="flex gap-2">
-            <button
-              onClick={() => setPage((p) => Math.max(1, p - 1))}
-              disabled={page === 1}
-              className="rounded-lg border border-neutral-700 px-3 py-1.5 text-sm text-white transition hover:bg-neutral-900 disabled:opacity-50"
-            >
-              {t("prevPage")}
-            </button>
-            <button
-              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-              disabled={page === totalPages}
-              className="rounded-lg border border-neutral-700 px-3 py-1.5 text-sm text-white transition hover:bg-neutral-900 disabled:opacity-50"
-            >
-              {t("nextPage")}
-            </button>
-          </div>
+          </span>
+          <Button
+            variant="secondary"
+            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+            disabled={page >= totalPages}
+          >
+            {t("nextPage")}
+          </Button>
         </div>
       )}
 
@@ -493,7 +474,9 @@ export default function AdminProfilesPage() {
                     </div>
                   )}
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-white">{p.name}</p>
+                    <p className="text-sm font-medium text-white">
+                      {p.name}
+                    </p>
                     <p className="text-xs text-neutral-500">
                       {p.lastKnownLocation}
                     </p>
@@ -513,10 +496,18 @@ export default function AdminProfilesPage() {
             {mergeTarget && (
               <p className="mt-4 text-sm text-neutral-300">
                 <span className="text-green-500">{t("mergeTarget")}:</span>{" "}
-                {selectedProfiles.find((p) => p.id === mergeTarget)?.name}
+                {
+                  selectedProfiles.find((p) => p.id === mergeTarget)
+                    ?.name
+                }
                 {"  \u00b7  "}
-                <span className="text-red-500">{t("mergeSource")}:</span>{" "}
-                {selectedProfiles.find((p) => p.id !== mergeTarget)?.name}
+                <span className="text-red-500">
+                  {t("mergeSource")}:
+                </span>{" "}
+                {
+                  selectedProfiles.find((p) => p.id !== mergeTarget)
+                    ?.name
+                }
               </p>
             )}
 
