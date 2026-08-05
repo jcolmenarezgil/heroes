@@ -116,3 +116,31 @@ export const photos = pgTable("photos", {
     createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
 });
 
+export const suggestionStatusEnum = pgEnum("suggestion_status_enum", [
+    "pending",
+    "approved",
+    "rejected",
+]);
+
+export const profileSuggestions = pgTable("profile_suggestions", {
+    id: uuid("id").defaultRandom().primaryKey(),
+    profileId: uuid("profile_id")
+        .notNull()
+        .references(() => profiles.id, { onDelete: "cascade" }),
+    // Nullable: anonymous suggestions are allowed (rate-limited server-side).
+    userId: uuid("user_id").references(() => users.id, {
+        onDelete: "set null",
+    }),
+    submitterName: text("submitter_name"),
+    submitterContact: text("submitter_contact"),
+    note: text("note").notNull(),
+    status: suggestionStatusEnum("status").default("pending").notNull(),
+    resolvedAt: timestamp("resolved_at", { mode: "date" }),
+    resolvedBy: uuid("resolved_by").references(() => users.id, {
+        onDelete: "set null",
+    }),
+    createdAt: timestamp("created_at", { mode: "date" })
+        .defaultNow()
+        .notNull(),
+});
+

@@ -20,7 +20,7 @@ import Section from "@/components/ui/Section";
 import StatusBadge from "@/components/ui/StatusBadge";
 import ProfileDetailSkeleton from "@/components/ProfileDetailSkeleton";
 import { useToast } from "@/components/providers/ToastProvider";
-import { ApiError, getPublicProfile } from "@/lib/api-client";
+import { ApiError, getPublicProfile, listSuggestions } from "@/lib/api-client";
 import type { PublicProfileDTO } from "@/types/profile";
 
 export default function ProfileDetailPage() {
@@ -33,6 +33,7 @@ export default function ProfileDetailPage() {
   const [profile, setProfile] = useState<PublicProfileDTO | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const [pendingSuggestions, setPendingSuggestions] = useState(0);
 
   const uuid = params.uuid as string;
 
@@ -41,6 +42,16 @@ export default function ProfileDetailPage() {
     getPublicProfile(uuid)
       .then((data) => {
         if (!cancelled) setProfile(data);
+        // Only owners/rescuers/admins can see the pending count.
+        if (data.canEdit) {
+          listSuggestions(uuid, { status: "pending", limit: 1 })
+            .then((res) => {
+              if (!cancelled) setPendingSuggestions(res.pendingCount);
+            })
+            .catch(() => {
+              /* best-effort: ignore */
+            });
+        }
       })
       .catch((error) => {
         if (cancelled) return;
@@ -251,6 +262,14 @@ export default function ProfileDetailPage() {
           </div>
 
           {/* Audit trail */}
+          {profile.canEdit && pendingSuggestions > 0 && (
+            <div className="rounded-lg border border-amber-800 bg-amber-950/50 px-4 py-3 text-sm text-amber-200">
+              <Link href={`/p/${profile.id}/edit`} className="underline">
+                {t("suggestionPendingCount", { count: pendingSuggestions })}
+              </Link>
+            </div>
+          )}
+
           <div className="border-t border-neutral-900 py-4 text-xs text-neutral-500">
             <p>
               {t("createdBy", {
