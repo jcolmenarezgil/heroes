@@ -137,6 +137,8 @@
   "admin": {
     "profilesTitle": "Perfiles",
     "profilesSubtitle": "Gestiona, verifica y combina perfiles de personas desaparecidas.",
+    "usersTitle": "Usuarios",
+    "usersSubtitle": "Explora, filtra y busca usuarios de la plataforma.",
     "nav": {
       "profiles": "Perfiles",
       "users": "Usuarios",
@@ -185,6 +187,27 @@
       "viewer": "Espectador",
       "rescuer": "Rescatista",
       "admin": "Administrador"
+    },
+    "users": {
+      "searchPlaceholder": "Buscar por nombre o correo...",
+      "labelSearch": "Buscar",
+      "labelRole": "Rol",
+      "filterAll": "Todos",
+      "columnName": "Nombre",
+      "columnEmail": "Correo",
+      "columnRole": "Rol",
+      "columnJoined": "Se unió",
+      "columnActions": "Acciones",
+      "noResults": "No se encontraron usuarios",
+      "page": "Página {page} de {totalPages}",
+      "prevPage": "Anterior",
+      "nextPage": "Siguiente",
+      "youBadge": "Tú",
+      "cannotSelf": "No puedes cambiar tu propio rol",
+      "updateRoleSuccess": "Rol actualizado",
+      "updateRoleError": "Error al actualizar el rol",
+      "lastAdminError": "No puedes degradar al único administrador restante",
+      "selfAdminError": "No puedes degradarte a ti mismo"
     }
   },
   "onboarding": {

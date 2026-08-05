@@ -9,7 +9,7 @@ import type {
     ProfileSuggestionListResponse,
 } from "@/types/profile-suggestion";
 import { compressImage } from "@/lib/compress-image";
-import type { UserDTO } from "@/types/user";
+import type { UserDTO, AdminUserListResponse } from "@/types/user";
 
 export class ApiError extends Error {
     constructor(
@@ -199,5 +199,37 @@ export function mergeProfiles(
     return request(`/api/admin/profiles/merge`, {
         method: "POST",
         body: JSON.stringify({ source, target }),
+    });
+}
+
+export interface ListAdminUsersParams {
+    q?: string;
+    role?: "all" | "viewer" | "rescuer" | "admin";
+    page?: number;
+    limit?: number;
+}
+
+export function listAdminUsers(
+    params: ListAdminUsersParams = {}
+): Promise<AdminUserListResponse> {
+    const search = new URLSearchParams();
+    if (params.q) search.set("q", params.q);
+    if (params.role) search.set("role", params.role);
+    if (params.page) search.set("page", String(params.page));
+    if (params.limit) search.set("limit", String(params.limit));
+
+    const qs = search.toString();
+    return request<AdminUserListResponse>(
+        `/api/admin/users${qs ? `?${qs}` : ""}`
+    );
+}
+
+export function updateUserRole(
+    userId: string,
+    role: "viewer" | "rescuer" | "admin"
+): Promise<UserDTO> {
+    return request<UserDTO>(`/api/admin/users/${userId}/role`, {
+        method: "PATCH",
+        body: JSON.stringify({ role }),
     });
 }
