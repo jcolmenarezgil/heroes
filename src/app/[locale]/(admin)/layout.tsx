@@ -8,10 +8,9 @@ import NavBar from "@/components/layout/NavBar";
 
 const navItems: {
   href: string;
-  labelKey: "dashboard" | "profiles" | "users";
+  labelKey: "profiles" | "users";
   exact: boolean;
 }[] = [
-  { href: "/admin", labelKey: "dashboard", exact: true },
   { href: "/admin/profiles", labelKey: "profiles", exact: false },
   { href: "/admin/users", labelKey: "users", exact: false },
 ];

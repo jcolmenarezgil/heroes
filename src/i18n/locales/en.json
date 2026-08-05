@@ -135,22 +135,9 @@
     "offline": "You are offline — showing cached results"
   },
   "admin": {
-    "dashboardTitle": "Dashboard",
-    "dashboardSubtitle": "Overview of platform activity.",
-    "dashboard": {
-      "totalProfiles": "Total profiles",
-      "active": "Active",
-      "found": "Found",
-      "deceased": "Deceased",
-      "verified": "Verified",
-      "pendingSuggestions": "Pending suggestions",
-      "totalUsers": "Users"
-    },
-    "usersTitle": "Users",
     "profilesTitle": "Profiles",
     "profilesSubtitle": "Manage, verify, and merge missing person profiles.",
     "nav": {
-      "dashboard": "Dashboard",
       "profiles": "Profiles",
       "users": "Users",
       "backToApp": "Back to app"
