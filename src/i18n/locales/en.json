@@ -115,6 +115,7 @@
     "suggestionApprove": "Approve",
     "suggestionReject": "Reject",
     "suggestionPendingCount": "{count, plural, =0{No pending suggestions} one{# pending suggestion} other{# pending suggestions}}",
+    "suggestionEmpty": "No pending suggestions for this profile.",
     "suggestionBy": "By {name}",
     "suggestionAnon": "Anonymous",
     "suggestionResolvedBy": "Resolved by {name}",

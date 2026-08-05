@@ -115,6 +115,7 @@
     "suggestionApprove": "Aprobar",
     "suggestionReject": "Rechazar",
     "suggestionPendingCount": "{count, plural, =0{Sin sugerencias pendientes} one{# sugerencia pendiente} other{# sugerencias pendientes}}",
+    "suggestionEmpty": "Sin sugerencias pendientes para este perfil.",
     "suggestionBy": "Por {name}",
     "suggestionAnon": "Anónimo",
     "suggestionResolvedBy": "Resuelto por {name}",

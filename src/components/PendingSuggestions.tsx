@@ -64,13 +64,17 @@ export default function PendingSuggestions({
     };
 
     if (isLoading) return null;
-    if (items.length === 0) return null;
 
     return (
         <div className="space-y-2">
             <h2 className="text-sm font-semibold text-white">
                 {t("suggestionPendingCount", { count: items.length })}
             </h2>
+            {items.length === 0 ? (
+                <p className="rounded-lg border border-neutral-800 bg-neutral-950 p-3 text-xs text-neutral-500">
+                    {t("suggestionEmpty")}
+                </p>
+            ) : (
             <ul className="space-y-2">
                 {items.map((s) => (
                     <li
@@ -116,6 +120,7 @@ export default function PendingSuggestions({
                     </li>
                 ))}
             </ul>
+            )}
         </div>
     );
 }
