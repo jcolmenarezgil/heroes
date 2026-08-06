@@ -137,6 +137,8 @@
   "admin": {
     "profilesTitle": "Profiles",
     "profilesSubtitle": "Manage, verify, and merge missing person profiles.",
+    "usersTitle": "Users",
+    "usersSubtitle": "Browse, filter, and search platform users.",
     "nav": {
       "profiles": "Profiles",
       "users": "Users",
@@ -185,6 +187,51 @@
       "viewer": "Viewer",
       "rescuer": "Rescuer",
       "admin": "Admin"
+    },
+    "users": {
+      "searchPlaceholder": "Search by name or email...",
+      "labelSearch": "Search",
+      "labelRole": "Role",
+      "filterAll": "All",
+      "columnName": "Name",
+      "columnEmail": "Email",
+      "columnRole": "Role",
+      "columnJoined": "Joined",
+      "columnActions": "Actions",
+      "noResults": "No users found",
+      "page": "Page {page} of {totalPages}",
+      "prevPage": "Previous",
+      "nextPage": "Next",
+      "youBadge": "You",
+      "cannotSelf": "You cannot change your own role",
+      "updateRoleSuccess": "Role updated",
+      "updateRoleError": "Failed to update role",
+      "lastAdminError": "Cannot demote the last remaining admin",
+      "selfAdminError": "You cannot demote yourself"
+    }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "subtitle": "Updates about your profiles and suggestions.",
+    "openMenu": "Open notifications",
+    "empty": "No notifications yet",
+    "emptyUnread": "No new notifications",
+    "markAllRead": "Mark all as read",
+    "viewAllHistory": "View all history",
+    "unreadOnly": "Unread only",
+    "loadMore": "Load more",
+    "loadError": "Could not load notifications",
+    "markReadError": "Could not mark as read",
+    "type": {
+      "suggestionCreated": "New suggestion on {profile}",
+      "suggestionResolved": "Your suggestion on {profile} was {resolution}",
+      "profileVerified": "{profile} was verified",
+      "profileUnverified": "{profile} was unverified",
+      "profileMerged": "{source} was merged into {target}",
+      "resolution": {
+        "approved": "approved",
+        "rejected": "rejected"
+      }
     }
   },
   "onboarding": {
@@ -230,10 +277,19 @@
     "syncNow": "Sync now",
     "syncing": "Syncing…",
     "syncInterval": "Sync",
+    "notifInterval": "Notifications",
     "myProfile": "My profile",
     "adminDashboard": "Admin dashboard",
-    "comingSoon": "Coming soon",
+    "settings": "Settings",
     "offlineSync": "You are offline. Connect to sync."
+  },
+  "settings": {
+    "back": "Back"
+  },
+  "notificationPrefs": {
+    "30sec": "30 seconds",
+    "1min": "1 minute",
+    "5min": "5 minutes"
   },
   "myProfile": {
     "title": "My profile",

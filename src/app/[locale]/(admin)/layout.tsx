@@ -23,7 +23,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     exact ? pathname === href : pathname.startsWith(href);
 
   return (
-    <div className="flex min-h-screen bg-black text-white">
+    <div className="flex min-h-screen min-w-0 bg-black text-white">
       <NavBar />
 
       <aside className="fixed bottom-0 left-0 top-14 z-30 hidden w-64 flex-col border-r border-neutral-900 bg-neutral-950 md:flex">
@@ -66,9 +66,35 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </div>
       </aside>
 
-      <div className="flex flex-1 flex-col md:pl-64">
+      <div className="flex min-w-0 flex-1 flex-col md:pl-64">
         <div className="h-14 shrink-0" />
-        <main className="flex-1 p-4 md:p-8">{children}</main>
+
+        {/* Mobile-only tab bar (md and up use the desktop sidebar). */}
+        <div className="border-b border-neutral-900 bg-neutral-950 md:hidden">
+          <nav className="flex items-center gap-1 overflow-x-auto px-2 py-2">
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`shrink-0 rounded-md px-3 py-1.5 text-xs font-medium transition ${
+                  isActive(item.href, item.exact)
+                    ? "bg-neutral-800 text-white"
+                    : "text-neutral-400 hover:bg-neutral-900 hover:text-white"
+                }`}
+              >
+                {t(item.labelKey)}
+              </Link>
+            ))}
+            <Link
+              href="/"
+              className="ml-auto shrink-0 rounded-md px-3 py-1.5 text-xs font-medium text-neutral-400 transition hover:bg-neutral-900 hover:text-white"
+            >
+              {t("backToApp")}
+            </Link>
+          </nav>
+        </div>
+
+        <main className="min-w-0 flex-1 p-4 md:p-8">{children}</main>
       </div>
     </div>
   );

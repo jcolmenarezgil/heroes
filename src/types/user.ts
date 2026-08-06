@@ -8,3 +8,10 @@ export type UserDTO = Omit<
     createdAt: string;
     updatedAt: string;
 };
+
+export interface AdminUserListResponse {
+    users: UserDTO[];
+    total: number;
+    page: number;
+    totalPages: number;
+}

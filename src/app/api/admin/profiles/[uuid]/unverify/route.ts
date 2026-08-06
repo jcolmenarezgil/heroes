@@ -9,6 +9,7 @@ import {
 } from "@/lib/api-response";
 import { db } from "@/lib/db/client";
 import { profiles } from "@/lib/db/schema";
+import { createNotification } from "@/lib/notification-helpers";
 import { findProfileWithUsers, toProfileDTO } from "@/lib/profile-mapper";
 import { uuidParamSchema } from "@/lib/validations/profile";
 
@@ -40,6 +41,18 @@ export async function POST(_request: Request, context: RouteContext) {
             .returning();
 
         const dto = toProfileDTO(updated, user, user);
+
+        // Notify the profile owner.
+        if (updated.userId && updated.userId !== user.id) {
+            await createNotification(db, {
+                userId: updated.userId,
+                type: "profile.unverified",
+                profileId: parsedUuid.data,
+                actorId: user.id,
+                payload: { profileName: updated.name ?? "", href: `/p/${parsedUuid.data}` },
+            });
+        }
+
         return jsonOk(dto);
     } catch (error) {
         console.error("POST /api/admin/profiles/[uuid]/unverify failed:", error);

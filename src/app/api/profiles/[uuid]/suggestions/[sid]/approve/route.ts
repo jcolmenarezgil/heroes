@@ -10,6 +10,7 @@ import {
 } from "@/lib/api-response";
 import { db } from "@/lib/db/client";
 import { profileSuggestions, profiles } from "@/lib/db/schema";
+import { createNotification } from "@/lib/notification-helpers";
 import {
     findProfileSuggestionWithUsers,
     toSuggestionDTO,
@@ -46,7 +47,7 @@ export async function POST(
         }
 
         const profile = await db
-            .select({ userId: profiles.userId })
+            .select({ userId: profiles.userId, name: profiles.name })
             .from(profiles)
             .where(eq(profiles.id, parsedUuid.data))
             .limit(1);
@@ -73,6 +74,36 @@ export async function POST(
             name: user.name,
             fullName: user.fullName,
         });
+
+        // Notify the submitter (if authenticated) and the profile owner.
+        const profileHref = `/p/${parsedUuid.data}`;
+        if (row.submitter?.id && row.submitter.id !== user.id) {
+            await createNotification(db, {
+                userId: row.submitter.id,
+                type: "suggestion.resolved",
+                profileId: parsedUuid.data,
+                actorId: user.id,
+                payload: {
+                    profileName: profileRow.name,
+                    resolution: "approved",
+                    href: profileHref,
+                },
+            });
+        }
+        if (profileRow.userId && profileRow.userId !== user.id) {
+            await createNotification(db, {
+                userId: profileRow.userId,
+                type: "suggestion.resolved",
+                profileId: parsedUuid.data,
+                actorId: user.id,
+                payload: {
+                    profileName: profileRow.name,
+                    resolution: "approved",
+                    href: profileHref,
+                },
+            });
+        }
+
         return jsonOk(dto);
     } catch (error) {
         console.error("POST /api/profiles/[uuid]/suggestions/[sid]/approve failed:", error);

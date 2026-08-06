@@ -19,6 +19,7 @@ import Section from "@/components/ui/Section";
 import StatusBadge from "@/components/ui/StatusBadge";
 import VerifiedBadge from "@/components/ui/VerifiedBadge";
 import ProfileDetailSkeleton from "@/components/ProfileDetailSkeleton";
+import Skeleton from "@/components/ui/Skeleton";
 import { useToast } from "@/components/providers/ToastProvider";
 import { ApiError, getPublicProfile, listSuggestions } from "@/lib/api-client";
 import type { PublicProfileDTO } from "@/types/profile";
@@ -33,6 +34,8 @@ export default function ProfileDetailPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [pendingSuggestions, setPendingSuggestions] = useState(0);
+  const [isPendingSuggestionsLoading, setIsPendingSuggestionsLoading] =
+      useState(true);
 
   const uuid = params.uuid as string;
 
@@ -45,11 +48,16 @@ export default function ProfileDetailPage() {
         if (data.canEdit) {
           listSuggestions(uuid, { status: "pending", limit: 1 })
             .then((res) => {
-              if (!cancelled) setPendingSuggestions(res.pendingCount);
+              if (cancelled) return;
+              setPendingSuggestions(res.pendingCount);
+              setIsPendingSuggestionsLoading(false);
             })
             .catch(() => {
-              /* best-effort: ignore */
+              if (cancelled) return;
+              setIsPendingSuggestionsLoading(false);
             });
+        } else {
+          setIsPendingSuggestionsLoading(false);
         }
       })
       .catch((error) => {
@@ -254,12 +262,18 @@ export default function ProfileDetailPage() {
           </div>
 
           {/* Audit trail */}
-          {profile.canEdit && pendingSuggestions > 0 && (
-            <div className="rounded-lg border border-amber-800 bg-amber-950/50 px-4 py-3 text-sm text-amber-200">
-              <Link href={`/p/${profile.id}/edit`} className="underline">
-                {t("suggestionPendingCount", { count: pendingSuggestions })}
-              </Link>
-            </div>
+          {profile.canEdit && isPendingSuggestionsLoading && (
+            <Skeleton className="h-4 w-40" />
+          )}
+          {profile.canEdit &&
+              !isPendingSuggestionsLoading &&
+              pendingSuggestions > 0 && (
+            <Link
+              href={`/p/${profile.id}/edit`}
+              className="my-4 block text-sm text-amber-200 underline"
+            >
+              {t("suggestionPendingCount", { count: pendingSuggestions })}
+            </Link>
           )}
 
           <div className="border-t border-neutral-900 py-4 text-xs text-neutral-500">

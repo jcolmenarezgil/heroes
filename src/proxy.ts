@@ -11,6 +11,7 @@ const PROTECTED_PATTERNS = [
   /^\/me$/,
   /^\/me\/edit$/,
   /^\/p\/[^/]+\/edit$/,
+  /^\/notifications$/,
 ];
 
 // Routes restricted to admins.

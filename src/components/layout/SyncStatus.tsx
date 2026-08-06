@@ -5,6 +5,14 @@ import { useFormatter, useTranslations } from "next-intl";
 import { useConnectivity } from "@/components/providers/ConnectivityProvider";
 import { useSync } from "@/components/providers/SyncProvider";
 
+/**
+ * Click-through trigger that opens the user menu's settings sub-view.
+ *
+ * The pill itself only renders the status indicator (online dot + last sync).
+ * Clicking it dispatches a `user-menu:open` CustomEvent on `window`, which
+ * `UserMenu` listens for and responds by opening with the requested view.
+ * This keeps a single owner of the dropdown panel.
+ */
 export default function SyncStatus() {
     const t = useTranslations();
     const format = useFormatter();
@@ -15,10 +23,20 @@ export default function SyncStatus() {
         ? format.relativeTime(new Date(lastSync), { now: new Date() })
         : t("userMenu.neverSynced");
 
+    const ariaLabel = `${isOnline ? t("connectivity.online") : t("connectivity.offline")} — ${t("userMenu.lastSync", { time: lastSyncText })}`;
+
     return (
-        <div
-            className="flex items-center gap-2 rounded-md border border-neutral-800 bg-neutral-900/50 px-2.5 py-1 text-xs text-neutral-400"
-            title={`${isOnline ? t("connectivity.online") : t("connectivity.offline")} — ${t("userMenu.lastSync", { time: lastSyncText })}`}
+        <button
+            onClick={() => {
+                window.dispatchEvent(
+                    new CustomEvent("user-menu:open", {
+                        detail: { view: "settings" },
+                    })
+                );
+            }}
+            className="flex items-center gap-2 rounded-md border border-neutral-800 bg-neutral-900/50 px-2.5 py-1 text-xs text-neutral-400 focus:outline-none focus:ring-2 focus:ring-white"
+            title={ariaLabel}
+            aria-label={ariaLabel}
         >
             <span
                 className={`h-2 w-2 rounded-full ${
@@ -32,6 +50,6 @@ export default function SyncStatus() {
             <span className="hidden md:inline">
                 {t("userMenu.lastSync", { time: lastSyncText })}
             </span>
-        </div>
+        </button>
     );
 }
