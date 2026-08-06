@@ -178,9 +178,9 @@ export default function AdminProfilesPage() {
   }, [profiles, verifiedFilter]);
 
   return (
-    <div className="space-y-4">
+    <div className="min-w-0 space-y-4">
       <div>
-        <h1 className="text-2xl font-semibold text-white">
+        <h1 className="text-xl font-semibold text-white md:text-2xl">
           {tAdmin("profilesTitle")}
         </h1>
         <p className="mt-1 text-sm text-neutral-400">
@@ -272,28 +272,49 @@ export default function AdminProfilesPage() {
 
       {/* Table — same column structure, home-page styling */}
       <div className="overflow-x-auto rounded-lg border border-neutral-900">
-        <table className="w-full border-collapse">
+        <table className="w-full min-w-[700px] border-collapse">
           <thead>
             <tr className="border-b border-neutral-900 bg-neutral-950 text-left text-xs font-medium uppercase tracking-wider text-neutral-400">
               <th className="w-10 px-4 py-2" />
               <th className="px-2 py-2">{t("columnName")}</th>
               <th className="px-2 py-2">{t("columnStatus")}</th>
               <th className="px-2 py-2">{t("columnVerified")}</th>
-              <th className="hidden px-2 py-2 md:table-cell">
-                {t("columnCreatedBy")}
-              </th>
-              <th className="hidden px-2 py-2 lg:table-cell">
-                {t("columnCreated")}
-              </th>
+              <th className="px-2 py-2">{t("columnCreatedBy")}</th>
+              <th className="px-2 py-2">{t("columnCreated")}</th>
               <th className="px-4 py-2 text-right">{t("columnActions")}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-neutral-900">
             {isLoading
               ? Array.from({ length: 3 }).map((_, i) => (
-                  <tr key={i}>
-                    <td colSpan={7} className="px-4 py-0">
-                      <Skeleton className="h-24 w-full" />
+                  <tr key={i} aria-hidden="true">
+                    <td className="px-4 py-3">
+                      <Skeleton className="h-4 w-4 rounded" />
+                    </td>
+                    <td className="px-2 py-3">
+                      <div className="flex items-center gap-2">
+                        <Skeleton className="h-10 w-10 rounded-full" />
+                        <Skeleton className="h-4 w-32" />
+                      </div>
+                    </td>
+                    <td className="px-2 py-3">
+                      <Skeleton className="h-5 w-16" />
+                    </td>
+                    <td className="px-2 py-3">
+                      <Skeleton className="h-5 w-16" />
+                    </td>
+                    <td className="px-2 py-3">
+                      <Skeleton className="h-4 w-24" />
+                    </td>
+                    <td className="px-2 py-3">
+                      <Skeleton className="h-4 w-20" />
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center justify-end gap-1.5">
+                        <Skeleton className="h-6 w-12" />
+                        <Skeleton className="h-6 w-12" />
+                        <Skeleton className="h-6 w-12" />
+                      </div>
                     </td>
                   </tr>
                 ))
@@ -329,9 +350,9 @@ export default function AdminProfilesPage() {
                       />
                     </td>
                     <td className="px-2 py-3">
-                      <div className="flex items-center gap-2">
+                      <div className="flex min-w-0 items-center gap-2">
                         {profile.photoUrl ? (
-                          <div className="relative h-10 w-10 overflow-hidden rounded-md bg-neutral-900">
+                          <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-md bg-neutral-900">
                             <Image
                               src={profile.photoUrl}
                               alt={profile.name}
@@ -346,7 +367,7 @@ export default function AdminProfilesPage() {
                         )}
                         <Link
                           href={`/p/${profile.id}`}
-                          className="text-base font-medium text-white hover:underline"
+                          className="min-w-0 truncate text-sm font-medium text-white hover:underline md:text-base"
                         >
                           {profile.name}
                         </Link>
@@ -362,10 +383,10 @@ export default function AdminProfilesPage() {
                         <span className="text-xs text-neutral-600">&mdash;</span>
                       )}
                     </td>
-                    <td className="hidden px-2 py-3 text-sm text-neutral-400 md:table-cell">
+                    <td className="px-2 py-3 text-sm text-neutral-400">
                       {profile.createdByName}
                     </td>
-                    <td className="hidden px-2 py-3 text-sm text-neutral-400 lg:table-cell">
+                    <td className="px-2 py-3 text-sm text-neutral-400">
                       {format.dateTime(new Date(profile.createdAt), {
                         day: "numeric",
                         month: "short",
@@ -373,12 +394,12 @@ export default function AdminProfilesPage() {
                       })}
                     </td>
                     <td className="px-4 py-3">
-                      <div className="flex items-center justify-end gap-1.5">
+                      <div className="flex flex-wrap items-center justify-end gap-1.5">
                         {profile.verified ? (
                           <button
                             onClick={() => handleUnverify(profile)}
                             disabled={busyId === profile.id}
-                            className="rounded-md bg-yellow-600 px-2 py-1 text-xs font-medium text-white transition hover:bg-yellow-700 disabled:opacity-50"
+                            className="shrink-0 rounded-md bg-yellow-600 px-2 py-1 text-xs font-medium text-white transition hover:bg-yellow-700 disabled:opacity-50"
                           >
                             {t("unverify")}
                           </button>
@@ -386,20 +407,20 @@ export default function AdminProfilesPage() {
                           <button
                             onClick={() => handleVerify(profile)}
                             disabled={busyId === profile.id}
-                            className="rounded-md bg-blue-700 px-2 py-1 text-xs font-medium text-white transition hover:bg-blue-800 disabled:opacity-50"
+                            className="shrink-0 rounded-md bg-blue-700 px-2 py-1 text-xs font-medium text-white transition hover:bg-blue-800 disabled:opacity-50"
                           >
                             {t("verify")}
                           </button>
                         )}
                         <Link
                           href={`/p/${profile.id}/edit`}
-                          className="rounded-md border border-neutral-700 px-2 py-1 text-xs text-white transition hover:bg-neutral-900"
+                          className="shrink-0 rounded-md border border-neutral-700 px-2 py-1 text-xs text-white transition hover:bg-neutral-900"
                         >
                           {t("edit")}
                         </Link>
                         <Link
                           href={`/p/${profile.id}`}
-                          className="rounded-md border border-neutral-700 px-2 py-1 text-xs text-white transition hover:bg-neutral-900"
+                          className="shrink-0 rounded-md border border-neutral-700 px-2 py-1 text-xs text-white transition hover:bg-neutral-900"
                         >
                           {t("view")}
                         </Link>

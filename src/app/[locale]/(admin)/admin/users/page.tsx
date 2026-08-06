@@ -118,9 +118,9 @@ export default function AdminUsersPage() {
   const displayList = useMemo(() => rows, [rows]);
 
   return (
-    <div className="space-y-4">
+    <div className="min-w-0 space-y-4">
       <div>
-        <h1 className="text-2xl font-semibold text-white">
+        <h1 className="text-xl font-semibold text-white md:text-2xl">
           {tAdmin("usersTitle")}
         </h1>
         <p className="mt-1 text-sm text-neutral-400">
@@ -175,26 +175,37 @@ export default function AdminUsersPage() {
 
       {/* Table */}
       <div className="overflow-x-auto rounded-lg border border-neutral-900">
-        <table className="w-full border-collapse">
+        <table className="w-full min-w-[560px] border-collapse">
           <thead>
             <tr className="border-b border-neutral-900 bg-neutral-950 text-left text-xs font-medium uppercase tracking-wider text-neutral-400">
               <th className="px-4 py-2">{t("columnName")}</th>
-              <th className="hidden px-2 py-2 md:table-cell">
-                {t("columnEmail")}
-              </th>
+              <th className="px-2 py-2">{t("columnEmail")}</th>
               <th className="px-2 py-2">{t("columnRole")}</th>
-              <th className="hidden px-2 py-2 lg:table-cell">
-                {t("columnJoined")}
-              </th>
+              <th className="px-2 py-2">{t("columnJoined")}</th>
               <th className="px-4 py-2 text-right">{t("columnActions")}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-neutral-900">
             {isLoading ? (
               Array.from({ length: 3 }).map((_, i) => (
-                <tr key={i}>
-                  <td colSpan={5} className="px-4 py-0">
-                    <Skeleton className="h-16 w-full" />
+                <tr key={i} aria-hidden="true">
+                  <td className="px-4 py-3">
+                    <div className="flex items-center gap-3">
+                      <Skeleton className="h-9 w-9 rounded-full" />
+                      <Skeleton className="h-4 w-28" />
+                    </div>
+                  </td>
+                  <td className="truncate px-2 py-3">
+                    <Skeleton className="h-4 w-40" />
+                  </td>
+                  <td className="px-2 py-3">
+                    <Skeleton className="h-5 w-16" />
+                  </td>
+                  <td className="px-2 py-3">
+                    <Skeleton className="h-4 w-20" />
+                  </td>
+                  <td className="px-4 py-3">
+                    <Skeleton className="ml-auto h-7 w-24" />
                   </td>
                 </tr>
               ))
@@ -221,9 +232,9 @@ export default function AdminUsersPage() {
                     className="transition hover:bg-neutral-950"
                   >
                     <td className="px-4 py-3">
-                      <div className="flex items-center gap-3">
+                      <div className="flex min-w-0 items-center gap-3">
                         {user.image ? (
-                          <div className="relative h-9 w-9 overflow-hidden rounded-full bg-neutral-900">
+                          <div className="relative h-9 w-9 shrink-0 overflow-hidden rounded-full bg-neutral-900">
                             <Image
                               src={user.image}
                               alt={user.fullName}
@@ -239,8 +250,8 @@ export default function AdminUsersPage() {
                             className="!h-9 !w-9 rounded-full"
                           />
                         )}
-                        <div className="flex flex-col">
-                          <span className="text-base font-medium text-white">
+                        <div className="flex min-w-0 flex-col">
+                          <span className="truncate text-sm font-medium text-white md:text-base">
                             {user.name || user.fullName}
                             {isSelf && (
                               <span className="ml-2 inline-flex items-center rounded bg-neutral-800 px-1.5 py-0.5 text-xs font-medium text-neutral-300">
@@ -249,20 +260,20 @@ export default function AdminUsersPage() {
                             )}
                           </span>
                           {user.name && user.name !== user.fullName && (
-                            <span className="text-xs text-neutral-500">
+                            <span className="truncate text-xs text-neutral-500">
                               {user.fullName}
                             </span>
                           )}
                         </div>
                       </div>
                     </td>
-                    <td className="hidden truncate px-2 py-3 text-sm text-neutral-400 md:table-cell">
+                    <td className="truncate px-2 py-3 text-sm text-neutral-400">
                       {user.email}
                     </td>
                     <td className="px-2 py-3">
                       <RoleBadge role={user.role} />
                     </td>
-                    <td className="hidden px-2 py-3 text-sm text-neutral-400 lg:table-cell">
+                    <td className="px-2 py-3 text-sm text-neutral-400">
                       {format.dateTime(new Date(user.createdAt), {
                         day: "numeric",
                         month: "short",
