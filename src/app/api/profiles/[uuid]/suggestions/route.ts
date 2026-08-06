@@ -85,7 +85,10 @@ export async function POST(request: Request, context: RouteContext) {
                 type: "suggestion.created",
                 profileId: uuid,
                 actorId: authUser?.id ?? undefined,
-                payload: { profileName: profileOwner[0].name, href: `/p/${uuid}` },
+                payload: {
+                    profileName: profileOwner[0].name,
+                    href: `/p/${uuid}`,
+                },
             });
         }
 

@@ -13,6 +13,7 @@ import {
 import type {
     NotificationDTO,
     NotificationListResponse,
+    NotificationPayload,
 } from "@/lib/notification-mapper";
 
 const POLL_MS = 30_000;
@@ -22,31 +23,54 @@ function notificationText(
     t: ReturnType<typeof useTranslations<"notifications">>,
     n: NotificationDTO
 ): string {
-    const p = n.payload ?? {};
-    const profile = p.profileName ?? "";
+    if (!n.payload) return "";
+
     switch (n.type) {
-        case "suggestion.created":
-            return t("type.suggestionCreated", { profile });
-        case "suggestion.resolved":
+        case "suggestion.created": {
+            const p = n.payload as Extract<
+                NotificationPayload,
+                { profileName: string; href: string }
+            >;
+            return t("type.suggestionCreated", { profile: p.profileName });
+        }
+        case "suggestion.resolved": {
+            const p = n.payload as Extract<
+                NotificationPayload,
+                { profileName: string; resolution: "approved" | "rejected" }
+            >;
             return t("type.suggestionResolved", {
-                profile,
+                profile: p.profileName,
                 resolution: t(
-                    `type.resolution.${p.resolution ?? "approved"}` as
+                    `type.resolution.${p.resolution}` as
                         | "type.resolution.approved"
                         | "type.resolution.rejected"
                 ),
             });
-        case "profile.verified":
-            return t("type.profileVerified", { profile });
-        case "profile.unverified":
-            return t("type.profileUnverified", { profile });
-        case "profile.merged":
+        }
+        case "profile.verified": {
+            const p = n.payload as Extract<
+                NotificationPayload,
+                { profileName: string; href: string }
+            >;
+            return t("type.profileVerified", { profile: p.profileName });
+        }
+        case "profile.unverified": {
+            const p = n.payload as Extract<
+                NotificationPayload,
+                { profileName: string; href: string }
+            >;
+            return t("type.profileUnverified", { profile: p.profileName });
+        }
+        case "profile.merged": {
+            const p = n.payload as Extract<
+                NotificationPayload,
+                { sourceProfileName: string; targetProfileName: string }
+            >;
             return t("type.profileMerged", {
-                source: p.sourceProfileName ?? "",
-                target: p.targetProfileName ?? "",
+                source: p.sourceProfileName,
+                target: p.targetProfileName,
             });
-        default:
-            return profile;
+        }
     }
 }
 
@@ -137,7 +161,7 @@ export default function NotificationBell() {
         setOpen(false);
         const href = n.payload?.href;
         if (typeof href === "string" && href.startsWith("/")) {
-            router.push(href as never);
+            router.push(href);
         }
     };
 

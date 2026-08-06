@@ -163,7 +163,9 @@ export const notifications = pgTable("notifications", {
         onDelete: "set null",
     }),
     // Free-form context: profileName, noteExcerpt, resolution, targetProfileName, etc.
-    payload: jsonb("payload").$type<Record<string, unknown>>(),
+    // Typed loosely here (Record<string, unknown>) for DB compatibility; callers
+    // use the strict NotificationPayload union from notification-mapper.ts.
+    payload: jsonb("payload").$type<Record<string, unknown> | null>(),
     readAt: timestamp("read_at", { mode: "date" }),
     createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
 }, (table) => [
