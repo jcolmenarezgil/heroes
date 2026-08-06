@@ -277,9 +277,19 @@
     "syncNow": "Sync now",
     "syncing": "Syncing…",
     "syncInterval": "Sync",
+    "notifInterval": "Notifications",
     "myProfile": "My profile",
     "adminDashboard": "Admin dashboard",
+    "settings": "Settings",
     "offlineSync": "You are offline. Connect to sync."
+  },
+  "settings": {
+    "back": "Back"
+  },
+  "notificationPrefs": {
+    "30sec": "30 seconds",
+    "1min": "1 minute",
+    "5min": "5 minutes"
   },
   "myProfile": {
     "title": "My profile",

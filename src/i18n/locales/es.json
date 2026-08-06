@@ -277,9 +277,19 @@
     "syncNow": "Sincronizar ahora",
     "syncing": "Sincronizando…",
     "syncInterval": "Sincronizar",
+    "notifInterval": "Notificaciones",
     "myProfile": "Mi perfil",
     "adminDashboard": "Panel de administración",
+    "settings": "Ajustes",
     "offlineSync": "Sin conexión. Conéctate para sincronizar."
+  },
+  "settings": {
+    "back": "Atrás"
+  },
+  "notificationPrefs": {
+    "30sec": "30 segundos",
+    "1min": "1 minuto",
+    "5min": "5 minutos"
   },
   "myProfile": {
     "title": "Mi perfil",

@@ -10,13 +10,13 @@ import {
     getNotifications,
     markNotificationsRead,
 } from "@/lib/api-client";
+import { getNotificationPollInterval } from "@/lib/notification-prefs";
 import type {
     NotificationDTO,
     NotificationListResponse,
     NotificationPayload,
 } from "@/lib/notification-mapper";
 
-const POLL_MS = 30_000;
 const DROPDOWN_LIMIT = 10;
 
 function notificationText(
@@ -87,26 +87,39 @@ export default function NotificationBell() {
     const [isLoadingList, setIsLoadingList] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
 
-    // Poll unread count every 30s.
+    // Poll unread count at the user-configured interval (default 30s).
+    // We re-read the interval at the start of each cycle so changes from the
+    // sync dropdown's Settings sub-view take effect within one tick.
     useEffect(() => {
         if (status !== "authenticated") return;
 
         let cancelled = false;
+        let timer: ReturnType<typeof setTimeout> | null = null;
+
+        const scheduleNext = () => {
+            if (cancelled) return;
+            const nextDelay = getNotificationPollInterval();
+            timer = setTimeout(fetchUnread, nextDelay);
+        };
+
         const fetchUnread = () => {
+            if (cancelled) return;
             getNotifications({ limit: 1 })
                 .then((res: NotificationListResponse) => {
                     if (!cancelled) setUnreadCount(res.unreadCount);
                 })
                 .catch(() => {
                     /* silent — badge just stays stale */
+                })
+                .finally(() => {
+                    if (!cancelled) scheduleNext();
                 });
         };
 
         fetchUnread();
-        const interval = setInterval(fetchUnread, POLL_MS);
         return () => {
             cancelled = true;
-            clearInterval(interval);
+            if (timer) clearTimeout(timer);
         };
     }, [status]);
 

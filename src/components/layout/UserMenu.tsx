@@ -4,11 +4,8 @@ import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { Link as LocalizedLink } from "@/i18n/navigation";
 import { useSession, signIn, signOut } from "next-auth/react";
-import { useFormatter, useTranslations } from "next-intl";
-import { useConnectivity } from "@/components/providers/ConnectivityProvider";
-import { useSync } from "@/components/providers/SyncProvider";
-import { useToast } from "@/components/providers/ToastProvider";
-import { SYNC_INTERVALS } from "@/lib/profiles-cache";
+import { useTranslations } from "next-intl";
+import SettingsView from "@/components/panels/SettingsView";
 
 function getInitials(name?: string | null, email?: string | null): string {
     if (name) {
@@ -28,15 +25,13 @@ function getInitials(name?: string | null, email?: string | null): string {
 export default function UserMenu() {
     const t = useTranslations();
     const tNav = useTranslations("nav");
-    const format = useFormatter();
     const { data: session, status } = useSession();
-    const { isOnline } = useConnectivity();
-    const { interval, setInterval, lastSync, isSyncing, syncNow } = useSync();
-    const { addToast } = useToast();
 
     const [open, setOpen] = useState(false);
+    const [view, setView] = useState<"menu" | "settings">("menu");
     const ref = useRef<HTMLDivElement>(null);
 
+    // Outside click closes the dropdown (and resets to menu view).
     useEffect(() => {
         if (!open) return;
         const handle = (event: MouseEvent) => {
@@ -45,11 +40,38 @@ export default function UserMenu() {
                 !ref.current.contains(event.target as Node)
             ) {
                 setOpen(false);
+                setView("menu");
             }
         };
         document.addEventListener("mousedown", handle);
         return () => document.removeEventListener("mousedown", handle);
     }, [open]);
+
+    // Escape closes the dropdown.
+    useEffect(() => {
+        if (!open) return;
+        const handle = (event: KeyboardEvent) => {
+            if (event.key === "Escape") {
+                setOpen(false);
+                setView("menu");
+            }
+        };
+        document.addEventListener("keydown", handle);
+        return () => document.removeEventListener("keydown", handle);
+    }, [open]);
+
+    // Listen for external triggers (e.g. the navbar's SyncStatus pill) that
+    // want to open this menu with a specific view.
+    useEffect(() => {
+        const handle = (event: Event) => {
+            const custom = event as CustomEvent<{ view?: "menu" | "settings" }>;
+            const nextView = custom.detail?.view ?? "menu";
+            setView(nextView);
+            setOpen(true);
+        };
+        window.addEventListener("user-menu:open", handle);
+        return () => window.removeEventListener("user-menu:open", handle);
+    }, []);
 
     if (status === "loading") {
         return (
@@ -71,21 +93,9 @@ export default function UserMenu() {
     const user = session.user;
     const isAdmin = user.role === "admin";
 
-    const lastSyncText = lastSync
-        ? format.relativeTime(new Date(lastSync), { now: new Date() })
-        : t("userMenu.neverSynced");
-
-    const handleSyncNow = async () => {
-        if (!isOnline) {
-            addToast(t("userMenu.offlineSync"), "warning");
-            return;
-        }
-        await syncNow();
-    };
-
-    const handleIntervalChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setInterval(Number(e.target.value));
+    const closeMenu = () => {
         setOpen(false);
+        setView("menu");
     };
 
     return (
@@ -95,6 +105,7 @@ export default function UserMenu() {
                 className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-neutral-800 text-xs font-medium text-white focus:outline-none focus:ring-2 focus:ring-white"
                 aria-label={t("userMenu.openMenu")}
                 aria-expanded={open}
+                aria-haspopup="menu"
             >
                 {user.image ? (
                     // eslint-disable-next-line @next/next/no-img-element
@@ -111,96 +122,84 @@ export default function UserMenu() {
 
             {open && (
                 <div className="absolute right-0 top-full mt-2 w-64 rounded-lg border border-neutral-800 bg-neutral-950 p-2 shadow-xl">
-                    {/* User header */}
-                    <div className="px-3 py-2">
-                        <p className="text-sm font-medium text-white">
-                            {user.name || user.email}
-                        </p>
-                        {user.name && user.email && (
-                            <p className="text-xs text-neutral-400">
-                                {user.email}
-                            </p>
-                        )}
-                        {user.role && (
-                            <span className="mt-1 inline-flex rounded-full bg-neutral-800 px-2 py-0.5 text-xs font-medium text-neutral-300">
-                                {t(`admin.roles.${user.role}`)}
-                            </span>
-                        )}
-                    </div>
+                    {view === "menu" ? (
+                        <>
+                            {/* User header */}
+                            <div className="px-3 py-2">
+                                <p className="text-sm font-medium text-white">
+                                    {user.name || user.email}
+                                </p>
+                                {user.name && user.email && (
+                                    <p className="text-xs text-neutral-400">
+                                        {user.email}
+                                    </p>
+                                )}
+                                {user.role && (
+                                    <span className="mt-1 inline-flex rounded-full bg-neutral-800 px-1.5 py-0 text-[10px] font-medium text-neutral-300">
+                                        {t(`admin.roles.${user.role}`)}
+                                    </span>
+                                )}
+                            </div>
 
-                    {/* Connectivity status */}
-                    <div className="flex items-center gap-2 px-3 py-2">
-                        <span
-                            className={`h-2 w-2 rounded-full ${
-                                isOnline ? "bg-green-500" : "bg-yellow-500"
-                            }`}
-                        />
-                        <span className="text-sm text-neutral-300">
-                            {isOnline
-                                ? t("connectivity.online")
-                                : t("connectivity.offline")}
-                        </span>
-                    </div>
-                    <p className="px-3 pb-2 text-xs text-neutral-500">
-                        {t("userMenu.lastSync", { time: lastSyncText })}
-                    </p>
+                            <div className="my-1 border-t border-neutral-800" />
 
-                    {/* Sync now */}
-                    <button
-                        onClick={handleSyncNow}
-                        disabled={isSyncing || !isOnline}
-                        className="mb-2 flex w-full items-center justify-center rounded-md bg-white px-3 py-2 text-sm font-medium text-black hover:bg-neutral-200 disabled:bg-neutral-800 disabled:text-neutral-500"
-                    >
-                        {isSyncing ? t("userMenu.syncing") : t("userMenu.syncNow")}
-                    </button>
+                            {/* Nav links */}
+                            <LocalizedLink
+                                href="/me"
+                                onClick={closeMenu}
+                                className="block rounded-md px-3 py-2 text-sm text-white hover:bg-neutral-900"
+                            >
+                                {t("userMenu.myProfile")}
+                            </LocalizedLink>
+                            {isAdmin && (
+                                <Link
+                                    href="/admin"
+                                    onClick={closeMenu}
+                                    className="block rounded-md px-3 py-2 text-sm text-white hover:bg-neutral-900"
+                                >
+                                    {t("userMenu.adminDashboard")}
+                                </Link>
+                            )}
 
-                    {/* Sync interval */}
-                    <div className="px-3 py-2">
-                        <label
-                            htmlFor="sync-interval"
-                            className="mb-1 block text-xs text-neutral-400"
-                        >
-                            {t("userMenu.syncInterval")}
-                        </label>
-                        <select
-                            id="sync-interval"
-                            value={interval}
-                            onChange={handleIntervalChange}
-                            className="w-full rounded-md border border-neutral-700 bg-neutral-900 px-2 py-1.5 text-sm text-white focus:border-white focus:outline-none"
-                        >
-                            {SYNC_INTERVALS.map((item) => (
-                                <option key={item.value} value={item.value}>
-                                    {t(item.labelKey)}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
+                            <div className="my-1 border-t border-neutral-800" />
 
-                    <div className="my-1 border-t border-neutral-800" />
+                            {/* Settings entry */}
+                            <button
+                                onClick={() => setView("settings")}
+                                className="block w-full rounded-md px-3 py-2 text-left text-sm text-white hover:bg-neutral-900"
+                            >
+                                {t("userMenu.settings")}
+                            </button>
 
-                    {/* Actions */}
-                    <LocalizedLink
-                        href="/me"
-                        onClick={() => setOpen(false)}
-                        className="block rounded-md px-3 py-2 text-sm text-white hover:bg-neutral-900"
-                    >
-                        {t("userMenu.myProfile")}
-                    </LocalizedLink>
-                    {isAdmin && (
-                        <Link
-                            href="/admin"
-                            onClick={() => setOpen(false)}
-                            className="block rounded-md px-3 py-2 text-sm text-white hover:bg-neutral-900"
-                        >
-                            {t("userMenu.adminDashboard")}
-                        </Link>
+                            <div className="my-1 border-t border-neutral-800" />
+
+                            {/* Sign out */}
+                            <button
+                                onClick={() => {
+                                    closeMenu();
+                                    void signOut();
+                                }}
+                                className="block w-full rounded-md px-3 py-2 text-left text-sm text-white hover:bg-neutral-900"
+                            >
+                                {tNav("signOut")}
+                            </button>
+                        </>
+                    ) : (
+                        <>
+                            {/* Back link */}
+                            <button
+                                onClick={() => setView("menu")}
+                                className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm text-neutral-300 hover:bg-neutral-900 hover:text-white"
+                            >
+                                <span aria-hidden="true">←</span>
+                                {t("settings.back")}
+                            </button>
+
+                            <div className="my-1 border-t border-neutral-800" />
+
+                            <SettingsView />
+                        </>
                     )}
-                    <button
-                        onClick={() => signOut()}
-                        className="block w-full rounded-md px-3 py-2 text-left text-sm text-white hover:bg-neutral-900"
-                    >
-                        {tNav("signOut")}
-                    </button>
                 </div>
             )}
         </div>
