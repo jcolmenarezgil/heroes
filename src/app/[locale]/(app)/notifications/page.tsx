@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useFormatter, useTranslations } from "next-intl";
 import Skeleton from "@/components/ui/Skeleton";
-import { Button } from "@/components/ui/Button";
 import { useToast } from "@/components/providers/ToastProvider";
 import { SearchEmptyIcon } from "@/components/icons";
 import { useRouter } from "@/i18n/navigation";
@@ -14,6 +13,9 @@ import {
     type ListNotificationsParams,
 } from "@/lib/api-client";
 import type { NotificationDTO, NotificationPayload } from "@/lib/notification-mapper";
+
+const PAGE_LIMIT = 10;
+const SKELETON_ROWS = [0, 1, 2];
 
 function notificationText(
     t: ReturnType<typeof useTranslations<"notifications">>,
@@ -70,6 +72,26 @@ function notificationText(
     }
 }
 
+function SkeletonRows() {
+    return (
+        <>
+            {SKELETON_ROWS.map((i) => (
+                <div
+                    key={i}
+                    className="flex items-start gap-3 px-4 py-3"
+                    aria-hidden="true"
+                >
+                    <Skeleton className="mt-1.5 h-2 w-2 rounded-full" />
+                    <div className="min-w-0 flex-1">
+                        <Skeleton className="h-4 w-3/4" />
+                        <Skeleton className="mt-1.5 h-3 w-1/3" />
+                    </div>
+                </div>
+            ))}
+        </>
+    );
+}
+
 export default function NotificationsPage() {
     const t = useTranslations("notifications");
     const format = useFormatter();
@@ -83,6 +105,7 @@ export default function NotificationsPage() {
     const [totalPages, setTotalPages] = useState(0);
     const [unreadOnly, setUnreadOnly] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
+    const [isLoadingMore, setIsLoadingMore] = useState(false);
 
     useEffect(() => {
         if (sessionStatus === "unauthenticated") {
@@ -90,25 +113,37 @@ export default function NotificationsPage() {
         }
     }, [sessionStatus, router]);
 
+    // Fetch the current page whenever page or filter changes.
     useEffect(() => {
         if (sessionStatus !== "authenticated") return;
         let cancelled = false;
 
-        const params: ListNotificationsParams = { page, limit: 20 };
+        const params: ListNotificationsParams = { page, limit: PAGE_LIMIT };
         if (unreadOnly) params.unreadOnly = true;
+        const isFirstLoad = page === 1;
 
         getNotifications(params)
             .then((res) => {
                 if (cancelled) return;
-                setItems(res.notifications);
-                setUnreadCount(res.unreadCount);
+                setItems((prev) => {
+                    if (isFirstLoad) return res.notifications;
+                    // Append, dedupe by id (defensive against duplicates).
+                    const seen = new Set(prev.map((p) => p.id));
+                    return [
+                        ...prev,
+                        ...res.notifications.filter((n) => !seen.has(n.id)),
+                    ];
+                });
+                if (isFirstLoad) setUnreadCount(res.unreadCount);
                 setTotalPages(res.totalPages);
                 setIsLoading(false);
+                setIsLoadingMore(false);
             })
             .catch(() => {
                 if (!cancelled) {
                     addToast(t("loadError"), "error");
                     setIsLoading(false);
+                    setIsLoadingMore(false);
                 }
             });
 
@@ -149,6 +184,14 @@ export default function NotificationsPage() {
             .catch(() => addToast(t("markReadError"), "error"));
     };
 
+    const handleLoadMore = () => {
+        if (isLoadingMore || page >= totalPages) return;
+        setIsLoadingMore(true);
+        setPage((p) => p + 1);
+    };
+
+    const hasMore = page < totalPages;
+
     if (sessionStatus === "loading") {
         return null;
     }
@@ -156,26 +199,20 @@ export default function NotificationsPage() {
     return (
         <div className="mx-auto max-w-lg lg:max-w-4xl">
             {/* Title */}
-            <div className="mb-4 flex items-start justify-between">
-                <div>
-                    <h1 className="text-2xl font-semibold text-white">
-                        {t("title")}
-                    </h1>
-                    <p className="mt-1 text-sm text-neutral-400">
-                        {t("subtitle")}
-                    </p>
-                </div>
-                {unreadCount > 0 && (
-                    <Button variant="secondary" onClick={handleMarkAll}>
-                        {t("markAllRead")}
-                    </Button>
-                )}
+            <div className="mb-4">
+                <h1 className="text-2xl font-semibold text-white">
+                    {t("title")}
+                </h1>
+                <p className="mt-1 text-sm text-neutral-400">
+                    {t("subtitle")}
+                </p>
             </div>
 
             {/* Filter toggle */}
             <div className="mb-4 flex items-center gap-2">
                 <button
                     onClick={() => {
+                        setIsLoading(true);
                         setUnreadOnly((v) => !v);
                         setPage(1);
                     }}
@@ -187,15 +224,21 @@ export default function NotificationsPage() {
                 >
                     {t("unreadOnly")}
                 </button>
+                {unreadCount > 0 && (
+                    <button
+                        onClick={handleMarkAll}
+                        className="rounded-md border border-neutral-700 px-2 py-1 text-xs text-white transition hover:bg-neutral-900"
+                    >
+                        {t("markAllRead")}
+                    </button>
+                )}
             </div>
 
             {/* List */}
             <div className="overflow-hidden rounded-lg border border-neutral-900">
                 {isLoading ? (
                     <div className="divide-y divide-neutral-900">
-                        <Skeleton className="h-20 w-full" />
-                        <Skeleton className="h-20 w-full" />
-                        <Skeleton className="h-20 w-full" />
+                        <SkeletonRows />
                     </div>
                 ) : items.length === 0 ? (
                     <div className="flex flex-col items-center py-16 text-center">
@@ -226,7 +269,13 @@ export default function NotificationsPage() {
                                     aria-hidden="true"
                                 />
                                 <span className="min-w-0 flex-1">
-                                    <span className="block text-sm text-white">
+                                    <span
+                                        className={`block text-sm ${
+                                            n.readAt
+                                                ? "text-neutral-400"
+                                                : "text-white"
+                                        }`}
+                                    >
                                         {notificationText(t, n)}
                                     </span>
                                     <span className="mt-0.5 block text-xs text-neutral-500">
@@ -238,32 +287,20 @@ export default function NotificationsPage() {
                                 </span>
                             </button>
                         ))}
+                        {isLoadingMore && <SkeletonRows />}
                     </div>
                 )}
             </div>
 
-            {/* Pagination */}
-            {!isLoading && totalPages > 1 && (
-                <div className="mt-4 flex items-center justify-between">
-                    <Button
-                        variant="secondary"
-                        onClick={() => setPage((p) => Math.max(1, p - 1))}
-                        disabled={page <= 1}
+            {/* Load more */}
+            {!isLoading && items.length > 0 && hasMore && !isLoadingMore && (
+                <div className="mt-4 flex justify-center">
+                    <button
+                        onClick={handleLoadMore}
+                        className="rounded-md border border-neutral-700 px-3 py-1 text-xs text-white transition hover:bg-neutral-900"
                     >
-                        {t("prevPage")}
-                    </Button>
-                    <span className="text-sm text-neutral-400">
-                        {t("page", { page, totalPages })}
-                    </span>
-                    <Button
-                        variant="secondary"
-                        onClick={() =>
-                            setPage((p) => Math.min(totalPages, p + 1))
-                        }
-                        disabled={page >= totalPages}
-                    >
-                        {t("nextPage")}
-                    </Button>
+                        {t("loadMore")}
+                    </button>
                 </div>
             )}
         </div>
