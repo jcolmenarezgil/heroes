@@ -110,11 +110,11 @@ export default function NotificationBell() {
         };
     }, [status]);
 
-    // Load the list when the dropdown opens.
+    // Load the unread list when the dropdown opens.
     useEffect(() => {
         if (!open) return;
         let cancelled = false;
-        getNotifications({ limit: DROPDOWN_LIMIT })
+        getNotifications({ limit: DROPDOWN_LIMIT, unreadOnly: true })
             .then((res) => {
                 if (cancelled) return;
                 setItems(res.notifications);
@@ -165,20 +165,6 @@ export default function NotificationBell() {
         }
     };
 
-    const handleMarkAll = () => {
-        markNotificationsRead({ all: true })
-            .then(() => {
-                setUnreadCount(0);
-                setItems((prev) =>
-                    prev.map((it) => ({
-                        ...it,
-                        readAt: it.readAt ?? new Date().toISOString(),
-                    }))
-                );
-            })
-            .catch(() => addToast(t("markReadError"), "error"));
-    };
-
     return (
         <div className="relative" ref={ref}>
             <button
@@ -206,14 +192,15 @@ export default function NotificationBell() {
                         <span className="text-xs font-medium uppercase tracking-wider text-neutral-400">
                             {t("title")}
                         </span>
-                        {unreadCount > 0 && (
-                            <button
-                                onClick={handleMarkAll}
-                                className="text-xs font-medium text-white hover:underline"
-                            >
-                                {t("markAllRead")}
-                            </button>
-                        )}
+                        <button
+                            onClick={() => {
+                                setOpen(false);
+                                router.push("/notifications");
+                            }}
+                            className="rounded-md px-2 py-0.5 text-xs text-white hover:bg-neutral-900"
+                        >
+                            {t("viewAllHistory")}
+                        </button>
                     </div>
 
                     <div className="max-h-96 space-y-1 overflow-y-auto">
@@ -223,7 +210,7 @@ export default function NotificationBell() {
                             </p>
                         ) : items.length === 0 ? (
                             <p className="py-8 text-center text-sm text-neutral-500">
-                                {t("empty")}
+                                {t("emptyUnread")}
                             </p>
                         ) : (
                             items.map((n) => (
@@ -255,17 +242,6 @@ export default function NotificationBell() {
                             ))
                         )}
                     </div>
-
-                    <div className="mt-1 border-t border-neutral-800" />
-                    <button
-                        onClick={() => {
-                            setOpen(false);
-                            router.push("/notifications");
-                        }}
-                        className="block w-full rounded-md px-3 py-2 text-sm text-white hover:bg-neutral-900"
-                    >
-                        {t("viewAll")}
-                    </button>
                 </div>
             )}
         </div>
