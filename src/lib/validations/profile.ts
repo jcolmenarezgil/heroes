@@ -1,3 +1,4 @@
+//src/lib/validations/profile.ts
 import { z } from "zod";
 
 export const profileStatusSchema = z.enum(["active", "found", "deceased"]);

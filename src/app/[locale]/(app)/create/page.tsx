@@ -1,3 +1,4 @@
+//src/app/[locale]/(app)/create/page.tsx
 "use client";
 
 import React, { useEffect, Suspense } from "react";
