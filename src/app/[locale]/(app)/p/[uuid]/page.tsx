@@ -3,9 +3,9 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
 import { useFormatter, useTranslations } from "next-intl";
 import QRCodeLib from "qrcode";
+import Image from "next/image";
 import {
   ArrowDownTrayIcon,
   ArrowLeftIcon,
@@ -15,30 +15,50 @@ import {
 import { Button } from "@/components/ui/Button";
 import AvatarPlaceholder from "@/components/ui/AvatarPlaceholder";
 import QRCode from "@/components/ui/QRCode";
+import Section from "@/components/ui/Section";
 import StatusBadge from "@/components/ui/StatusBadge";
+import VerifiedBadge from "@/components/ui/VerifiedBadge";
 import ProfileDetailSkeleton from "@/components/ProfileDetailSkeleton";
+import Skeleton from "@/components/ui/Skeleton";
 import { useToast } from "@/components/providers/ToastProvider";
-import { ApiError, getProfile } from "@/lib/api-client";
-import type { ProfileDTO } from "@/types/profile";
+import { ApiError, getPublicProfile, listSuggestions } from "@/lib/api-client";
+import type { PublicProfileDTO } from "@/types/profile";
 
 export default function ProfileDetailPage() {
   const t = useTranslations("profile");
   const format = useFormatter();
   const params = useParams();
-  const { data: session } = useSession();
   const { addToast } = useToast();
   const [qrUrl, setQrUrl] = useState<string | null>(null);
-  const [profile, setProfile] = useState<ProfileDTO | null>(null);
+  const [profile, setProfile] = useState<PublicProfileDTO | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const [pendingSuggestions, setPendingSuggestions] = useState(0);
+  const [isPendingSuggestionsLoading, setIsPendingSuggestionsLoading] =
+      useState(true);
 
   const uuid = params.uuid as string;
 
   useEffect(() => {
     let cancelled = false;
-    getProfile(uuid)
+    getPublicProfile(uuid)
       .then((data) => {
         if (!cancelled) setProfile(data);
+        // Only owners/rescuers/admins can see the pending count.
+        if (data.canEdit) {
+          listSuggestions(uuid, { status: "pending", limit: 1 })
+            .then((res) => {
+              if (cancelled) return;
+              setPendingSuggestions(res.pendingCount);
+              setIsPendingSuggestionsLoading(false);
+            })
+            .catch(() => {
+              if (cancelled) return;
+              setIsPendingSuggestionsLoading(false);
+            });
+        } else {
+          setIsPendingSuggestionsLoading(false);
+        }
       })
       .catch((error) => {
         if (cancelled) return;
@@ -85,10 +105,7 @@ export default function ProfileDetailPage() {
     );
   }
 
-  const canEditDirectly =
-    session?.user?.role === "admin" ||
-    session?.user?.role === "rescuer" ||
-    session?.user?.id === profile.userId;
+  const canEditDirectly = profile.canEdit;
 
   const canShare =
     typeof navigator !== "undefined" && "share" in navigator;
@@ -150,15 +167,15 @@ export default function ProfileDetailPage() {
             <span className="text-sm font-medium">{t("actions.edit")}</span>
           </Link>
         ) : (
-          <button
-            onClick={() => addToast(t("suggestionComingSoon"), "warning")}
+          <Link
+            href={`/p/${profile.id}/suggest`}
             className="flex h-11 min-w-11 items-center gap-2 rounded-lg border border-neutral-700 px-3 text-white transition hover:bg-neutral-900"
           >
             <PencilSquareIcon className="h-5 w-5" />
             <span className="text-sm font-medium">
               {t("actions.suggestUpdate")}
             </span>
-          </button>
+          </Link>
         )}
       </div>
 
@@ -166,12 +183,16 @@ export default function ProfileDetailPage() {
         {/* Left column */}
         <div className="space-y-6">
           {profile.photoUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={profile.photoUrl}
-              alt={profile.name}
-              className="aspect-[3/4] w-full rounded-lg bg-neutral-900 object-cover"
-            />
+            <div className="relative aspect-[3/4] w-full overflow-hidden rounded-lg bg-neutral-900">
+              <Image
+                src={profile.photoUrl}
+                alt={profile.name}
+                fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                className="object-cover"
+                referrerPolicy="no-referrer"
+              />
+            </div>
           ) : (
             <div className="flex aspect-[3/4] w-full items-center justify-center rounded-lg bg-neutral-900">
               <AvatarPlaceholder size="lg" />
@@ -182,8 +203,17 @@ export default function ProfileDetailPage() {
             <h1 className="text-2xl font-semibold text-white">
               {profile.name}
             </h1>
-            <StatusBadge status={profile.status} />
+            <div className="flex items-center gap-2">
+              {profile.verified && <VerifiedBadge verified={profile.verified} />}
+              <StatusBadge status={profile.status} />
+            </div>
           </div>
+
+          {profile.isMinor && (
+            <p className="rounded-lg border border-neutral-900 bg-neutral-950 px-3 py-2 text-xs text-neutral-400">
+              {t("minorDisclaimer")}
+            </p>
+          )}
 
           <Button variant="secondary" onClick={handleExportJson}>
             <span className="flex items-center gap-2">
@@ -232,6 +262,20 @@ export default function ProfileDetailPage() {
           </div>
 
           {/* Audit trail */}
+          {profile.canEdit && isPendingSuggestionsLoading && (
+            <Skeleton className="h-4 w-40" />
+          )}
+          {profile.canEdit &&
+              !isPendingSuggestionsLoading &&
+              pendingSuggestions > 0 && (
+            <Link
+              href={`/p/${profile.id}/edit`}
+              className="my-4 block text-sm text-amber-200 underline"
+            >
+              {t("suggestionPendingCount", { count: pendingSuggestions })}
+            </Link>
+          )}
+
           <div className="border-t border-neutral-900 py-4 text-xs text-neutral-500">
             <p>
               {t("createdBy", {
@@ -245,18 +289,19 @@ export default function ProfileDetailPage() {
                 }),
               })}
             </p>
-            <p className="mt-1">
-              {t("updatedBy", {
-                name: profile.updatedByName,
-                date: format.dateTime(new Date(profile.updatedAt), {
-                  day: "numeric",
-                  month: "short",
-                  year: "numeric",
-                  hour: "numeric",
-                  minute: "numeric",
-                }),
-              })}
-            </p>
+            {profile.updatedAt !== profile.createdAt && (
+              <p className="mt-1">
+                {t("lastUpdated", {
+                  date: format.dateTime(new Date(profile.updatedAt), {
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric",
+                    hour: "numeric",
+                    minute: "numeric",
+                  }),
+                })}
+              </p>
+            )}
           </div>
         </div>
       </div>
@@ -264,19 +309,3 @@ export default function ProfileDetailPage() {
   );
 }
 
-function Section({
-  label,
-  value,
-  first = false,
-}: {
-  label: string;
-  value: string;
-  first?: boolean;
-}) {
-  return (
-    <div className={`py-4 ${first ? "" : "border-t border-neutral-900"}`}>
-      <p className="text-sm text-neutral-400">{label}</p>
-      <p className="mt-1 text-base text-white">{value}</p>
-    </div>
-  );
-}

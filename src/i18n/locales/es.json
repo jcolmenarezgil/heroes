@@ -72,7 +72,10 @@
       "location": "Última ubicación conocida",
       "status": "Estado",
       "contact": "Teléfono de contacto",
-      "notes": "Notas"
+      "notes": "Notas",
+      "isMinor": "Menor de edad",
+      "isMinorHint": "Esta persona es menor de 18. Se ocultarán detalles sensibles en la vista pública.",
+      "authorization": "Confirmo que tengo autorización para publicar la imagen de esta persona."
     },
     "placeholders": {
       "name": "Ingresa el nombre completo",
@@ -82,8 +85,9 @@
     },
     "validation": {
       "nameRequired": "El nombre es obligatorio",
-      "locationRequired": "La ubicación es obligatoria",
-      "photoRequired": "La foto es obligatoria"
+      "locationRequired": "La ubicación debe tener al menos 3 caracteres",
+      "photoRequired": "La foto es obligatoria",
+      "authorizationRequired": "Debes confirmar la autorización de la imagen para subir"
     },
     "dropzone": "Toca para subir una foto",
     "photoPreview": "Vista previa de la foto",
@@ -95,8 +99,13 @@
       "share": "Compartir por QR",
       "download": "Descargar PNG",
       "export": "Exportar como JSON",
-      "suggestUpdate": "Sugerir actualización"
+      "suggestUpdate": "Sugerir actualización",
+      "signInToHelp": "Inicia sesión para ayudar"
     },
+    "minorDisclaimer": "Esta persona es menor de edad. Los detalles sensibles de ubicación se ocultan en la vista pública.",
+    "lastUpdated": "Última actualización {date}",
+    "verified": "Verificado",
+    "verifiedTooltip": "Este perfil ha sido verificado por un administrador.",
     "notFound": "Perfil no encontrado",
     "backToHome": "Volver al inicio",
     "noContact": "Sin teléfono de contacto",
@@ -112,8 +121,27 @@
     "suggestionComingSoon": "Las sugerencias serán revisadas por un rescatista",
     "suggestionTitle": "Sugerir una actualización",
     "suggestionDescription": "Puedes sugerir cambios a este perfil. Un rescatista o administrador revisará tu solicitud.",
+    "suggestionAnonDescription": "Comparte cualquier información que tengas sobre esta persona. Tu contacto solo será visible para el dueño del perfil y rescatistas.",
     "suggestionPlaceholder": "Describe el cambio que quieres sugerir…",
+    "suggestionNameLabel": "Tu nombre",
+    "suggestionNamePlaceholder": "¿Cómo deberíamos identificarte?",
+    "suggestionContactLabel": "Contacto (opcional)",
+    "suggestionContactPlaceholder": "Teléfono o email para que el rescatista te contacte",
     "suggestionSubmitted": "Sugerencia enviada para revisión",
+    "suggestionLoadError": "No se pudieron cargar las sugerencias",
+    "suggestionResolveError": "No se pudo resolver la sugerencia",
+    "suggestionApprove": "Aprobar",
+    "suggestionReject": "Rechazar",
+    "suggestionPendingCount": "{count, plural, =0{Sin sugerencias pendientes} one{# sugerencia pendiente} other{# sugerencias pendientes}}",
+    "suggestionEmpty": "Sin sugerencias pendientes para este perfil.",
+    "suggestionBy": "Por {name}",
+    "suggestionAnon": "Anónimo",
+    "suggestionResolvedBy": "Resuelto por {name}",
+    "suggestionStatus": {
+      "pending": "Pendiente",
+      "approved": "Aprobada",
+      "rejected": "Rechazada"
+    },
     "sections": {
       "lastKnownLocation": "Última ubicación conocida",
       "contact": "Contacto",
@@ -125,12 +153,103 @@
     "offline": "Estás sin conexión — mostrando resultados en caché"
   },
   "admin": {
-    "dashboardTitle": "Panel",
+    "profilesTitle": "Perfiles",
+    "profilesSubtitle": "Gestiona, verifica y combina perfiles de personas desaparecidas.",
     "usersTitle": "Usuarios",
+    "usersSubtitle": "Explora, filtra y busca usuarios de la plataforma.",
+    "nav": {
+      "profiles": "Perfiles",
+      "users": "Usuarios",
+      "backToApp": "Volver a la app"
+    },
+    "profiles": {
+      "searchPlaceholder": "Buscar por nombre...",
+      "labelSearch": "Buscar",
+      "labelStatus": "Estado",
+      "labelVerified": "Verificado",
+      "filterAll": "Todos",
+      "filterVerified": "Verificados",
+      "filterUnverified": "No verificados",
+      "columnName": "Nombre",
+      "columnStatus": "Estado",
+      "columnVerified": "Verificado",
+      "columnCreatedBy": "Creado por",
+      "columnCreated": "Creado",
+      "columnActions": "Acciones",
+      "verify": "Verificar",
+      "unverify": "Quitar verificación",
+      "view": "Ver",
+      "edit": "Editar",
+      "merge": "Combinar seleccionados",
+      "mergeTitle": "Combinar perfiles duplicados",
+      "mergeDescription": "Selecciona qué perfil conservar (destino) y cuál eliminar (origen). Las sugerencias pendientes y la foto del origen (si el destino no tiene) se moverán al destino. Esta acción no se puede deshacer.",
+      "mergeTarget": "Conservar",
+      "mergeSource": "Eliminar",
+      "mergeConfirm": "Confirmar combinación",
+      "mergeCancel": "Cancelar",
+      "mergeSuccess": "Perfiles combinados exitosamente",
+      "mergeError": "Error al combinar perfiles",
+      "mergeSelectTwo": "Selecciona exactamente dos perfiles para combinar",
+      "noResults": "No se encontraron perfiles",
+      "loading": "Cargando...",
+      "prevPage": "Anterior",
+      "nextPage": "Siguiente",
+      "page": "Página {page} de {totalPages}",
+      "verifySuccess": "Perfil verificado",
+      "unverifySuccess": "Verificación removida",
+      "verifyError": "Error al verificar perfil",
+      "unverifyError": "Error al quitar verificación",
+      "selected": "{count} seleccionados"
+    },
     "roles": {
       "viewer": "Espectador",
       "rescuer": "Rescatista",
       "admin": "Administrador"
+    },
+    "users": {
+      "searchPlaceholder": "Buscar por nombre o correo...",
+      "labelSearch": "Buscar",
+      "labelRole": "Rol",
+      "filterAll": "Todos",
+      "columnName": "Nombre",
+      "columnEmail": "Correo",
+      "columnRole": "Rol",
+      "columnJoined": "Se unió",
+      "columnActions": "Acciones",
+      "noResults": "No se encontraron usuarios",
+      "page": "Página {page} de {totalPages}",
+      "prevPage": "Anterior",
+      "nextPage": "Siguiente",
+      "youBadge": "Tú",
+      "cannotSelf": "No puedes cambiar tu propio rol",
+      "updateRoleSuccess": "Rol actualizado",
+      "updateRoleError": "Error al actualizar el rol",
+      "lastAdminError": "No puedes degradar al único administrador restante",
+      "selfAdminError": "No puedes degradarte a ti mismo"
+    }
+  },
+  "notifications": {
+    "title": "Notificaciones",
+    "subtitle": "Actualizaciones sobre tus perfiles y sugerencias.",
+    "openMenu": "Abrir notificaciones",
+    "empty": "Aún no hay notificaciones",
+    "emptyUnread": "No hay notificaciones nuevas",
+    "markAllRead": "Marcar todas como leídas",
+    "viewAllHistory": "Ver todo el historial",
+    "unreadOnly": "Solo no leídas",
+    "loadMore": "Cargar más",
+    "loadError": "No se pudieron cargar las notificaciones",
+    "markReadError": "No se pudieron marcar como leídas",
+    "type": {
+      "suggestionCreated": "Nueva sugerencia en {profile}",
+      "suggestionResolved": "Tu sugerencia en {profile} fue {resolution}",
+      "profileVerified": "{profile} fue verificado",
+      "profileUnverified": "Se quitó la verificación de {profile}",
+      "profileMerged": "{source} fue combinado en {target}",
+      "resolution": {
+        "approved": "aprobada",
+        "rejected": "rechazada"
+      }
     }
   },
   "onboarding": {
@@ -176,13 +295,99 @@
     "syncNow": "Sincronizar ahora",
     "syncing": "Sincronizando…",
     "syncInterval": "Sincronizar",
+    "notifInterval": "Notificaciones",
     "myProfile": "Mi perfil",
     "adminDashboard": "Panel de administración",
-    "comingSoon": "Próximamente",
+    "settings": "Ajustes",
     "offlineSync": "Sin conexión. Conéctate para sincronizar."
+  },
+  "settings": {
+    "back": "Atrás"
+  },
+  "notificationPrefs": {
+    "30sec": "30 segundos",
+    "1min": "1 minuto",
+    "5min": "5 minutos"
+  },
+  "myProfile": {
+    "title": "Mi perfil",
+    "editTitle": "Editar perfil",
+    "sections": {
+      "demographics": "Datos demográficos",
+      "phones": "Teléfonos",
+      "myReports": "Mis reportes"
+    },
+    "fields": {
+      "fullName": "Nombre completo",
+      "name": "Nombre visible",
+      "email": "Correo electrónico",
+      "dob": "Fecha de nacimiento",
+      "gender": "Género",
+      "phones": "Teléfonos",
+      "phoneNumber": "Teléfono",
+      "phoneLabel": "Etiqueta",
+      "preferredPhone": "Preferido"
+    },
+    "gender": {
+      "unspecified": "No especificado",
+      "male": "Masculino",
+      "female": "Femenino"
+    },
+    "phoneLabels": {
+      "personal": "Personal",
+      "work": "Trabajo",
+      "emergency": "Emergencia",
+      "other": "Otro"
+    },
+    "placeholders": {
+      "fullName": "Ingresa tu nombre completo",
+      "name": "Ingresa tu nombre visible",
+      "phone": "+1 787-555-0199"
+    },
+    "actions": {
+      "edit": "Editar",
+      "save": "Guardar cambios",
+      "cancel": "Cancelar",
+      "export": "Exportar mis datos",
+      "addPhone": "Añadir teléfono",
+      "removePhone": "Eliminar teléfono"
+    },
+    "validation": {
+      "fullNameRequired": "El nombre completo es obligatorio",
+      "nameRequired": "El nombre visible es obligatorio",
+      "phoneNumberRequired": "El teléfono no puede estar vacío",
+      "onePreferred": "Solo un teléfono puede ser preferido"
+    },
+    "emptyStates": {
+      "noPhones": "No hay teléfonos añadidos.",
+      "noReports": "Aún no has creado reportes.",
+      "createReport": "Crear un reporte"
+    },
+    "notSpecified": "No especificado",
+    "emailReadOnly": "El correo está vinculado a tu cuenta de Google y no se puede cambiar.",
+    "googlePhotoCaption": "Tu foto se sincroniza desde Google.",
+    "preferredPhone": "Preferido",
+    "loadError": "No se pudo cargar el perfil",
+    "saveError": "No se pudo guardar el perfil",
+    "saveSuccess": "Perfil guardado",
+    "exportSuccess": "Datos exportados",
+    "backToHome": "Volver al inicio",
+    "memberSince": "Miembro desde {date}",
+    "updatedAt": "Perfil actualizado {date}",
+    "pagination": {
+      "previous": "Anterior",
+      "next": "Siguiente",
+      "pageOf": "Página {page} de {total}"
+    }
   },
   "errors": {
     "unauthorized": "No tienes permiso para realizar esta acción.",
-    "generic": "Algo salió mal. Por favor, inténtalo de nuevo."
+    "generic": "Algo salió mal. Por favor, inténtalo de nuevo.",
+    "notFoundTitle": "Página no encontrada",
+    "notFoundDescription": "La página que buscas no existe o fue movida.",
+    "errorTitle": "Algo salió mal",
+    "errorDescription": "Ocurrió un error inesperado al renderizar esta página.",
+    "retry": "Intentar de nuevo",
+    "backToHome": "Volver al inicio"
   }
 }

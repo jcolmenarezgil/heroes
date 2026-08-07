@@ -72,7 +72,10 @@
       "location": "Last known location",
       "status": "Status",
       "contact": "Contact phone",
-      "notes": "Notes"
+      "notes": "Notes",
+      "isMinor": "Minor",
+      "isMinorHint": "This person is under 18. Sensitive details will be hidden on the public view.",
+      "authorization": "I confirm I have authorization to publish this person's image."
     },
     "placeholders": {
       "name": "Enter full name",
@@ -82,8 +85,9 @@
     },
     "validation": {
       "nameRequired": "Name is required",
-      "locationRequired": "Location is required",
-      "photoRequired": "Photo is required"
+      "locationRequired": "Location must be at least 3 characters",
+      "photoRequired": "Photo is required",
+      "authorizationRequired": "You must confirm image authorization to upload"
     },
     "dropzone": "Tap to upload a photo",
     "photoPreview": "Photo preview",
@@ -95,8 +99,13 @@
       "share": "Share via QR",
       "download": "Download PNG",
       "export": "Export as JSON",
-      "suggestUpdate": "Suggest update"
+      "suggestUpdate": "Suggest update",
+      "signInToHelp": "Sign in to help"
     },
+    "minorDisclaimer": "This person is a minor. Sensitive location details are hidden on the public view.",
+    "lastUpdated": "Last updated {date}",
+    "verified": "Verified",
+    "verifiedTooltip": "This profile has been verified by an administrator.",
     "notFound": "Profile not found",
     "backToHome": "Back to home",
     "noContact": "No contact provided",
@@ -112,8 +121,27 @@
     "suggestionComingSoon": "Update suggestions will be reviewed by a rescuer",
     "suggestionTitle": "Suggest an update",
     "suggestionDescription": "You can suggest changes to this profile. A rescuer or admin will review your request.",
+    "suggestionAnonDescription": "Share any information you have about this person. Your contact will only be visible to the profile owner and rescuers.",
     "suggestionPlaceholder": "Describe the change you want to suggest…",
+    "suggestionNameLabel": "Your name",
+    "suggestionNamePlaceholder": "How should we credit you?",
+    "suggestionContactLabel": "Contact (optional)",
+    "suggestionContactPlaceholder": "Phone or email so the rescuer can reach you",
     "suggestionSubmitted": "Suggestion submitted for review",
+    "suggestionLoadError": "Could not load suggestions",
+    "suggestionResolveError": "Could not resolve suggestion",
+    "suggestionApprove": "Approve",
+    "suggestionReject": "Reject",
+    "suggestionPendingCount": "{count, plural, =0{No pending suggestions} one{# pending suggestion} other{# pending suggestions}}",
+    "suggestionEmpty": "No pending suggestions for this profile.",
+    "suggestionBy": "By {name}",
+    "suggestionAnon": "Anonymous",
+    "suggestionResolvedBy": "Resolved by {name}",
+    "suggestionStatus": {
+      "pending": "Pending",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    },
     "sections": {
       "lastKnownLocation": "Last known location",
       "contact": "Contact",
@@ -125,12 +153,103 @@
     "offline": "You are offline — showing cached results"
   },
   "admin": {
-    "dashboardTitle": "Dashboard",
+    "profilesTitle": "Profiles",
+    "profilesSubtitle": "Manage, verify, and merge missing person profiles.",
     "usersTitle": "Users",
+    "usersSubtitle": "Browse, filter, and search platform users.",
+    "nav": {
+      "profiles": "Profiles",
+      "users": "Users",
+      "backToApp": "Back to app"
+    },
+    "profiles": {
+      "searchPlaceholder": "Search by name...",
+      "labelSearch": "Search",
+      "labelStatus": "Status",
+      "labelVerified": "Verified",
+      "filterAll": "All",
+      "filterVerified": "Verified",
+      "filterUnverified": "Unverified",
+      "columnName": "Name",
+      "columnStatus": "Status",
+      "columnVerified": "Verified",
+      "columnCreatedBy": "Created by",
+      "columnCreated": "Created",
+      "columnActions": "Actions",
+      "verify": "Verify",
+      "unverify": "Unverify",
+      "view": "View",
+      "edit": "Edit",
+      "merge": "Merge Selected",
+      "mergeTitle": "Merge duplicate profiles",
+      "mergeDescription": "Select which profile to keep (target) and which to delete (source). The source's pending suggestions and photo (if the target has none) will be moved to the target. This action cannot be undone.",
+      "mergeTarget": "Keep",
+      "mergeSource": "Delete",
+      "mergeConfirm": "Confirm Merge",
+      "mergeCancel": "Cancel",
+      "mergeSuccess": "Profiles merged successfully",
+      "mergeError": "Failed to merge profiles",
+      "mergeSelectTwo": "Select exactly two profiles to merge",
+      "noResults": "No profiles found",
+      "loading": "Loading...",
+      "prevPage": "Previous",
+      "nextPage": "Next",
+      "page": "Page {page} of {totalPages}",
+      "verifySuccess": "Profile verified",
+      "unverifySuccess": "Profile unverified",
+      "verifyError": "Failed to verify profile",
+      "unverifyError": "Failed to unverify profile",
+      "selected": "{count} selected"
+    },
     "roles": {
       "viewer": "Viewer",
       "rescuer": "Rescuer",
       "admin": "Admin"
+    },
+    "users": {
+      "searchPlaceholder": "Search by name or email...",
+      "labelSearch": "Search",
+      "labelRole": "Role",
+      "filterAll": "All",
+      "columnName": "Name",
+      "columnEmail": "Email",
+      "columnRole": "Role",
+      "columnJoined": "Joined",
+      "columnActions": "Actions",
+      "noResults": "No users found",
+      "page": "Page {page} of {totalPages}",
+      "prevPage": "Previous",
+      "nextPage": "Next",
+      "youBadge": "You",
+      "cannotSelf": "You cannot change your own role",
+      "updateRoleSuccess": "Role updated",
+      "updateRoleError": "Failed to update role",
+      "lastAdminError": "Cannot demote the last remaining admin",
+      "selfAdminError": "You cannot demote yourself"
+    }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "subtitle": "Updates about your profiles and suggestions.",
+    "openMenu": "Open notifications",
+    "empty": "No notifications yet",
+    "emptyUnread": "No new notifications",
+    "markAllRead": "Mark all as read",
+    "viewAllHistory": "View all history",
+    "unreadOnly": "Unread only",
+    "loadMore": "Load more",
+    "loadError": "Could not load notifications",
+    "markReadError": "Could not mark as read",
+    "type": {
+      "suggestionCreated": "New suggestion on {profile}",
+      "suggestionResolved": "Your suggestion on {profile} was {resolution}",
+      "profileVerified": "{profile} was verified",
+      "profileUnverified": "{profile} was unverified",
+      "profileMerged": "{source} was merged into {target}",
+      "resolution": {
+        "approved": "approved",
+        "rejected": "rejected"
+      }
     }
   },
   "onboarding": {
@@ -176,13 +295,99 @@
     "syncNow": "Sync now",
     "syncing": "Syncing…",
     "syncInterval": "Sync",
+    "notifInterval": "Notifications",
     "myProfile": "My profile",
     "adminDashboard": "Admin dashboard",
-    "comingSoon": "Coming soon",
+    "settings": "Settings",
     "offlineSync": "You are offline. Connect to sync."
+  },
+  "settings": {
+    "back": "Back"
+  },
+  "notificationPrefs": {
+    "30sec": "30 seconds",
+    "1min": "1 minute",
+    "5min": "5 minutes"
+  },
+  "myProfile": {
+    "title": "My profile",
+    "editTitle": "Edit profile",
+    "sections": {
+      "demographics": "Demographics",
+      "phones": "Phone numbers",
+      "myReports": "My reports"
+    },
+    "fields": {
+      "fullName": "Full name",
+      "name": "Display name",
+      "email": "Email",
+      "dob": "Date of birth",
+      "gender": "Gender",
+      "phones": "Phone numbers",
+      "phoneNumber": "Phone number",
+      "phoneLabel": "Label",
+      "preferredPhone": "Preferred"
+    },
+    "gender": {
+      "unspecified": "Not specified",
+      "male": "Male",
+      "female": "Female"
+    },
+    "phoneLabels": {
+      "personal": "Personal",
+      "work": "Work",
+      "emergency": "Emergency",
+      "other": "Other"
+    },
+    "placeholders": {
+      "fullName": "Enter your full name",
+      "name": "Enter your display name",
+      "phone": "+1 787-555-0199"
+    },
+    "actions": {
+      "edit": "Edit",
+      "save": "Save changes",
+      "cancel": "Cancel",
+      "export": "Export my data",
+      "addPhone": "Add phone",
+      "removePhone": "Remove phone"
+    },
+    "validation": {
+      "fullNameRequired": "Full name is required",
+      "nameRequired": "Display name is required",
+      "phoneNumberRequired": "Phone number cannot be empty",
+      "onePreferred": "Only one phone can be preferred"
+    },
+    "emptyStates": {
+      "noPhones": "No phone numbers added.",
+      "noReports": "You haven't created any reports yet.",
+      "createReport": "Create a report"
+    },
+    "notSpecified": "Not specified",
+    "emailReadOnly": "Email is linked to your Google account and cannot be changed.",
+    "googlePhotoCaption": "Your photo is synced from Google.",
+    "preferredPhone": "Preferred",
+    "loadError": "Could not load profile",
+    "saveError": "Could not save profile",
+    "saveSuccess": "Profile saved",
+    "exportSuccess": "Data exported",
+    "backToHome": "Back to home",
+    "memberSince": "Member since {date}",
+    "updatedAt": "Profile updated {date}",
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next",
+      "pageOf": "Page {page} of {total}"
+    }
   },
   "errors": {
     "unauthorized": "You don't have permission to perform this action.",
-    "generic": "Something went wrong. Please try again."
+    "generic": "Something went wrong. Please try again.",
+    "notFoundTitle": "Page not found",
+    "notFoundDescription": "The page you were looking for doesn't exist or has moved.",
+    "errorTitle": "Something went wrong",
+    "errorDescription": "An unexpected error occurred while rendering this page.",
+    "retry": "Try again",
+    "backToHome": "Back to home"
   }
 }

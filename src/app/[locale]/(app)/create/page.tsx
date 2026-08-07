@@ -8,7 +8,7 @@ import { useSearchParams } from "next/navigation";
 import ProfileForm, { ProfileFormData } from "@/components/ProfileForm";
 import ProfileFormSkeleton from "@/components/ProfileFormSkeleton";
 import { useToast } from "@/components/providers/ToastProvider";
-import { ApiError, createProfile } from "@/lib/api-client";
+import { ApiError, createProfile, uploadProfilePhoto } from "@/lib/api-client";
 
 function CreateProfileContent() {
   const t = useTranslations("profile");
@@ -34,20 +34,20 @@ function CreateProfileContent() {
 
   const handleSubmit = async (data: ProfileFormData, file: File | null) => {
     try {
-      let uploadedPhotoUrl = data.photoUrl;
+      let photoUrl = data.photoUrl;
+      let photoPath = data.photoPath;
 
-      // Si existe un archivo adjunto, aquí se debe procesar la subida antes de guardar el perfil
       if (file) {
-        // Ejemplo de integracion futura:
-        // const formData = new FormData();
-        // formData.append("file", file);
-        // const uploadRes = await uploadPhotoApi(formData);
-        // uploadedPhotoUrl = uploadRes.url;
+        const uploaded = await uploadProfilePhoto(file);
+        photoUrl = uploaded.url;
+        photoPath = uploaded.path;
       }
 
       const created = await createProfile({
         name: data.name,
-        photoUrl: uploadedPhotoUrl ?? null,
+        photoUrl,
+        photoPath,
+        isMinor: data.isMinor,
         lastKnownLocation: data.lastKnownLocation,
         latitude: data.latitude ?? null,
         longitude: data.longitude ?? null,
@@ -84,6 +84,8 @@ function CreateProfileContent() {
         initialData={{
           name: "",
           photoUrl: null,
+          photoPath: null,
+          isMinor: false,
           lastKnownLocation: "",
           latitude: initialLat,
           longitude: initialLng,

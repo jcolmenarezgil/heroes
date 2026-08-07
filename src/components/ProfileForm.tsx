@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
@@ -14,6 +14,8 @@ export interface ProfileFormData {
   id?: string;
   name: string;
   photoUrl: string | null;
+  photoPath: string | null;
+  isMinor: boolean;
   lastKnownLocation: string;
   latitude?: number | null;
   longitude?: number | null;
@@ -58,8 +60,22 @@ export default function ProfileForm({
   const [photoPreview, setPhotoPreview] = useState<string | null>(
     initialData.photoUrl
   );
+  const [photoPath, setPhotoPath] = useState<string | null>(
+    initialData.photoPath
+  );
+  const [isMinor, setIsMinor] = useState(initialData.isMinor);
+  const [hasAuthorization, setHasAuthorization] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (initialData.latitude !== undefined) {
+      setLatitude(initialData.latitude);
+    }
+    if (initialData.longitude !== undefined) {
+      setLongitude(initialData.longitude);
+    }
+  }, [initialData.latitude, initialData.longitude]);
 
   const statusOptions = [
     { value: "active", label: t("status.active") },
@@ -70,13 +86,16 @@ export default function ProfileForm({
   const handlePhotoChange = (file: File | null, preview: string | null) => {
     setPhotoFile(file);
     setPhotoPreview(preview);
+    if (file) setPhotoPath(null);
   };
 
   const validate = () => {
     const next: Record<string, string> = {};
     if (!name.trim()) next.name = t("validation.nameRequired");
-    if (!lastKnownLocation.trim())
+    if (!lastKnownLocation.trim() || lastKnownLocation.trim().length < 3)
       next.lastKnownLocation = t("validation.locationRequired");
+    if (photoFile && !hasAuthorization)
+      next.hasAuthorization = t("validation.authorizationRequired");
     setErrors(next);
     return Object.keys(next).length === 0;
   };
@@ -98,6 +117,8 @@ export default function ProfileForm({
           contactPhone,
           notes,
           photoUrl: photoPreview,
+          photoPath,
+          isMinor,
         },
         photoFile
       );
@@ -160,7 +181,6 @@ export default function ProfileForm({
             />
           </Field>
 
-          {/* Indicador visual dinamizado sin texto hardcoded */}
           {latitude !== null && longitude !== null && (
             <div className="flex items-center justify-between rounded-md border border-neutral-800 bg-neutral-900/60 px-3 py-1.5 text-xs text-neutral-300">
               <div className="flex items-center space-x-1.5">
@@ -193,6 +213,19 @@ export default function ProfileForm({
           />
         </Field>
 
+        <Field id="isMinor" label={t("fields.isMinor")}>
+          <label className="flex items-center gap-2 text-sm text-white">
+            <input
+              id="isMinor"
+              type="checkbox"
+              checked={isMinor}
+              onChange={(e) => setIsMinor(e.target.checked)}
+              className="h-4 w-4 rounded border-neutral-700 bg-neutral-900"
+            />
+            {t("fields.isMinorHint")}
+          </label>
+        </Field>
+
         <Field id="contact" label={t("fields.contact")}>
           <Input
             id="contact"
@@ -214,6 +247,25 @@ export default function ProfileForm({
       </div>
 
       <div className="col-span-full space-y-3">
+        {photoFile && (
+          <div className="rounded-lg border border-neutral-900 bg-neutral-950 p-3">
+            <label className="flex items-start gap-2 text-sm text-white">
+              <input
+                type="checkbox"
+                checked={hasAuthorization}
+                onChange={(e) => setHasAuthorization(e.target.checked)}
+                className="mt-0.5 h-4 w-4 rounded border-neutral-700 bg-neutral-900"
+              />
+              <span>{t("fields.authorization")}</span>
+            </label>
+            {errors.hasAuthorization && (
+              <p className="mt-1 text-sm text-red-400">
+                {errors.hasAuthorization}
+              </p>
+            )}
+          </div>
+        )}
+
         <Button type="submit" isLoading={isSubmitting}>
           {submitLabel}
         </Button>

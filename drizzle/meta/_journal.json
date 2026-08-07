@@ -33,8 +33,43 @@
     {
       "idx": 4,
       "version": "7",
-      "when": 1785819581986,
-      "tag": "0004_charming_polaris",
+      "when": 1785942592254,
+      "tag": "0004_easy_legion",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1785945500803,
+      "tag": "0005_rare_annihilus",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1785947057081,
+      "tag": "0006_skinny_vision",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1785962749786,
+      "tag": "0007_amused_mac_gargan",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1785962784090,
+      "tag": "0008_purple_lenny_balinger",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1786068473780,
+      "tag": "0009_fresh_stranger",
       "breakpoints": true
     }
   ]

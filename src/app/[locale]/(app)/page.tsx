@@ -126,6 +126,7 @@ export default function HomePage() {
                   month: "short",
                 })}
                 photoUrl={profile.photoUrl}
+                verified={profile.verified}
                 onClick={() => router.push(`/p/${profile.id}`)}
               />
             ))}

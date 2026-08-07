@@ -24,6 +24,7 @@ export async function GET(request: Request) {
     const parsed = listProfilesQuerySchema.safeParse({
         q: url.searchParams.get("q") ?? undefined,
         status: url.searchParams.get("status") ?? undefined,
+        createdBy: url.searchParams.get("createdBy") ?? undefined,
         limit: url.searchParams.get("limit") ?? undefined,
         page: url.searchParams.get("page") ?? undefined,
     });
@@ -32,11 +33,12 @@ export async function GET(request: Request) {
         return jsonBadRequest("Invalid query parameters", parsed.error.issues);
     }
 
-    const { q, status, limit, page } = parsed.data;
+    const { q, status, createdBy, limit, page } = parsed.data;
 
     const conditions = [];
     if (q) conditions.push(ilike(profiles.name, `%${q}%`));
     if (status) conditions.push(eq(profiles.status, status));
+    if (createdBy) conditions.push(eq(profiles.createdBy, createdBy));
     const where = conditions.length > 0 ? and(...conditions) : undefined;
 
     try {
@@ -82,7 +84,7 @@ export async function POST(request: Request) {
         return jsonBadRequest("Invalid profile data", parsed.error.issues);
     }
 
-    const { name, photoUrl, lastKnownLocation, status, contactPhone, notes } =
+    const { name, photoUrl, photoPath, isMinor, lastKnownLocation, status, contactPhone, notes } =
         parsed.data;
 
     try {
@@ -94,6 +96,8 @@ export async function POST(request: Request) {
                 updatedBy: user.id,
                 name,
                 photoUrl: photoUrl ?? null,
+                photoPath: photoPath ?? null,
+                isMinor,
                 lastKnownLocation,
                 status,
                 contactPhone: contactPhone ?? null,
