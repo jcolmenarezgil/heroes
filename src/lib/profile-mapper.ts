@@ -31,6 +31,8 @@ export function toProfileDTO(
         isMinor: profile.isMinor,
         lastKnownLocation: profile.lastKnownLocation,
         status: profile.status,
+        latitude: profile.latitude ?? null,
+        longitude: profile.longitude ?? null,
         contactPhone: profile.contactPhone,
         notes: profile.notes,
         verified: profile.verified ? profile.verified.toISOString() : null,
@@ -143,7 +145,7 @@ export function mapProfileToDTO(
 
         latitude: dbRecord.latitude ?? null,
         longitude: dbRecord.longitude ?? null,
-
+        isMinor: dbRecord.isMinor ?? false,
         status: dbRecord.status,
         contactPhone: dbRecord.contactPhone,
         notes: dbRecord.notes,
