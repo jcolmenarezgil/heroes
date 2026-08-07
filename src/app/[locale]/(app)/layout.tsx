@@ -17,7 +17,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
     <div className="flex min-h-screen flex-col bg-black text-white selection:bg-neutral-800">
       <NavBar />
 
-      {/* Spacers for fixed elements so main content is never overlapped */}
+      {/* Spacers para elementos fijos y evitar superposición en mobile/desktop */}
       <div className="h-14 shrink-0" />
       <ConnectivityBanner />
       {showBanner && <div className="h-10 shrink-0" />}

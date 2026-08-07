@@ -1,19 +1,30 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, Suspense } from "react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
+import { useSearchParams } from "next/navigation";
 import ProfileForm, { ProfileFormData } from "@/components/ProfileForm";
 import ProfileFormSkeleton from "@/components/ProfileFormSkeleton";
 import { useToast } from "@/components/providers/ToastProvider";
 import { ApiError, createProfile, uploadProfilePhoto } from "@/lib/api-client";
 
-export default function CreateProfilePage() {
+function CreateProfileContent() {
   const t = useTranslations("profile");
   const router = useRouter();
   const { status: sessionStatus } = useSession();
   const { addToast } = useToast();
+  const searchParams = useSearchParams();
+
+  // Lectura y parseo seguro de coordenadas desde la URL
+  const rawLat = searchParams.get("lat");
+  const rawLng = searchParams.get("lng");
+
+  const initialLat =
+    rawLat && !Number.isNaN(parseFloat(rawLat)) ? parseFloat(rawLat) : null;
+  const initialLng =
+    rawLng && !Number.isNaN(parseFloat(rawLng)) ? parseFloat(rawLng) : null;
 
   useEffect(() => {
     if (sessionStatus === "unauthenticated") {
@@ -38,10 +49,13 @@ export default function CreateProfilePage() {
         photoPath,
         isMinor: data.isMinor,
         lastKnownLocation: data.lastKnownLocation,
+        latitude: data.latitude ?? null,
+        longitude: data.longitude ?? null,
         status: data.status,
         contactPhone: data.contactPhone || null,
         notes: data.notes || null,
       });
+
       addToast(t("saveToast"), "success");
       router.push(`/p/${created.id}`);
     } catch (error) {
@@ -61,13 +75,20 @@ export default function CreateProfilePage() {
       <h1 className="mb-6 text-2xl font-semibold text-white">
         {t("createTitle")}
       </h1>
+      {/* 
+        La propiedad key re-inicializa el formulario de forma limpia 
+        si las coordenadas iniciales cambian tras la hidratación.
+      */}
       <ProfileForm
+        key={`${initialLat}-${initialLng}`}
         initialData={{
           name: "",
           photoUrl: null,
           photoPath: null,
           isMinor: false,
           lastKnownLocation: "",
+          latitude: initialLat,
+          longitude: initialLng,
           status: "active",
           contactPhone: "",
           notes: "",
@@ -77,5 +98,13 @@ export default function CreateProfilePage() {
         cancelHref="/"
       />
     </div>
+  );
+}
+
+export default function CreateProfilePage() {
+  return (
+    <Suspense fallback={<ProfileFormSkeleton />}>
+      <CreateProfileContent />
+    </Suspense>
   );
 }

@@ -31,6 +31,8 @@ export function toProfileDTO(
         isMinor: profile.isMinor,
         lastKnownLocation: profile.lastKnownLocation,
         status: profile.status,
+        latitude: profile.latitude ?? null,
+        longitude: profile.longitude ?? null,
         contactPhone: profile.contactPhone,
         notes: profile.notes,
         verified: profile.verified ? profile.verified.toISOString() : null,
@@ -125,4 +127,32 @@ export async function listProfilesWithUsers(options: {
         .orderBy(...options.orderBy)
         .limit(options.limit)
         .offset(options.offset);
+}
+
+export function mapProfileToDTO(
+    dbRecord: any, 
+    createdByName: string,
+    updatedByName: string
+): ProfileDTO {
+    return {
+        id: dbRecord.id,
+        userId: dbRecord.userId,
+        createdBy: dbRecord.createdBy,
+        updatedBy: dbRecord.updatedBy,
+        name: dbRecord.name,
+        photoUrl: dbRecord.photoUrl,
+        lastKnownLocation: dbRecord.lastKnownLocation,
+
+        latitude: dbRecord.latitude ?? null,
+        longitude: dbRecord.longitude ?? null,
+        isMinor: dbRecord.isMinor ?? false,
+        status: dbRecord.status,
+        contactPhone: dbRecord.contactPhone,
+        notes: dbRecord.notes,
+        verified: dbRecord.verified ? dbRecord.verified.toISOString() : null,
+        createdAt: dbRecord.createdAt.toISOString(),
+        updatedAt: dbRecord.updatedAt.toISOString(),
+        createdByName,
+        updatedByName,
+    };
 }

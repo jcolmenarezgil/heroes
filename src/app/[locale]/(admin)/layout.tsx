@@ -11,9 +11,9 @@ const navItems: {
   labelKey: "profiles" | "users";
   exact: boolean;
 }[] = [
-  { href: "/admin/profiles", labelKey: "profiles", exact: false },
-  { href: "/admin/users", labelKey: "users", exact: false },
-];
+    { href: "/admin/profiles", labelKey: "profiles", exact: false },
+    { href: "/admin/users", labelKey: "users", exact: false },
+  ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const t = useTranslations("admin.nav");
@@ -32,11 +32,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <Link
               key={item.href}
               href={item.href}
-              className={`block rounded-lg px-3 py-2 text-sm font-medium transition ${
-                isActive(item.href, item.exact)
+              className={`block rounded-lg px-3 py-2 text-sm font-medium transition ${isActive(item.href, item.exact)
                   ? "bg-neutral-800 text-white"
                   : "text-neutral-400 hover:bg-neutral-900 hover:text-white"
-              }`}
+                }`}
             >
               {t(item.labelKey)}
             </Link>
@@ -67,20 +66,20 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col md:pl-64">
+        {/* Espaciador para la barra fija superior */}
         <div className="h-14 shrink-0" />
 
-        {/* Mobile-only tab bar (md and up use the desktop sidebar). */}
+        {/* Navegación móvil por pestañas */}
         <div className="border-b border-neutral-900 bg-neutral-950 md:hidden">
           <nav className="flex items-center gap-1 overflow-x-auto px-2 py-2">
             {navItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`shrink-0 rounded-md px-3 py-1.5 text-xs font-medium transition ${
-                  isActive(item.href, item.exact)
+                className={`shrink-0 rounded-md px-3 py-1.5 text-xs font-medium transition ${isActive(item.href, item.exact)
                     ? "bg-neutral-800 text-white"
                     : "text-neutral-400 hover:bg-neutral-900 hover:text-white"
-                }`}
+                  }`}
               >
                 {t(item.labelKey)}
               </Link>

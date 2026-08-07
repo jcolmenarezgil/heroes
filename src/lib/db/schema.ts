@@ -1,4 +1,17 @@
-import { pgTable, text, timestamp, date, pgEnum, jsonb, integer, primaryKey, uuid, boolean, index } from "drizzle-orm/pg-core";
+import {
+    pgTable,
+    text,
+    timestamp,
+    date,
+    pgEnum,
+    jsonb,
+    integer,
+    primaryKey,
+    uuid,
+    doublePrecision,
+    boolean,
+    index,
+} from "drizzle-orm/pg-core";
 import { AdapterAccount } from "next-auth/adapters";
 
 // Definición física del Enum para el género en PostgreSQL
@@ -16,6 +29,7 @@ export interface UserPhoneConfig {
     label: "personal" | "work" | "emergency" | "other";
     isPreferred: boolean;
 }
+
 export const users = pgTable("users", {
     id: uuid("id").defaultRandom().primaryKey(),
 
@@ -64,8 +78,10 @@ export const account = pgTable(
     },
     (table) => [
         {
-            compoundKey: primaryKey({ columns: [table.provider, table.providerAccountId] }),
-        }
+            compoundKey: primaryKey({
+                columns: [table.provider, table.providerAccountId],
+            }),
+        },
     ]
 );
 
@@ -97,6 +113,10 @@ export const profiles = pgTable("profiles", {
     photoPath: text("photo_path"),
     isMinor: boolean("is_minor").default(false).notNull(),
     lastKnownLocation: text("last_known_location").notNull(),
+
+    latitude: doublePrecision("latitude"),
+    longitude: doublePrecision("longitude"),
+
     status: profileStatusEnum("status").default("active").notNull(),
     contactPhone: text("contact_phone"),
     notes: text("notes"),
@@ -105,6 +125,21 @@ export const profiles = pgTable("profiles", {
     updatedAt: timestamp("updated_at", { mode: "date" })
         .defaultNow()
         .$onUpdate(() => new Date())
+        .notNull(),
+});
+
+export const EmergencyShelter = pgTable("emergency_shelter", {
+    id: uuid("id").defaultRandom().primaryKey(),
+    name: text("name").notNull(),
+    capacity: integer("capacity"),
+    occupancy: integer("occupancy").default(0),
+    status: text("status").notNull().default("active"),
+    latitude: doublePrecision("latitude").notNull(),
+    longitude: doublePrecision("longitude").notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+    createdByUserId: uuid("user_id")
+        .references(() => users.id, { onDelete: "cascade" })
         .notNull(),
 });
 
@@ -148,28 +183,26 @@ export const profileSuggestions = pgTable("profile_suggestions", {
         .notNull(),
 });
 
-export const notifications = pgTable("notifications", {
-    id: uuid("id").defaultRandom().primaryKey(),
-    userId: uuid("user_id")
-        .notNull()
-        .references(() => users.id, { onDelete: "cascade" }),
-    // e.g. "suggestion.created" | "suggestion.resolved" | "profile.verified"
-    //      | "profile.unverified" | "profile.merged"
-    type: text("type").notNull(),
-    profileId: uuid("profile_id").references(() => profiles.id, {
-        onDelete: "cascade",
-    }),
-    actorId: uuid("actor_id").references(() => users.id, {
-        onDelete: "set null",
-    }),
-    // Free-form context: profileName, noteExcerpt, resolution, targetProfileName, etc.
-    // Typed loosely here (Record<string, unknown>) for DB compatibility; callers
-    // use the strict NotificationPayload union from notification-mapper.ts.
-    payload: jsonb("payload").$type<Record<string, unknown> | null>(),
-    readAt: timestamp("read_at", { mode: "date" }),
-    createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
-}, (table) => [
-    index("notifications_user_created_idx").on(table.userId, table.createdAt),
-    index("notifications_user_read_idx").on(table.userId, table.readAt),
-]);
-
+export const notifications = pgTable(
+    "notifications",
+    {
+        id: uuid("id").defaultRandom().primaryKey(),
+        userId: uuid("user_id")
+            .notNull()
+            .references(() => users.id, { onDelete: "cascade" }),
+        type: text("type").notNull(),
+        profileId: uuid("profile_id").references(() => profiles.id, {
+            onDelete: "cascade",
+        }),
+        actorId: uuid("actor_id").references(() => users.id, {
+            onDelete: "set null",
+        }),
+        payload: jsonb("payload").$type<Record<string, unknown> | null>(),
+        readAt: timestamp("read_at", { mode: "date" }),
+        createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+    },
+    (table) => [
+        index("notifications_user_created_idx").on(table.userId, table.createdAt),
+        index("notifications_user_read_idx").on(table.userId, table.readAt),
+    ]
+);

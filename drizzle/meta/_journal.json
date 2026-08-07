@@ -64,6 +64,13 @@
       "when": 1785962784090,
       "tag": "0008_purple_lenny_balinger",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1786068473780,
+      "tag": "0009_fresh_stranger",
+      "breakpoints": true
     }
   ]
 }
