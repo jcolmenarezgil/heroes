@@ -18,25 +18,25 @@
     "signIn": "Sign in",
     "signOut": "Sign out"
   },
-"map": {
-  "title": "Emergency Map",
-  "subtitle": "Nearby medical centers and location selection points",
-  "myLocation": "My Location",
-  "gettingLocation": "Getting location...",
-  "locationRequiredNotice": "Enable your location to load medical centers and navigate the map.",
-  "allowLocation": "Allow Location",
-  "selectedPoint": "Selected point",
-  "createReportHere": "Create Report Here",
-  "markerPopupReport": "Selected point for report",
-  "coordinatesPinned": "Coordinates pinned:",
-  "unlinkCoordinates": "Unlink coordinates",
-  "coverageSector": "Coverage Sector",
-  "coverageRadius": "Facility located within a radius of ~{radius} km.",
-  "types": {
-    "hospital": "Hospital",
-    "clinic": "Medical Center"
-  }
-},
+  "map": {
+    "title": "Emergency Map",
+    "subtitle": "Nearby medical centers and location selection points",
+    "myLocation": "My Location",
+    "gettingLocation": "Getting location...",
+    "locationRequiredNotice": "Enable your location to load medical centers and navigate the map.",
+    "allowLocation": "Allow Location",
+    "selectedPoint": "Selected point",
+    "createReportHere": "Create Report Here",
+    "markerPopupReport": "Selected point for report",
+    "coordinatesPinned": "Coordinates pinned:",
+    "unlinkCoordinates": "Unlink coordinates",
+    "coverageSector": "Coverage Sector",
+    "coverageRadius": "Facility located within a radius of ~{radius} km.",
+    "types": {
+      "hospital": "Hospital",
+      "clinic": "Medical Center"
+    }
+  },
   "auth": {
     "loginWithGoogle": "Sign in with Google",
     "signOut": "Sign Out",
@@ -323,7 +323,8 @@
     "myProfile": "My profile",
     "adminDashboard": "Admin dashboard",
     "settings": "Settings",
-    "offlineSync": "You are offline. Connect to sync."
+    "offlineSync": "You are offline. Connect to sync.",
+    "about": "About Heroes"
   },
   "settings": {
     "back": "Back"
@@ -431,6 +432,125 @@
       "clinic": "Clinic",
       "pharmacy": "Pharmacy",
       "health": "Health Center"
+    }
+  },
+  "community": {
+    "title": "Open Source Community",
+    "subtitle": "Free and non-profit project. Join us by submitting a Pull Request!",
+    "stars": "{count} Stars",
+    "forks": "{count} Forks",
+    "contributors": "Contributors ({count})"
+  },
+  "about": {
+    "badge": "Non-Profit & Open Source",
+    "title": "Heroes Project",
+    "description": "A community-driven platform to quickly and freely locate health centers, missing persons, and critical resources in times of need.",
+    "license": {
+      "title": "MIT License",
+      "description": "This software is 100% free. You have full freedom to use, modify, and distribute it. The only legal requirement is to maintain copyright and original attribution.",
+      "link": "View Full License →"
+    },
+    "contribute": {
+      "title": "How to Contribute?",
+      "description": "Found a bug or have a UX/UI enhancement? Check our architecture guides, clone the repository, and start contributing via a Pull Request to `main`.",
+      "link": "Contribution Guide →"
+    }
+  },
+  "protocol": {
+    "badge": "Official Response Guide",
+    "title": "Crisis Action Protocols",
+    "subtitle": "Clear instructions and fundamental steps to act in a coordinated manner during an emergency.",
+    "sections": {
+      "missing": "Missing Persons",
+      "emergencyNumbers": "Emergency Numbers"
+    },
+    "missing": {
+      "title": "Missing Persons Protocol",
+      "description": "What to do immediately when a family member or acquaintance goes missing and how to leverage the Heroes platform.",
+      "items": {
+        "firstHours": {
+          "title": "1. First 24 Hours (Immediate Action)",
+          "content": "Do not wait 24 to 48 hours to act. Contact local authorities immediately. Gather a recent photo showing a clear face, last known clothing, distinguishing marks (tattoos, scars), and contact details of close family."
+        },
+        "usingApp": {
+          "title": "2. Publishing a Report on the Platform",
+          "content": "Use the 'Report' section in Heroes to create a profile. Be sure to pin the last known location. If the person is a minor, check the appropriate option so sensitive details remain protected."
+        },
+        "offlineSupport": {
+          "title": "3. Offline Mode and Syncing",
+          "content": "You can create or search reports even without an internet connection. Data is stored safely in your device local storage and automatically syncs with servers once connection is restored."
+        },
+        "verification": {
+          "title": "4. Verification & Collaboration",
+          "content": "Avoid spreading unverified information or rumors. If you have details on a profile submitted by someone else, use the 'Suggest update' option inside their profile for rescuers to review."
+        }
+      }
+    },
+    "emergency": {
+      "title": "Official Emergency Directories",
+      "description": "Primary hotline numbers for immediate crisis response based on the detected country.",
+      "selectCountry": "Selected country:",
+      "detectedTag": "Detected by location",
+      "categories": {
+        "police": "Police / Security",
+        "medical": "Medical Emergencies / Ambulance",
+        "fire": "Fire Department",
+        "general": "Unified Emergency Line",
+        "civilProtection": "Civil Defense / Rescue"
+      }
+    },
+    "security": {
+      "badge": "Security",
+      "title": "Communication and Security Best Practices",
+      "subtitle": "Clear, verified, and responsible communication is vital during a crisis. Follow these guidelines to coordinate effective help without overwhelming network resources.",
+      "guidelines": {
+        "clarity": {
+          "title": "Clarity and Objective Data",
+          "description": "Describe needs with maximum accuracy (exact location, count of affected people, and specific help required). Avoid assumptions or alarmist language."
+        },
+        "verification": {
+          "title": "Verify Before Sharing",
+          "description": "Confirm the accuracy of information before issuing a broadcast alert. Misinformation can divert critical resources away from real emergencies."
+        },
+        "privacy": {
+          "title": "Protect Sensitive Information",
+          "description": "Do not share identities, legal documents, or personal data of third parties without explicit consent to safeguard their integrity and privacy."
+        },
+        "responsibility": {
+          "title": "Mature Priority Usage",
+          "description": "Classify urgency levels accurately. Reserving maximum priority alerts exclusively for immediate threats increases the probability of an effective response."
+        }
+      },
+      "callToAction": {
+        "title": "Community Commitment",
+        "description": "The value of this network relies on mutual trust. By acting with empathy and technical discipline, we ensure help reaches those who need it most."
+      }
+    }
+  },
+  "offlineGuide": {
+    "badge": "Local-First Preparedness",
+    "title": "Offline Emergency Checklist",
+    "subtitle": "Save and prepare your essential supplies. This checklist works fully offline via local storage on your device.",
+    "exportJson": "Export Checklist (JSON)",
+    "shareMessage": "Share List",
+    "copySuccess": "Message copied to clipboard",
+    "storageNotice": "Your progress is automatically saved in your browser's local storage. It will remain accessible even without network connectivity.",
+    "shareTemplate": "Hello, I am sharing the emergency preparedness checklist I am completing to stay ready during a crisis. You can review full details and build yours at {url}",
+    "categories": {
+      "waterFood": "Water & Food",
+      "medical": "Health & First Aid",
+      "powerComm": "Power & Communications",
+      "docs": "Documents & ID"
+    },
+    "items": {
+      "water": "Drinking water (at least 2 liters per person/day for 3 days)",
+      "cannedFood": "Non-perishable food and manual can opener",
+      "firstAid": "First aid kit and essential prescription medications",
+      "flashlight": "Flashlight with spare batteries or solar/crank power",
+      "powerbank": "External power bank fully charged",
+      "radio": "Portable AM/FM radio (battery or hand-crank powered)",
+      "copiesDocs": "Physical & digital ID copies inside a waterproof bag",
+      "whistle": "Emergency whistle for rescue signaling"
     }
   }
 }

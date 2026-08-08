@@ -171,6 +171,15 @@ export default function UserMenu() {
                                 {t("userMenu.settings")}
                             </button>
 
+                            {/* About / Proyecto Heroes link */}
+                            <LocalizedLink
+                                href="/about"
+                                onClick={closeMenu}
+                                className="block rounded-md px-3 py-2 text-sm text-white hover:bg-neutral-900"
+                            >
+                                {t("userMenu.about")}
+                            </LocalizedLink>
+
                             <div className="my-1 border-t border-neutral-800" />
 
                             {/* Sign out */}

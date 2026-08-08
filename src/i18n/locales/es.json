@@ -18,25 +18,25 @@
     "signIn": "Iniciar sesión",
     "signOut": "Cerrar sesión"
   },
-"map": {
-  "title": "Mapa de Emergencia",
-  "subtitle": "Centros médicos cercanos y selección de puntos de paradero",
-  "myLocation": "Mi Ubicación",
-  "gettingLocation": "Obteniendo ubicación...",
-  "locationRequiredNotice": "Activa tu ubicación para cargar los centros médicos y navegar por el mapa.",
-  "allowLocation": "Permitir Ubicación",
-  "selectedPoint": "Punto seleccionado",
-  "createReportHere": "Crear Reporte Aquí",
-  "markerPopupReport": "Punto seleccionado para reporte",
-  "coordinatesPinned": "Coordenadas fijadas:",
-  "unlinkCoordinates": "Desvincular coordenadas",
-  "coverageSector": "Sector de Cobertura",
-  "coverageRadius": "Establecimiento ubicado en un radio de ~{radius} km.",
-  "types": {
-    "hospital": "Hospital",
-    "clinic": "Centro Médico"
-  }
-},
+  "map": {
+    "title": "Mapa de Emergencia",
+    "subtitle": "Centros médicos cercanos y selección de puntos de paradero",
+    "myLocation": "Mi Ubicación",
+    "gettingLocation": "Obteniendo ubicación...",
+    "locationRequiredNotice": "Activa tu ubicación para cargar los centros médicos y navegar por el mapa.",
+    "allowLocation": "Permitir Ubicación",
+    "selectedPoint": "Punto seleccionado",
+    "createReportHere": "Crear Reporte Aquí",
+    "markerPopupReport": "Punto seleccionado para reporte",
+    "coordinatesPinned": "Coordenadas fijadas:",
+    "unlinkCoordinates": "Desvincular coordenadas",
+    "coverageSector": "Sector de Cobertura",
+    "coverageRadius": "Establecimiento ubicado en un radio de ~{radius} km.",
+    "types": {
+      "hospital": "Hospital",
+      "clinic": "Centro Médico"
+    }
+  },
   "auth": {
     "loginWithGoogle": "Iniciar sesión con Google",
     "signOut": "Cerrar sesión",
@@ -323,7 +323,8 @@
     "myProfile": "Mi perfil",
     "adminDashboard": "Panel de administración",
     "settings": "Ajustes",
-    "offlineSync": "Sin conexión. Conéctate para sincronizar."
+    "offlineSync": "Sin conexión. Conéctate para sincronizar.",
+    "about": "Acerca de Heroes"
   },
   "settings": {
     "back": "Atrás"
@@ -431,6 +432,125 @@
       "clinic": "Clínica",
       "pharmacy": "Farmacia",
       "health": "Centro de Salud"
+    }
+  },
+  "community": {
+    "title": "Comunidad Open Source",
+    "subtitle": "Proyecto libre y sin fines de lucro. ¡Súmate proponiendo un Pull Request!",
+    "stars": "{count} Stars",
+    "forks": "{count} Forks",
+    "contributors": "Colaboradores ({count})"
+  },
+  "about": {
+    "badge": "Sin fines de lucro y Código Abierto",
+    "title": "Proyecto Heroes",
+    "description": "Una plataforma comunitaria para localizar rápida y libremente centros de salud, personas desaparecidas y recursos críticos en momentos de necesidad.",
+    "license": {
+      "title": "Licencia MIT",
+      "description": "Este software es 100% libre. Tienes total libertad de usarlo, modificarlo y distribuirlo. La única condición legal es mantener el aviso de copyright y la atribución original del proyecto.",
+      "link": "Ver Licencia Completa →"
+    },
+    "contribute": {
+      "title": "¿Cómo Contribuir?",
+      "description": "¿Encontraste un bug o tienes una mejora de UX/UI? Revisa nuestras guías de arquitectura, clona el repositorio e inicia tu contribución mediante un Pull Request a `main`.",
+      "link": "Guía de Contribución →"
+    }
+  },
+  "protocol": {
+    "badge": "Guía Oficial de Respuesta",
+    "title": "Protocolos de Actuación en Crisis",
+    "subtitle": "Instrucciones claras y pasos fundamentales para actuar de manera coordinada durante una emergencia.",
+    "sections": {
+      "missing": "Personas Desaparecidas",
+      "emergencyNumbers": "Números de Emergencia"
+    },
+    "missing": {
+      "title": "Protocolo para Personas Desaparecidas",
+      "description": "Qué hacer inmediatamente ante la desaparición de un familiar o conocido y cómo aprovechar la plataforma Heroes.",
+      "items": {
+        "firstHours": {
+          "title": "1. Primeras 24 Horas (Acción Inmediata)",
+          "content": "No esperes 24 o 48 horas para actuar. Contacta a las autoridades locales de inmediato. Reúne una fotografía reciente con rostro visible, vestimenta vista por última vez, señas particulares (tatuajes, cicatrices) y números de contacto de familiares cercanos."
+        },
+        "usingApp": {
+          "title": "2. Publicación de Reporte en la Plataforma",
+          "content": "Utiliza la sección 'Reportar' de Heroes para crear una ficha. Asegúrate de incluir la última ubicación conocida. Si la persona es menor de edad, marca la casilla correspondiente para que los datos sensibles permanezcan protegidos."
+        },
+        "offlineSupport": {
+          "title": "3. Modo Offline y Sincronización",
+          "content": "Puedes crear o consultar reportes aunque no tengas conexión a internet. Los datos se guardarán de forma segura en el almacenamiento local de tu dispositivo y se enviarán automáticamente a los servidores cuando recuperes señal."
+        },
+        "verification": {
+          "title": "4. Verificación y Colaboración",
+          "content": "Evita difundir rumores o información no confirmada. Si tienes datos sobre un perfil publicado por otra persona, utiliza la opción 'Sugerir actualización' dentro de su perfil para que los rescatistas coordinen la verificación."
+        }
+      }
+    },
+    "emergency": {
+      "title": "Directorios y Canales Oficiales",
+      "description": "Líneas telefónicas primarias para la atención inmediata de crisis según el país detectado.",
+      "selectCountry": "País seleccionado:",
+      "detectedTag": "Detectado por ubicación",
+      "categories": {
+        "police": "Policía / Seguridad",
+        "medical": "Emergencias Médicas / Ambulancias",
+        "fire": "Cuerpo de Bomberos",
+        "general": "Central Unificada de Emergencias",
+        "civilProtection": "Protección Civil / Rescue"
+      }
+    },
+    "security": {
+      "badge": "Seguridad",
+      "title": "Buenas Prácticas de Comunicación y Seguridad",
+      "subtitle": "Un lenguaje claro, verificado y responsable es fundamental durante una crisis. Sigue estos lineamientos para coordinar ayuda efectiva sin saturar la red.",
+      "guidelines": {
+        "clarity": {
+          "title": "Claridad y Datos Objetivos",
+          "description": "Describe las necesidades con la mayor precisión posible (ubicación exacta, número de afectados y tipo de ayuda requerida). Evita suposiciones o lenguaje alarmista."
+        },
+        "verification": {
+          "title": "Verificación antes de Difundir",
+          "description": "Confirma la veracidad de la información antes de emitir una alerta masiva. La desinformación puede desviar recursos críticos de emergencias reales."
+        },
+        "privacy": {
+          "title": "Protección de Datos Sensibles",
+          "description": "No compartas identidades, documentación oficial o datos personales de terceros sin su consentimiento explícito para preservar su integridad y seguridad."
+        },
+        "responsibility": {
+          "title": "Uso Maduro de Prioridades",
+          "description": "Clasifica el nivel de urgencia correctamente. Reservar las alertas de máxima prioridad únicamente para situaciones de peligro inmediato aumenta las probabilidades de respuesta efectiva."
+        }
+      },
+      "callToAction": {
+        "title": "Compromiso de la Comunidad",
+        "description": "El valor de la plataforma radica en la confianza mutua. Al actuar con empatía y disciplina técnica, garantizamos que la ayuda llegue a quien más lo necesita."
+      }
+    }
+  },
+  "offlineGuide": {
+    "badge": "Preparación Local-First",
+    "title": "Checklist de Emergencia Offline",
+    "subtitle": "Guarda y prepara tus recursos esenciales. Esta lista funciona sin conexión mediante almacenamiento local en tu dispositivo.",
+    "exportJson": "Exportar Checklist (JSON)",
+    "shareMessage": "Compartir Lista",
+    "copySuccess": "Mensaje copiado al portapapeles",
+    "storageNotice": "Tus progresos se guardan automáticamente en el almacenamiento local de tu navegador. Estarán disponibles aun sin conexión a la red.",
+    "shareTemplate": "Hola, te comparto la lista de preparación de emergencia que estoy completando para estar listos ante cualquier crisis. Puedes revisar los detalles y crear la tuya en {url}",
+    "categories": {
+      "waterFood": "Agua y Alimentación",
+      "medical": "Salud y Primeros Auxilios",
+      "powerComm": "Energía y Comunicaciones",
+      "docs": "Documentos e Identificación"
+    },
+    "items": {
+      "water": "Agua potable (mínimo 2 litros por persona al día para 3 días)",
+      "cannedFood": "Alimentos no perecederos y abrelatas manual",
+      "firstAid": "Botiquín de primeros auxilios y medicamentos de prescripción médica",
+      "flashlight": "Linterna con baterías de repuesto o carga magnética/solar",
+      "powerbank": "Batería de respaldo (Powerbank) cargada al máximo",
+      "radio": "Radio portátil AM/FM (a baterías o manivela)",
+      "copiesDocs": "Copia física y digital de documentos de identidad en bolsa impermeable",
+      "whistle": "Silbato de emergencia para señalización de rescate"
     }
   }
 }
