@@ -5,7 +5,7 @@ import { routing } from "./i18n/routing";
 
 const intlMiddleware = createMiddleware(routing);
 
-// Routes that require an authenticated session.
+// Rutas protegidas que requieren sesión activa
 const PROTECTED_PATTERNS = [
   /^\/create$/,
   /^\/me$/,
@@ -14,7 +14,7 @@ const PROTECTED_PATTERNS = [
   /^\/notifications$/,
 ];
 
-// Routes restricted to admins.
+// Rutas exclusivas para administradores
 const ADMIN_PATTERNS = [/^\/admin(\/.*)?$/];
 
 function stripLocale(pathname: string): string {
@@ -23,7 +23,7 @@ function stripLocale(pathname: string): string {
   return pathname.slice(match[0].length) || "/";
 }
 
-export default async function middleware(req: NextRequest) {
+export default async function proxy(req: NextRequest) {
   const { pathname, search } = req.nextUrl;
   const stripped = stripLocale(pathname);
 
@@ -32,15 +32,15 @@ export default async function middleware(req: NextRequest) {
     secret: process.env.NEXTAUTH_SECRET,
   });
 
-  // Authenticated users visiting /login are bounced to the home page.
+  // 1. Redirección de usuarios autenticados al intentar ir a /login
   if (token && stripped === "/login") {
-    const home = new URL("/", req.url);
-    return NextResponse.redirect(home);
+    return NextResponse.redirect(new URL("/", req.url));
   }
 
   const isProtected = PROTECTED_PATTERNS.some((re) => re.test(stripped));
   const isAdminRoute = ADMIN_PATTERNS.some((re) => re.test(stripped));
 
+  // 2. Control de acceso a rutas protegidas o administrativas
   if (!token && (isProtected || isAdminRoute)) {
     const loginUrl = new URL("/login", req.url);
     loginUrl.searchParams.set("callbackUrl", `${pathname}${search}`);
@@ -51,12 +51,25 @@ export default async function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL("/", req.url));
   }
 
-  return intlMiddleware(req);
+  // 3. Ejecutar el middleware de i18n
+  const response = intlMiddleware(req);
+
+  // 4. Inyectar detección de país para el directorio de emergencia
+  const country =
+    req.headers.get("x-vercel-ip-country") ||
+    req.headers.get("cf-ipcountry") ||
+    "VE";
+
+  if (!req.cookies.has("user-country")) {
+    response.cookies.set("user-country", country, {
+      path: "/",
+      sameSite: "lax",
+    });
+  }
+
+  return response;
 }
 
 export const config = {
-  // Match all pathnames except for
-  // - those starting with /api, /trpc, /_next or /_vercel
-  // - those containing a dot (e.g. favicon.ico)
   matcher: "/((?!api|trpc|_next|_vercel|.*\\..*).*)",
 };
