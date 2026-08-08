@@ -432,5 +432,27 @@
       "pharmacy": "Pharmacy",
       "health": "Health Center"
     }
+  },
+  "community": {
+    "title": "Open Source Community",
+    "subtitle": "Free and non-profit project. Join us by submitting a Pull Request!",
+    "stars": "{count} Stars",
+    "forks": "{count} Forks",
+    "contributors": "Contributors ({count})"
+  },
+  "about": {
+    "badge": "Non-Profit & Open Source",
+    "title": "Heroes Project",
+    "description": "A community-driven platform to quickly and freely locate health centers, missing persons, and critical resources in times of need.",
+    "license": {
+      "title": "MIT License",
+      "description": "This software is 100% free. You have full freedom to use, modify, and distribute it. The only legal requirement is to maintain copyright and original attribution.",
+      "link": "View Full License →"
+    },
+    "contribute": {
+      "title": "How to Contribute?",
+      "description": "Found a bug or have a UX/UI enhancement? Check our architecture guides, clone the repository, and start contributing via a Pull Request to `main`.",
+      "link": "Contribution Guide →"
+    }
   }
 }

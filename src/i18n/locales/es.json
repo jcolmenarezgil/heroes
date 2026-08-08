@@ -432,5 +432,27 @@
       "pharmacy": "Farmacia",
       "health": "Centro de Salud"
     }
+  },
+  "community": {
+    "title": "Comunidad Open Source",
+    "subtitle": "Proyecto libre y sin fines de lucro. ¡Súmate proponiendo un Pull Request!",
+    "stars": "{count} Stars",
+    "forks": "{count} Forks",
+    "contributors": "Colaboradores ({count})"
+  },
+  "about": {
+    "badge": "Sin fines de lucro y Código Abierto",
+    "title": "Proyecto Heroes",
+    "description": "Una plataforma comunitaria para localizar rápida y libremente centros de salud, personas desaparecidas y recursos críticos en momentos de necesidad.",
+    "license": {
+      "title": "Licencia MIT",
+      "description": "Este software es 100% libre. Tienes total libertad de usarlo, modificarlo y distribuirlo. La única condición legal es mantener el aviso de copyright y la atribución original del proyecto.",
+      "link": "Ver Licencia Completa →"
+    },
+    "contribute": {
+      "title": "¿Cómo Contribuir?",
+      "description": "¿Encontraste un bug o tienes una mejora de UX/UI? Revisa nuestras guías de arquitectura, clona el repositorio e inicia tu contribución mediante un Pull Request a `main`.",
+      "link": "Guía de Contribución →"
+    }
   }
 }
