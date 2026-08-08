@@ -11,14 +11,14 @@ export default function HealthCentersPage() {
     const [userCoords, setUserCoords] = useState<{ lat: number; lon: number } | null>(null);
     const [locationError, setLocationError] = useState<string | null>(null);
 
-    const { startStreaming, getSortedCenters, isStreaming } = useHealthCentersStore();
+    const { fetchCenters, getSortedCenters, isLoading } = useHealthCentersStore();
 
     useEffect(() => {
         if (!navigator.geolocation) {
             setLocationError(t("errors.geoNotSupported"));
             const fallbackCoords = { lat: 10.2541, lon: -67.9531 };
             setUserCoords(fallbackCoords);
-            startStreaming(fallbackCoords.lat, fallbackCoords.lon);
+            fetchCenters(fallbackCoords.lat, fallbackCoords.lon);
             return;
         }
 
@@ -29,18 +29,18 @@ export default function HealthCentersPage() {
                     lon: position.coords.longitude,
                 };
                 setUserCoords(coords);
-                startStreaming(coords.lat, coords.lon);
+                fetchCenters(coords.lat, coords.lon);
             },
             (err) => {
                 console.warn("[HealthCenters] Error reading location:", err.message);
                 setLocationError(t("errors.locationFailed"));
                 const fallbackCoords = { lat: 10.2541, lon: -67.9531 };
                 setUserCoords(fallbackCoords);
-                startStreaming(fallbackCoords.lat, fallbackCoords.lon);
+                fetchCenters(fallbackCoords.lat, fallbackCoords.lon);
             },
             { enableHighAccuracy: true, timeout: 20000 }
         );
-    }, [startStreaming, t]);
+    }, [fetchCenters, t]);
 
     const centers = userCoords ? getSortedCenters(userCoords.lat, userCoords.lon) : [];
 
@@ -87,7 +87,7 @@ export default function HealthCentersPage() {
                 </div>
             )}
 
-            {isStreaming && centers.length > 0 && (
+            {isLoading && centers.length > 0 && (
                 <div className="flex items-center gap-2 text-[11px] text-neutral-400 animate-pulse">
                     <span className="h-2 w-2 rounded-full bg-blue-500" />
                     {t("searching")}
@@ -148,14 +148,14 @@ export default function HealthCentersPage() {
                 ))}
             </div>
 
-            {isStreaming && centers.length === 0 && (
+            {isLoading && centers.length === 0 && (
                 <div className="flex items-center justify-center gap-2 py-8 text-xs text-neutral-400">
                     <span className="h-2 w-2 animate-ping rounded-full bg-rose-500" />
                     {t("loadingRealtime")}
                 </div>
             )}
 
-            {!isStreaming && centers.length === 0 && (
+            {!isLoading && centers.length === 0 && (
                 <div className="rounded-xl border border-neutral-800 bg-neutral-900/40 p-8 text-center text-xs text-neutral-400">
                     {t("emptyState")}
                 </div>

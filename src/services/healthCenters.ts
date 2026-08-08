@@ -38,21 +38,31 @@ const OVERPASS_ENDPOINTS = [
     "https://overpass.private.coffee/api/interpreter",
 ];
 
+const cache = new Map<string, { timestamp: number; data: HealthCenter[] }>();
+const CACHE_TTL_MS = 5 * 60 * 1000;
+
 export async function fetchNearbyHealthCenters(
     lat: number,
     lon: number,
     radiusMeters: number = 8000
 ): Promise<HealthCenter[]> {
-    const query = `[out:json][timeout:8];
+    const cacheKey = `${lat.toFixed(2)},${lon.toFixed(2)}-${radiusMeters}`;
+    const cached = cache.get(cacheKey);
+
+    if (cached && Date.now() - cached.timestamp < CACHE_TTL_MS) {
+        return cached.data;
+    }
+
+    const query = `[out:json][timeout:12];
     (
       nwr["amenity"~"hospital|clinic|pharmacy|doctors|dentist"](around:${radiusMeters},${lat},${lon});
       nwr["healthcare"~"hospital|clinic|centre|doctor|pharmacy"](around:${radiusMeters},${lat},${lon});
     );
-    out center 100;`;
+    out center qt 100;`;
 
-    for (const endpoint of OVERPASS_ENDPOINTS) {
+    const fetchFromEndpoint = async (endpoint: string): Promise<HealthCenter[]> => {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 8000);
+        const timeoutId = setTimeout(() => controller.abort(), 12000);
 
         try {
             const response = await fetch(endpoint, {
@@ -67,21 +77,27 @@ export async function fetchNearbyHealthCenters(
 
             clearTimeout(timeoutId);
 
-            if (response.ok) {
-                const data: OverpassResponse = await response.json();
-                const centers = parseOverpassResponse(data, lat, lon);
-                if (centers.length > 0) {
-                    return centers;
-                }
-            }
-        } catch {
-            clearTimeout(timeoutId);
-            continue;
-        }
-    }
+            if (!response.ok) throw new Error(`HTTP error ${response.status}`);
 
-    console.warn("[HealthCenters] All Overpass endpoints failed or returned no data.");
-    return [];
+            const data: OverpassResponse = await response.json();
+            const centers = parseOverpassResponse(data, lat, lon);
+
+            if (centers.length === 0) throw new Error("No centers found");
+            return centers;
+        } catch (err) {
+            clearTimeout(timeoutId);
+            throw err;
+        }
+    };
+
+    try {
+        const centers = await Promise.any(OVERPASS_ENDPOINTS.map(fetchFromEndpoint));
+        cache.set(cacheKey, { timestamp: Date.now(), data: centers });
+        return centers;
+    } catch {
+        console.warn("[HealthCenters] All Overpass endpoints failed or timed out.");
+        return [];
+    }
 }
 
 function parseOverpassResponse(data: OverpassResponse, userLat: number, userLon: number): HealthCenter[] {

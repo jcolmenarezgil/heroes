@@ -1,21 +1,20 @@
-// src/store/useHealthCentersStore.ts
 import { create } from "zustand";
 import { HealthCenter } from "@/services/healthCenters";
 
 interface HealthCentersState {
     centers: Map<number, HealthCenter>;
     lastFetchedLocation: { lat: number; lon: number } | null;
-    isStreaming: boolean;
+    isLoading: boolean;
     error: string | null;
 
-    startStreaming: (lat: number, lon: number) => void;
+    fetchCenters: (lat: number, lon: number) => Promise<void>;
     getSortedCenters: (userLat: number, userLon: number) => HealthCenter[];
 }
 
 export const useHealthCentersStore = create<HealthCentersState>((set, get) => ({
     centers: new Map(),
     lastFetchedLocation: null,
-    isStreaming: false,
+    isLoading: false,
     error: null,
 
     getSortedCenters: (userLat: number, userLon: number) => {
@@ -30,8 +29,8 @@ export const useHealthCentersStore = create<HealthCentersState>((set, get) => ({
             .sort((a, b) => a.distance - b.distance);
     },
 
-    startStreaming: (lat: number, lon: number) => {
-        const { lastFetchedLocation, isStreaming, centers } = get();
+    fetchCenters: async (lat: number, lon: number) => {
+        const { lastFetchedLocation, isLoading, centers } = get();
 
         if (lastFetchedLocation) {
             const distMoved = calculateHaversineDistance(
@@ -40,51 +39,29 @@ export const useHealthCentersStore = create<HealthCentersState>((set, get) => ({
                 lat,
                 lon
             );
-            if (distMoved < 0.5 && centers.size > 0) {
-                return;
-            }
+            if (distMoved < 0.5 && centers.size > 0) return;
         }
 
-        if (isStreaming) return;
+        if (isLoading) return;
 
-        set({ isStreaming: true, error: null, lastFetchedLocation: { lat, lon } });
+        set({ isLoading: true, error: null, lastFetchedLocation: { lat, lon } });
 
-        const eventSource = new EventSource(`/api/health-centers/stream?lat=${lat}&lon=${lon}`);
+        try {
+            const res = await fetch(`/api/health-centers/stream?lat=${lat}&lon=${lon}`);
+            if (!res.ok) throw new Error("Failed to fetch health centers");
 
-        eventSource.onmessage = (event) => {
-            if (event.data === "[DONE]") {
-                eventSource.close();
-                set({ isStreaming: false });
-                return;
+            const data: HealthCenter[] = await res.json();
+
+            const newMap = new Map<number, HealthCenter>();
+            for (const item of data) {
+                newMap.set(item.id, item);
             }
 
-            try {
-                const incomingData = JSON.parse(event.data);
-                const list: HealthCenter[] = Array.isArray(incomingData)
-                    ? incomingData
-                    : Array.isArray(incomingData?.data)
-                        ? incomingData.data
-                        : [];
-
-                if (list.length > 0) {
-                    set((state) => {
-                        const newMap = new Map(state.centers);
-                        for (const item of list) {
-                            newMap.set(item.id, item);
-                        }
-                        return { centers: newMap };
-                    });
-                }
-            } catch (err) {
-                console.error("[useHealthCentersStore] Error parsing SSE chunk:", err);
-            }
-        };
-
-        eventSource.onerror = (err) => {
-            console.error("[useHealthCentersStore] SSE connection error:", err);
-            eventSource.close();
-            set({ isStreaming: false });
-        };
+            set({ centers: newMap, isLoading: false });
+        } catch (err) {
+            const message = err instanceof Error ? err.message : "Error fetching health centers";
+            set({ error: message, isLoading: false });
+        }
     },
 }));
 
