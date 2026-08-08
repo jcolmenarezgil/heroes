@@ -17,14 +17,14 @@ export default function BottomNav() {
             icon: (cls: string) => <HomeIcon className={cls} />,
         },
         {
-            label: t("map"),
-            href: "/map",
-            icon: (cls: string) => <MapIcon className={cls} />,
-        },
-        {
             label: t("create"),
             href: "/create",
             icon: (cls: string) => <ReportIcon className={cls} />,
+        },
+        {
+            label: t("map"),
+            href: "/map",
+            icon: (cls: string) => <MapIcon className={cls} />,
         },
     ];
 
@@ -47,10 +47,6 @@ export default function BottomNav() {
                     </Link>
                 );
             })}
-
-            <div className="flex flex-col items-center justify-center text-xs">
-                <SyncStatus />
-            </div>
         </nav>
     );
 }
