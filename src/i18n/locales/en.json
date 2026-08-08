@@ -199,7 +199,13 @@
       "unverifySuccess": "Profile unverified",
       "verifyError": "Failed to verify profile",
       "unverifyError": "Failed to unverify profile",
-      "selected": "{count} selected"
+      "selected": "{count} selected",
+"importJson": "Import JSON",
+"importTitle": "Bulk import profiles",
+"importQueued": "Queued {count} records for import",
+"importSuccess": "Successfully imported {count} records",
+"importError": "Failed to process JSON file",
+"importInvalidFormat": "JSON format does not match profile schema"
     },
     "roles": {
       "viewer": "Viewer",

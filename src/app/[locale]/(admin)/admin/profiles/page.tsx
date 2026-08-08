@@ -10,6 +10,7 @@ import AvatarPlaceholder from "@/components/ui/AvatarPlaceholder";
 import Skeleton from "@/components/ui/Skeleton";
 import { Button } from "@/components/ui/Button";
 import { useToast } from "@/components/providers/ToastProvider";
+import ProfileJsonImporter from "@/components/admin/ProfileJsonImporter"; // <-- Componente incorporado
 import {
   MagnifyingGlassIcon,
   SearchEmptyIcon,
@@ -177,15 +178,38 @@ export default function AdminProfilesPage() {
     );
   }, [profiles, verifiedFilter]);
 
+  const refreshList = () => {
+    setPage(1);
+    setIsLoading(true);
+    const params: ListProfilesParams = { page: 1, limit: 20 };
+    if (debouncedSearch) params.q = debouncedSearch;
+    if (statusFilter) params.status = statusFilter;
+
+    listProfiles(params)
+      .then((res) => {
+        setProfiles(res.profiles);
+        setTotalPages(res.totalPages);
+        setIsLoading(false);
+      })
+      .catch(() => {
+        addToast(t("verifyError"), "error");
+        setIsLoading(false);
+      });
+  };
+
   return (
     <div className="min-w-0 space-y-4">
-      <div>
-        <h1 className="text-xl font-semibold text-white md:text-2xl">
-          {tAdmin("profilesTitle")}
-        </h1>
-        <p className="mt-1 text-sm text-neutral-400">
-          {tAdmin("profilesSubtitle")}
-        </p>
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <h1 className="text-xl font-semibold text-white md:text-2xl">
+            {tAdmin("profilesTitle")}
+          </h1>
+          <p className="mt-1 text-sm text-neutral-400">
+            {tAdmin("profilesSubtitle")}
+          </p>
+        </div>
+
+        <ProfileJsonImporter onSuccess={refreshList} />
       </div>
 
       {/* Search + filters */}

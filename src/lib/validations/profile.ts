@@ -4,27 +4,28 @@ import { z } from "zod";
 export const profileStatusSchema = z.enum(["active", "found", "deceased"]);
 
 export const profileSchema = z.object({
-    name: z.string().trim().min(1, "nameRequired").max(200),
-    lastKnownLocation: z
+    id: z.string().uuid().optional(),
+    user_id: z.string().uuid().optional(),
+    name: z.string().trim().min(1),
+    photo_url: z
         .string()
-        .trim()
-        .min(3, "locationRequired")
-        .max(500),
-
-    // Coordenadas opcionales para la geolocalización
+        .regex(/^(\/api\/photos\/[0-9a-f-]{36}|https?:\/\/.+)$/i)
+        .nullable()
+        .optional(),
+    last_known_location: z.string().trim().min(1),
+    status: z.enum(["active", "found", "inactive"]).default("active"),
+    contact_phone: z.string().nullable().optional(),
+    notes: z.string().nullable().optional(),
+    // Acepta booleano o el timestamp retornado por PostgreSQL
+    verified: z.union([z.boolean(), z.string()]).nullable().optional(),
     latitude: z.number().min(-90).max(90).nullable().optional(),
     longitude: z.number().min(-180).max(180).nullable().optional(),
-
-    photoUrl: z
-        .string()
-        .max(2000)
-        .regex(/^(\/api\/photos\/[0-9a-f-]{36}|https?:\/\/.+)$/i)
-        .nullish(),
-    photoPath: z.string().max(500).nullish(),
-    isMinor: z.boolean().default(false),
-    contactPhone: z.string().trim().min(1).max(50).nullish(),
-    notes: z.string().max(5000).nullish(),
-    status: profileStatusSchema.default("active"),
+    is_minor: z.boolean().default(false),
+    photo_path: z.string().nullable().optional(),
+    created_at: z.string().optional(),
+    updated_at: z.string().optional(),
+    created_by: z.string().optional(),
+    updated_by: z.string().optional(),
 });
 
 export const createProfileSchema = z.object({

@@ -199,7 +199,13 @@
       "unverifySuccess": "Verificación removida",
       "verifyError": "Error al verificar perfil",
       "unverifyError": "Error al quitar verificación",
-      "selected": "{count} seleccionados"
+      "selected": "{count} seleccionados",
+"importJson": "Cargar JSON",
+"importTitle": "Importar perfiles masivos",
+"importQueued": "Se encolaron {count} registros para importación",
+"importSuccess": "Se importaron {count} registros correctamente",
+"importError": "Error al procesar el archivo JSON",
+"importInvalidFormat": "El formato del JSON no cumple con el esquema de perfiles"
     },
     "roles": {
       "viewer": "Espectador",

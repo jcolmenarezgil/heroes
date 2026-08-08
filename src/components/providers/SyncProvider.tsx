@@ -1,3 +1,5 @@
+// src/components/providers/SyncProvider.tsx
+
 "use client";
 
 import React, {
@@ -18,6 +20,7 @@ import {
     setSyncInterval,
     syncProfiles,
 } from "@/lib/profiles-cache";
+import { processSyncQueue } from "@/lib/sync/syncService";
 
 interface SyncContextValue {
     interval: number;
@@ -25,14 +28,16 @@ interface SyncContextValue {
     lastSync: number | null;
     isSyncing: boolean;
     syncNow: () => Promise<void>;
+    triggerOutboxSync: () => Promise<void>;
 }
 
 const SyncContext = createContext<SyncContextValue>({
     interval: 5 * 60 * 1000,
-    setInterval: () => {},
+    setInterval: () => { },
     lastSync: null,
     isSyncing: false,
-    syncNow: async () => {},
+    syncNow: async () => { },
+    triggerOutboxSync: async () => { },
 });
 
 export function useSync() {
@@ -57,6 +62,7 @@ export function SyncProvider({ children }: { children: React.ReactNode }) {
         setIntervalState(ms);
     }, []);
 
+    // Ejecuta la sincronización bidireccional (Outbox + Pull Cache)
     const runSync = useCallback(
         async (force = false) => {
             if (isSyncing) return;
@@ -64,13 +70,17 @@ export function SyncProvider({ children }: { children: React.ReactNode }) {
 
             setIsSyncing(true);
             try {
+                // 1. Flush de datos locales pendientes hacia el servidor
+                await processSyncQueue();
+
+                // 2. Traer datos frescos del servidor a la caché local
                 const didSync = await syncProfiles(isOnline, force);
                 if (didSync || force) {
                     const updated = await getLastSync();
                     setLastSync(updated);
                 }
             } catch (error) {
-                console.error("Sync failed:", error);
+                console.error("Sync process error:", error);
             } finally {
                 setIsSyncing(false);
             }
@@ -82,7 +92,17 @@ export function SyncProvider({ children }: { children: React.ReactNode }) {
         await runSync(true);
     }, [runSync]);
 
-    // Auto-sync on mount and when connection comes back online.
+    // Disparador dedicado exclusivamente a vaciar la cola outbox de forma manual
+    const triggerOutboxSync = useCallback(async () => {
+        if (!isOnline) return;
+        try {
+            await processSyncQueue();
+        } catch (error) {
+            console.error("Outbox sync failed:", error);
+        }
+    }, [isOnline]);
+
+    // Auto-sync cuando la conexión se restablece.
     useEffect(() => {
         const wasOffline = !prevOnlineRef.current;
         const isNowOnline = isOnline;
@@ -102,14 +122,13 @@ export function SyncProvider({ children }: { children: React.ReactNode }) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    // Keep a stable ref to runSync so the periodic timer doesn't reset when
-    // isSyncing / isOnline change.
+    // Mantener referencia estable de runSync para temporizadores de fondo
     const runSyncRef = useRef(runSync);
     useEffect(() => {
         runSyncRef.current = runSync;
     }, [runSync]);
 
-    // Periodic background sync when a non-zero interval is selected.
+    // Background periodic sync
     useEffect(() => {
         if (interval <= 0) return;
         const timer = window.setInterval(() => {
@@ -122,9 +141,7 @@ export function SyncProvider({ children }: { children: React.ReactNode }) {
     const locale = useLocale();
     const prevPathnameRef = useRef(pathname);
 
-    // Sync when the user navigates back to the home screen. This makes the
-    // "real-time" interval feel instant and lets longer intervals refresh as
-    // soon as the list is viewed (respecting TTL).
+    // Sync al regresar a la vista principal
     useEffect(() => {
         const prev = prevPathnameRef.current;
         prevPathnameRef.current = pathname;
@@ -134,7 +151,7 @@ export function SyncProvider({ children }: { children: React.ReactNode }) {
         }
     }, [pathname, locale, runSync]);
 
-    // Sync when the app/tab regains focus (respects TTL via runSync(false)).
+    // Sync cuando la pestaña o aplicación recupera el foco
     useEffect(() => {
         const handleVisibility = () => {
             if (document.visibilityState === "visible") {
@@ -153,8 +170,9 @@ export function SyncProvider({ children }: { children: React.ReactNode }) {
             lastSync,
             isSyncing,
             syncNow,
+            triggerOutboxSync,
         }),
-        [interval, setInterval, lastSync, isSyncing, syncNow]
+        [interval, setInterval, lastSync, isSyncing, syncNow, triggerOutboxSync]
     );
 
     return (
