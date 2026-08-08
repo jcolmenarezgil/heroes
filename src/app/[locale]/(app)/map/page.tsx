@@ -1,7 +1,9 @@
+// src/app/[locale]/(app)/map/page.tsx
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import dynamic from "next/dynamic";
+import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useUserLocation } from "@/hooks/useUserLocation";
 import { listProfiles } from "@/lib/api-client";
@@ -9,16 +11,36 @@ import type { ProfileDTO } from "@/types/profile";
 
 const InteractiveMap = dynamic(
     () => import("@/components/map/InteractiveMap"),
-    { ssr: false }
+    {
+        ssr: false,
+        loading: () => (
+            <div className="h-[calc(100dvh-18rem)] w-full rounded-xl border border-neutral-800 bg-neutral-900/50 animate-pulse" />
+        ),
+    }
 );
 
-export default function MapPage() {
+function MapContent() {
     const t = useTranslations("map");
+    const searchParams = useSearchParams();
     const { location, error: locationError, isLoading: isLocating, requestLocation } = useUserLocation();
 
     const [profiles, setProfiles] = useState<ProfileDTO[]>([]);
     const [isLoadingProfiles, setIsLoadingProfiles] = useState(true);
     const [apiError, setApiError] = useState<string | null>(null);
+
+    const latParam = searchParams.get("lat");
+    const lngParam = searchParams.get("lng");
+    const zoomParam = searchParams.get("zoom");
+    const radiusParam = searchParams.get("radius");
+
+    const focusLocation = (latParam && lngParam && !isNaN(parseFloat(latParam)) && !isNaN(parseFloat(lngParam)))
+        ? {
+            lat: parseFloat(latParam),
+            lng: parseFloat(lngParam),
+            zoom: zoomParam ? parseInt(zoomParam, 10) : 13,
+            radiusInMeters: radiusParam ? parseInt(radiusParam, 10) : 900,
+        }
+        : null;
 
     useEffect(() => {
         let isMounted = true;
@@ -29,7 +51,6 @@ export default function MapPage() {
                 const response = await listProfiles({ limit: 100 });
 
                 if (isMounted) {
-                    // Soporta respuesta array directo o envuelta en objeto (items / profiles / data)
                     const list: ProfileDTO[] = Array.isArray(response)
                         ? response
                         : "items" in response && Array.isArray(response.items)
@@ -44,11 +65,11 @@ export default function MapPage() {
                     setProfiles(validProfiles);
                     setApiError(null);
                 }
-            } catch (err) {
+            } catch (err: unknown) {
                 if (isMounted) {
-                    setApiError(
-                        err instanceof Error ? err.message : "Error al cargar reportes en el mapa"
-                    );
+                    const error = err instanceof Error ? err.message : "Failed to load map profiles";
+                    console.error("[MapContent] Error loading profiles:", err);
+                    setApiError(error);
                 }
             } finally {
                 if (isMounted) {
@@ -95,8 +116,17 @@ export default function MapPage() {
 
             <InteractiveMap
                 userLocation={location}
+                focusLocation={focusLocation}
                 profiles={profiles}
             />
         </section>
+    );
+}
+
+export default function MapPage() {
+    return (
+        <Suspense fallback={<div className="h-[calc(100dvh-18rem)] w-full rounded-xl border border-neutral-800 bg-neutral-900/50 animate-pulse" />}>
+            <MapContent />
+        </Suspense>
     );
 }

@@ -18,23 +18,25 @@
     "signIn": "Iniciar sesión",
     "signOut": "Cerrar sesión"
   },
-  "map": {
-    "title": "Mapa de Emergencia",
-    "subtitle": "Centros médicos cercanos y selección de puntos de paradero",
-    "myLocation": "Mi Ubicación",
-    "gettingLocation": "Obteniendo ubicación...",
-    "locationRequiredNotice": "Activa tu ubicación para cargar los centros médicos y navegar por el mapa.",
-    "allowLocation": "Permitir Ubicación",
-    "selectedPoint": "Punto seleccionado",
-    "createReportHere": "Crear Reporte Aquí",
-    "markerPopupReport": "Punto seleccionado para reporte",
-    "coordinatesPinned": "Coordenadas fijadas:",
-    "unlinkCoordinates": "Desvincular coordenadas",
-    "types": {
-      "hospital": "Hospital",
-      "clinic": "Centro Médico"
-    }
-  },
+"map": {
+  "title": "Mapa de Emergencia",
+  "subtitle": "Centros médicos cercanos y selección de puntos de paradero",
+  "myLocation": "Mi Ubicación",
+  "gettingLocation": "Obteniendo ubicación...",
+  "locationRequiredNotice": "Activa tu ubicación para cargar los centros médicos y navegar por el mapa.",
+  "allowLocation": "Permitir Ubicación",
+  "selectedPoint": "Punto seleccionado",
+  "createReportHere": "Crear Reporte Aquí",
+  "markerPopupReport": "Punto seleccionado para reporte",
+  "coordinatesPinned": "Coordenadas fijadas:",
+  "unlinkCoordinates": "Desvincular coordenadas",
+  "coverageSector": "Sector de Cobertura",
+  "coverageRadius": "Establecimiento ubicado en un radio de ~{radius} km.",
+  "types": {
+    "hospital": "Hospital",
+    "clinic": "Centro Médico"
+  }
+},
   "auth": {
     "loginWithGoogle": "Iniciar sesión con Google",
     "signOut": "Cerrar sesión",
@@ -411,5 +413,24 @@
     "errorDescription": "Ocurrió un error inesperado al renderizar esta página.",
     "retry": "Intentar de nuevo",
     "backToHome": "Volver al inicio"
+  },
+  "healthCenters": {
+    "title": "Centros de Salud Cerca",
+    "subtitle": "Puntos de atención ordenados por proximidad a tu ubicación actual.",
+    "searching": "Buscando nuevos puntos de atención en la zona...",
+    "noPhone": "Sin teléfono registrado",
+    "viewOnMap": "Ver en mapa",
+    "loadingRealtime": "Consultando centros de atención en tiempo real...",
+    "emptyState": "No se encontraron centros de salud cercanos en el área actual.",
+    "errors": {
+      "geoNotSupported": "La geolocalización no está soportada por tu navegador.",
+      "locationFailed": "No se pudo obtener la ubicación exacta. Mostrando resultados predeterminados."
+    },
+    "types": {
+      "hospital": "Hospital",
+      "clinic": "Clínica",
+      "pharmacy": "Farmacia",
+      "health": "Centro de Salud"
+    }
   }
 }

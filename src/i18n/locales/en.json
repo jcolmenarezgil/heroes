@@ -18,23 +18,25 @@
     "signIn": "Sign in",
     "signOut": "Sign out"
   },
-  "map": {
-    "title": "Emergency Map",
-    "subtitle": "Nearby medical centers and location selection points",
-    "myLocation": "My Location",
-    "gettingLocation": "Getting location...",
-    "locationRequiredNotice": "Enable your location to load medical centers and navigate the map.",
-    "allowLocation": "Allow Location",
-    "selectedPoint": "Selected point",
-    "createReportHere": "Create Report Here",
-    "markerPopupReport": "Selected point for report",
-    "coordinatesPinned": "Coordinates pinned:",
-    "unlinkCoordinates": "Unlink coordinates",
-    "types": {
-      "hospital": "Hospital",
-      "clinic": "Medical Center"
-    }
-  },
+"map": {
+  "title": "Emergency Map",
+  "subtitle": "Nearby medical centers and location selection points",
+  "myLocation": "My Location",
+  "gettingLocation": "Getting location...",
+  "locationRequiredNotice": "Enable your location to load medical centers and navigate the map.",
+  "allowLocation": "Allow Location",
+  "selectedPoint": "Selected point",
+  "createReportHere": "Create Report Here",
+  "markerPopupReport": "Selected point for report",
+  "coordinatesPinned": "Coordinates pinned:",
+  "unlinkCoordinates": "Unlink coordinates",
+  "coverageSector": "Coverage Sector",
+  "coverageRadius": "Facility located within a radius of ~{radius} km.",
+  "types": {
+    "hospital": "Hospital",
+    "clinic": "Medical Center"
+  }
+},
   "auth": {
     "loginWithGoogle": "Sign in with Google",
     "signOut": "Sign Out",
@@ -411,5 +413,24 @@
     "errorDescription": "An unexpected error occurred while rendering this page.",
     "retry": "Try again",
     "backToHome": "Back to home"
+  },
+  "healthCenters": {
+    "title": "Nearby Health Centers",
+    "subtitle": "Care points ordered by proximity to your current location.",
+    "searching": "Searching for new care points in the area...",
+    "noPhone": "No registered phone",
+    "viewOnMap": "View on map",
+    "loadingRealtime": "Checking care centers in real time...",
+    "emptyState": "No nearby health centers found in the current area.",
+    "errors": {
+      "geoNotSupported": "Geolocation is not supported by your browser.",
+      "locationFailed": "Could not obtain exact location. Showing default results."
+    },
+    "types": {
+      "hospital": "Hospital",
+      "clinic": "Clinic",
+      "pharmacy": "Pharmacy",
+      "health": "Health Center"
+    }
   }
 }
