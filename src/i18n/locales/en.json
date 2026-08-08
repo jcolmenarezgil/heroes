@@ -10,14 +10,14 @@
     "crisisResponse": "Crisis Response",
     "missingPersonsLocator": "& Missing Persons Locator"
   },
-"nav": {
-  "home": "Home",
-  "create": "Report",
-  "search": "Search",
-  "map": "Local Map",
-  "signIn": "Sign in",
-  "signOut": "Sign out"
-},
+  "nav": {
+    "home": "Home",
+    "create": "Report",
+    "search": "Search",
+    "map": "Local Map",
+    "signIn": "Sign in",
+    "signOut": "Sign out"
+  },
 "map": {
   "title": "Emergency Map",
   "subtitle": "Nearby medical centers and location selection points",
@@ -30,6 +30,8 @@
   "markerPopupReport": "Selected point for report",
   "coordinatesPinned": "Coordinates pinned:",
   "unlinkCoordinates": "Unlink coordinates",
+  "coverageSector": "Coverage Sector",
+  "coverageRadius": "Facility located within a radius of ~{radius} km.",
   "types": {
     "hospital": "Hospital",
     "clinic": "Medical Center"
@@ -56,6 +58,22 @@
       "previous": "Previous",
       "next": "Next",
       "pageOf": "Page {page} of {total}"
+    },
+    "tabs": {
+      "quickActions": "Quick Actions",
+      "searchDirectory": "Search Directory"
+    },
+    "actions": {
+      "urgent": "Urgent Action",
+      "reportPerson": "Report Missing Person",
+      "reportPersonDesc": "Register a new profile to initiate search and alert immediately.",
+      "searchCatalog": "Search Catalog",
+      "searchCatalogDesc": "Filter and locate active profiles stored in local cache.",
+      "nearbyCenters": "Care Centers",
+      "nearbyCentersDesc": "Find nearby medical centers, emergency points, and modules.",
+      "guideProtocol": "Response Protocol",
+      "guideProtocolDesc": "Instructions and official guidelines on how to act during a crisis.",
+      "offlineNotice": "Data is saved locally. You can issue reports and search even without network connectivity."
     }
   },
   "profile": {
@@ -200,12 +218,12 @@
       "verifyError": "Failed to verify profile",
       "unverifyError": "Failed to unverify profile",
       "selected": "{count} selected",
-"importJson": "Import JSON",
-"importTitle": "Bulk import profiles",
-"importQueued": "Queued {count} records for import",
-"importSuccess": "Successfully imported {count} records",
-"importError": "Failed to process JSON file",
-"importInvalidFormat": "JSON format does not match profile schema"
+      "importJson": "Import JSON",
+      "importTitle": "Bulk import profiles",
+      "importQueued": "Queued {count} records for import",
+      "importSuccess": "Successfully imported {count} records",
+      "importError": "Failed to process JSON file",
+      "importInvalidFormat": "JSON format does not match profile schema"
     },
     "roles": {
       "viewer": "Viewer",
@@ -395,5 +413,24 @@
     "errorDescription": "An unexpected error occurred while rendering this page.",
     "retry": "Try again",
     "backToHome": "Back to home"
+  },
+  "healthCenters": {
+    "title": "Nearby Health Centers",
+    "subtitle": "Care points ordered by proximity to your current location.",
+    "searching": "Searching for new care points in the area...",
+    "noPhone": "No registered phone",
+    "viewOnMap": "View on map",
+    "loadingRealtime": "Checking care centers in real time...",
+    "emptyState": "No nearby health centers found in the current area.",
+    "errors": {
+      "geoNotSupported": "Geolocation is not supported by your browser.",
+      "locationFailed": "Could not obtain exact location. Showing default results."
+    },
+    "types": {
+      "hospital": "Hospital",
+      "clinic": "Clinic",
+      "pharmacy": "Pharmacy",
+      "health": "Health Center"
+    }
   }
 }

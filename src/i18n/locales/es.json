@@ -10,14 +10,14 @@
     "crisisResponse": "Respuesta a Crisis",
     "missingPersonsLocator": "y Localizador de Personas Desaparecidas"
   },
-"nav": {
-  "home": "Inicio",
-  "create": "Reportar",
-  "search": "Buscar",
-  "map": "Mapa Local",
-  "signIn": "Iniciar sesión",
-  "signOut": "Cerrar sesión"
-},
+  "nav": {
+    "home": "Inicio",
+    "create": "Reportar",
+    "search": "Buscar",
+    "map": "Mapa Local",
+    "signIn": "Iniciar sesión",
+    "signOut": "Cerrar sesión"
+  },
 "map": {
   "title": "Mapa de Emergencia",
   "subtitle": "Centros médicos cercanos y selección de puntos de paradero",
@@ -30,6 +30,8 @@
   "markerPopupReport": "Punto seleccionado para reporte",
   "coordinatesPinned": "Coordenadas fijadas:",
   "unlinkCoordinates": "Desvincular coordenadas",
+  "coverageSector": "Sector de Cobertura",
+  "coverageRadius": "Establecimiento ubicado en un radio de ~{radius} km.",
   "types": {
     "hospital": "Hospital",
     "clinic": "Centro Médico"
@@ -56,6 +58,22 @@
       "previous": "Anterior",
       "next": "Siguiente",
       "pageOf": "Página {page} de {total}"
+    },
+    "tabs": {
+      "quickActions": "Acciones Rápidas",
+      "searchDirectory": "Directorio de Búsqueda"
+    },
+    "actions": {
+      "urgent": "Acción Urgente",
+      "reportPerson": "Reportar Persona",
+      "reportPersonDesc": "Registra un nuevo perfil para iniciar la búsqueda y alerta inmediata.",
+      "searchCatalog": "Buscar en Directorio",
+      "searchCatalogDesc": "Filtra y localiza perfiles activos guardados en el caché local.",
+      "nearbyCenters": "Puntos de Atención",
+      "nearbyCentersDesc": "Encuentra centros médicos, puntos de emergencia y módulos cercanos.",
+      "guideProtocol": "Guía de Respuesta",
+      "guideProtocolDesc": "Instrucciones y protocolos oficiales sobre cómo actuar durante una crisis.",
+      "offlineNotice": "Los datos se guardan localmente. Puedes reportar y consultar incluso sin conexión a la red."
     }
   },
   "profile": {
@@ -200,12 +218,12 @@
       "verifyError": "Error al verificar perfil",
       "unverifyError": "Error al quitar verificación",
       "selected": "{count} seleccionados",
-"importJson": "Cargar JSON",
-"importTitle": "Importar perfiles masivos",
-"importQueued": "Se encolaron {count} registros para importación",
-"importSuccess": "Se importaron {count} registros correctamente",
-"importError": "Error al procesar el archivo JSON",
-"importInvalidFormat": "El formato del JSON no cumple con el esquema de perfiles"
+      "importJson": "Cargar JSON",
+      "importTitle": "Importar perfiles masivos",
+      "importQueued": "Se encolaron {count} registros para importación",
+      "importSuccess": "Se importaron {count} registros correctamente",
+      "importError": "Error al procesar el archivo JSON",
+      "importInvalidFormat": "El formato del JSON no cumple con el esquema de perfiles"
     },
     "roles": {
       "viewer": "Espectador",
@@ -395,5 +413,24 @@
     "errorDescription": "Ocurrió un error inesperado al renderizar esta página.",
     "retry": "Intentar de nuevo",
     "backToHome": "Volver al inicio"
+  },
+  "healthCenters": {
+    "title": "Centros de Salud Cerca",
+    "subtitle": "Puntos de atención ordenados por proximidad a tu ubicación actual.",
+    "searching": "Buscando nuevos puntos de atención en la zona...",
+    "noPhone": "Sin teléfono registrado",
+    "viewOnMap": "Ver en mapa",
+    "loadingRealtime": "Consultando centros de atención en tiempo real...",
+    "emptyState": "No se encontraron centros de salud cercanos en el área actual.",
+    "errors": {
+      "geoNotSupported": "La geolocalización no está soportada por tu navegador.",
+      "locationFailed": "No se pudo obtener la ubicación exacta. Mostrando resultados predeterminados."
+    },
+    "types": {
+      "hospital": "Hospital",
+      "clinic": "Clínica",
+      "pharmacy": "Farmacia",
+      "health": "Centro de Salud"
+    }
   }
 }

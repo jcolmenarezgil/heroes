@@ -1,5 +1,3 @@
-// src/components/providers/SyncProvider.tsx
-
 "use client";
 
 import React, {
@@ -27,6 +25,7 @@ interface SyncContextValue {
     setInterval: (ms: number) => void;
     lastSync: number | null;
     isSyncing: boolean;
+    isOnline: boolean;
     syncNow: () => Promise<void>;
     triggerOutboxSync: () => Promise<void>;
 }
@@ -36,6 +35,7 @@ const SyncContext = createContext<SyncContextValue>({
     setInterval: () => { },
     lastSync: null,
     isSyncing: false,
+    isOnline: true,
     syncNow: async () => { },
     triggerOutboxSync: async () => { },
 });
@@ -169,10 +169,11 @@ export function SyncProvider({ children }: { children: React.ReactNode }) {
             setInterval,
             lastSync,
             isSyncing,
+            isOnline,
             syncNow,
             triggerOutboxSync,
         }),
-        [interval, setInterval, lastSync, isSyncing, syncNow, triggerOutboxSync]
+        [interval, setInterval, lastSync, isSyncing, isOnline, syncNow, triggerOutboxSync]
     );
 
     return (

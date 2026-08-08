@@ -1,52 +1,138 @@
-import type { Coordinates, HealthCenter } from "@/types/map";
+// src/services/healthCenters.ts
+
+export interface HealthCenter {
+    id: number;
+    name: string;
+    type: string;
+    lat: number;
+    lon: number;
+    address?: string;
+    phone?: string;
+    distance: number;
+}
+
+interface OverpassElement {
+    id: number;
+    type: "node" | "way" | "relation";
+    lat?: number;
+    lon?: number;
+    center?: { lat: number; lon: number };
+    tags?: {
+        name?: string;
+        amenity?: string;
+        healthcare?: string;
+        "addr:street"?: string;
+        "addr:housenumber"?: string;
+        phone?: string;
+        "contact:phone"?: string;
+    };
+}
+
+interface OverpassResponse {
+    elements?: OverpassElement[];
+}
+
+const OVERPASS_ENDPOINTS = [
+    "https://overpass-api.de/api/interpreter",
+    "https://overpass.kumi.systems/api/interpreter",
+    "https://overpass.private.coffee/api/interpreter",
+];
 
 export async function fetchNearbyHealthCenters(
-    coords: Coordinates,
-    radiusInMeters: number = 5000
+    lat: number,
+    lon: number,
+    radiusMeters: number = 8000
 ): Promise<HealthCenter[]> {
-    const query = `[out:json][timeout:15];
-(
-  node["amenity"="hospital"](around:${radiusInMeters},${coords.latitude},${coords.longitude});
-  node["amenity"="clinic"](around:${radiusInMeters},${coords.latitude},${coords.longitude});
-);
-out body 20;`;
+    const query = `[out:json][timeout:8];
+    (
+      nwr["amenity"~"hospital|clinic|pharmacy|doctors|dentist"](around:${radiusMeters},${lat},${lon});
+      nwr["healthcare"~"hospital|clinic|centre|doctor|pharmacy"](around:${radiusMeters},${lat},${lon});
+    );
+    out center 100;`;
 
-    const url = `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`;
+    for (const endpoint of OVERPASS_ENDPOINTS) {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 8000);
 
-    try {
-        const response = await fetch(url, {
-            headers: {
-                "Accept": "application/json",
-                "User-Agent": "HeroesCrisisApp/1.0",
-            },
-            cache: "no-store",
-        });
+        try {
+            const response = await fetch(endpoint, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "User-Agent": "HeroesApp/1.0",
+                },
+                body: `data=${encodeURIComponent(query)}`,
+                signal: controller.signal,
+            });
 
-        if (!response.ok) {
-            console.warn(`Overpass API responded with status: ${response.status}`);
-            throw new Error(`Error fetching medical centers (HTTP ${response.status})`);
+            clearTimeout(timeoutId);
+
+            if (response.ok) {
+                const data: OverpassResponse = await response.json();
+                const centers = parseOverpassResponse(data, lat, lon);
+                if (centers.length > 0) {
+                    return centers;
+                }
+            }
+        } catch {
+            clearTimeout(timeoutId);
+            continue;
         }
-
-        const data = await response.json();
-
-        if (!data || !Array.isArray(data.elements)) {
-            return [];
-        }
-
-        return data.elements.map((element: any) => ({
-            id: String(element.id),
-            name: element.tags?.name || element.tags?.["official_name"] || "Centro Médico",
-            type: element.tags?.amenity === "hospital" ? "hospital" : "clinic",
-            address: element.tags?.["addr:street"]
-                ? `${element.tags["addr:street"]} ${element.tags["addr:housenumber"] || ""}`.trim()
-                : "Dirección no registrada",
-            location: {
-                latitude: element.lat,
-                longitude: element.lon,
-            },
-        }));
-    } catch (error) {
-        console.error("Failed to stream health centers:", error);
-        return [];
     }
+
+    console.warn("[HealthCenters] All Overpass endpoints failed or returned no data.");
+    return [];
+}
+
+function parseOverpassResponse(data: OverpassResponse, userLat: number, userLon: number): HealthCenter[] {
+    if (!data.elements || !Array.isArray(data.elements)) return [];
+
+    const uniqueCenters = new Map<string, HealthCenter>();
+
+    for (const elem of data.elements) {
+        const lat = elem.lat ?? elem.center?.lat;
+        const lon = elem.lon ?? elem.center?.lon;
+        if (lat === undefined || lon === undefined) continue;
+
+        const name = elem.tags?.name || "Health Center";
+        const type = elem.tags?.amenity || elem.tags?.healthcare || "health";
+        const key = `${name.toLowerCase()}-${lat.toFixed(3)}-${lon.toFixed(3)}`;
+
+        if (!uniqueCenters.has(key)) {
+            uniqueCenters.set(key, {
+                id: elem.id,
+                name,
+                type: normalizeType(type),
+                lat,
+                lon,
+                address: elem.tags?.["addr:street"]
+                    ? `${elem.tags["addr:street"]} ${elem.tags["addr:housenumber"] || ""}`.trim()
+                    : undefined,
+                phone: elem.tags?.phone || elem.tags?.["contact:phone"],
+                distance: parseFloat(calculateHaversineDistance(userLat, userLon, lat, lon).toFixed(2)),
+            });
+        }
+    }
+
+    return Array.from(uniqueCenters.values()).sort((a, b) => a.distance - b.distance);
+}
+
+function normalizeType(type: string): string {
+    if (type.includes("hospital")) return "hospital";
+    if (type.includes("pharmacy")) return "pharmacy";
+    if (type.includes("clinic") || type.includes("centre") || type.includes("doctor")) return "clinic";
+    return "health";
+}
+
+function calculateHaversineDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
+    const R = 6371;
+    const dLat = ((lat2 - lat1) * Math.PI) / 180;
+    const dLon = ((lon2 - lon1) * Math.PI) / 180;
+    const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos((lat1 * Math.PI) / 180) *
+        Math.cos((lat2 * Math.PI) / 180) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+    return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
 }
