@@ -323,7 +323,8 @@
     "myProfile": "My profile",
     "adminDashboard": "Admin dashboard",
     "settings": "Settings",
-    "offlineSync": "You are offline. Connect to sync."
+    "offlineSync": "You are offline. Connect to sync.",
+    "about": "About Heroes"
   },
   "settings": {
     "back": "Back"

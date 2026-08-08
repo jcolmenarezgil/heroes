@@ -323,7 +323,8 @@
     "myProfile": "Mi perfil",
     "adminDashboard": "Panel de administración",
     "settings": "Ajustes",
-    "offlineSync": "Sin conexión. Conéctate para sincronizar."
+    "offlineSync": "Sin conexión. Conéctate para sincronizar.",
+    "about": "Acerca de Heroes"
   },
   "settings": {
     "back": "Atrás"
