@@ -28,6 +28,7 @@ export interface ProfileFormData {
 interface ProfileFormProps {
   initialData: ProfileFormData;
   onSubmit: (data: ProfileFormData, file: File | null) => Promise<void>;
+  onChange?: (data: ProfileFormData) => void;
   submitLabel: string;
   cancelHref?: string;
 }
@@ -35,6 +36,7 @@ interface ProfileFormProps {
 export default function ProfileForm({
   initialData,
   onSubmit,
+  onChange,
   submitLabel,
   cancelHref = "/",
 }: ProfileFormProps) {
@@ -70,13 +72,52 @@ export default function ProfileForm({
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    if (initialData.latitude !== undefined) {
-      setLatitude(initialData.latitude);
-    }
-    if (initialData.longitude !== undefined) {
-      setLongitude(initialData.longitude);
-    }
-  }, [initialData.latitude, initialData.longitude]);
+    setName(initialData.name);
+    setLastKnownLocation(initialData.lastKnownLocation);
+    setLatitude(initialData.latitude ?? null);
+    setLongitude(initialData.longitude ?? null);
+    setStatus(initialData.status);
+    setContactPhone(initialData.contactPhone);
+    setNotes(initialData.notes);
+    setPhotoFile(null);
+    setPhotoPreview(initialData.photoUrl);
+    setPhotoPath(initialData.photoPath);
+    setIsMinor(initialData.isMinor);
+    setHasAuthorization(false);
+    setErrors({});
+  }, [initialData]);
+
+  // Notifica al componente padre ante cualquier cambio en el estado local
+  useEffect(() => {
+    if (!onChange) return;
+
+    onChange({
+      ...initialData,
+      name,
+      lastKnownLocation,
+      latitude,
+      longitude,
+      status,
+      contactPhone,
+      notes,
+      photoUrl: photoPreview,
+      photoPath,
+      isMinor,
+    });
+  }, [
+    name,
+    lastKnownLocation,
+    latitude,
+    longitude,
+    status,
+    contactPhone,
+    notes,
+    photoPreview,
+    photoPath,
+    isMinor,
+    onChange,
+    initialData,
+  ]);
 
   const statusOptions = [
     { value: "active", label: t("status.active") },
