@@ -1,3 +1,4 @@
+///api/profiles/[uuid]/routes.ts
 import { eq } from "drizzle-orm";
 import { canModifyProfile, getAuthUser } from "@/lib/api-auth";
 import {
@@ -86,27 +87,30 @@ export async function PUT(request: Request, context: RouteContext) {
             return jsonForbidden("You can only modify your own profiles");
         }
 
-const updateData: Record<string, unknown> = {};
-    const {
-        name,
-        photoUrl,
-        photoPath,
-        isMinor,
-        lastKnownLocation,
-        status,
-        contactPhone,
-        notes,
-    } = parsed.data;
+        const updateData: Record<string, unknown> = {};
+        const {
+            name,
+            photoUrl,
+            photoPath,
+            isMinor,
+            lastKnownLocation,
+            latitude,
+            longitude,
+            status,
+            contactPhone,
+            notes,
+        } = parsed.data;
 
-    if (name !== undefined) updateData.name = name;
-    if (photoUrl !== undefined) updateData.photoUrl = photoUrl;
-    if (photoPath !== undefined) updateData.photoPath = photoPath;
-    if (isMinor !== undefined) updateData.isMinor = isMinor;
-    if (lastKnownLocation !== undefined)
-        updateData.lastKnownLocation = lastKnownLocation;
-    if (status !== undefined) updateData.status = status;
-    if (contactPhone !== undefined) updateData.contactPhone = contactPhone;
-    if (notes !== undefined) updateData.notes = notes;
+        if (name !== undefined) updateData.name = name;
+        if (photoUrl !== undefined) updateData.photoUrl = photoUrl;
+        if (photoPath !== undefined) updateData.photoPath = photoPath;
+        if (isMinor !== undefined) updateData.isMinor = isMinor;
+        if (lastKnownLocation !== undefined) updateData.lastKnownLocation = lastKnownLocation;
+        if (latitude !== undefined) updateData.latitude = latitude;
+        if (longitude !== undefined) updateData.longitude = longitude;
+        if (status !== undefined) updateData.status = status;
+        if (contactPhone !== undefined) updateData.contactPhone = contactPhone;
+        if (notes !== undefined) updateData.notes = notes;
 
     // If a new photo replaces an existing one, delete the old photo row to
     // avoid orphaned storage. Skip when photoPath is unchanged (kept unmodified).

@@ -31,6 +31,8 @@ export interface PublicProfileDTO {
     name: string;
     photoUrl: string | null;
     lastKnownLocation: string;
+    latitude?: number | null;  // <-- Agregar
+    longitude?: number | null; // <-- Agregar
     isMinor: boolean;
     status: "active" | "found" | "deceased";
     contactPhone: string | null;

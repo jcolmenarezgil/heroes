@@ -1,3 +1,4 @@
+//src/lib/profile-mapper.ts
 import { aliasedTable, eq, type SQL } from "drizzle-orm";
 import { db } from "@/lib/db/client";
 import { profiles, users } from "@/lib/db/schema";
@@ -92,6 +93,8 @@ export function toPublicProfileDTO(
             profile.lastKnownLocation,
             profile.isMinor
         ),
+        latitude: profile.latitude ?? null,   // <-- Agregar
+        longitude: profile.longitude ?? null, // <-- Agregar
         isMinor: profile.isMinor,
         status: profile.status,
         contactPhone: profile.contactPhone,

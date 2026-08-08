@@ -1,3 +1,4 @@
+//src/app/api/profiles/route.ts
 import { and, desc, eq, ilike, sql } from "drizzle-orm";
 import { getAuthUser } from "@/lib/api-auth";
 import {
@@ -84,8 +85,18 @@ export async function POST(request: Request) {
         return jsonBadRequest("Invalid profile data", parsed.error.issues);
     }
 
-    const { name, photoUrl, photoPath, isMinor, lastKnownLocation, status, contactPhone, notes } =
-        parsed.data;
+    const {
+        name,
+        photoUrl,
+        photoPath,
+        isMinor,
+        lastKnownLocation,
+        latitude,
+        longitude,
+        status,
+        contactPhone,
+        notes,
+    } = parsed.data;
 
     try {
         const [created] = await db
@@ -99,6 +110,8 @@ export async function POST(request: Request) {
                 photoPath: photoPath ?? null,
                 isMinor,
                 lastKnownLocation,
+                latitude: latitude ?? null,
+                longitude: longitude ?? null,
                 status,
                 contactPhone: contactPhone ?? null,
                 notes: notes ?? null,
