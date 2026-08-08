@@ -10,31 +10,31 @@
     "crisisResponse": "Crisis Response",
     "missingPersonsLocator": "& Missing Persons Locator"
   },
-"nav": {
-  "home": "Home",
-  "create": "Report",
-  "search": "Search",
-  "map": "Local Map",
-  "signIn": "Sign in",
-  "signOut": "Sign out"
-},
-"map": {
-  "title": "Emergency Map",
-  "subtitle": "Nearby medical centers and location selection points",
-  "myLocation": "My Location",
-  "gettingLocation": "Getting location...",
-  "locationRequiredNotice": "Enable your location to load medical centers and navigate the map.",
-  "allowLocation": "Allow Location",
-  "selectedPoint": "Selected point",
-  "createReportHere": "Create Report Here",
-  "markerPopupReport": "Selected point for report",
-  "coordinatesPinned": "Coordinates pinned:",
-  "unlinkCoordinates": "Unlink coordinates",
-  "types": {
-    "hospital": "Hospital",
-    "clinic": "Medical Center"
-  }
-},
+  "nav": {
+    "home": "Home",
+    "create": "Report",
+    "search": "Search",
+    "map": "Local Map",
+    "signIn": "Sign in",
+    "signOut": "Sign out"
+  },
+  "map": {
+    "title": "Emergency Map",
+    "subtitle": "Nearby medical centers and location selection points",
+    "myLocation": "My Location",
+    "gettingLocation": "Getting location...",
+    "locationRequiredNotice": "Enable your location to load medical centers and navigate the map.",
+    "allowLocation": "Allow Location",
+    "selectedPoint": "Selected point",
+    "createReportHere": "Create Report Here",
+    "markerPopupReport": "Selected point for report",
+    "coordinatesPinned": "Coordinates pinned:",
+    "unlinkCoordinates": "Unlink coordinates",
+    "types": {
+      "hospital": "Hospital",
+      "clinic": "Medical Center"
+    }
+  },
   "auth": {
     "loginWithGoogle": "Sign in with Google",
     "signOut": "Sign Out",
@@ -56,6 +56,22 @@
       "previous": "Previous",
       "next": "Next",
       "pageOf": "Page {page} of {total}"
+    },
+    "tabs": {
+      "quickActions": "Quick Actions",
+      "searchDirectory": "Search Directory"
+    },
+    "actions": {
+      "urgent": "Urgent Action",
+      "reportPerson": "Report Missing Person",
+      "reportPersonDesc": "Register a new profile to initiate search and alert immediately.",
+      "searchCatalog": "Search Catalog",
+      "searchCatalogDesc": "Filter and locate active profiles stored in local cache.",
+      "nearbyCenters": "Care Centers",
+      "nearbyCentersDesc": "Find nearby medical centers, emergency points, and modules.",
+      "guideProtocol": "Response Protocol",
+      "guideProtocolDesc": "Instructions and official guidelines on how to act during a crisis.",
+      "offlineNotice": "Data is saved locally. You can issue reports and search even without network connectivity."
     }
   },
   "profile": {
@@ -200,12 +216,12 @@
       "verifyError": "Failed to verify profile",
       "unverifyError": "Failed to unverify profile",
       "selected": "{count} selected",
-"importJson": "Import JSON",
-"importTitle": "Bulk import profiles",
-"importQueued": "Queued {count} records for import",
-"importSuccess": "Successfully imported {count} records",
-"importError": "Failed to process JSON file",
-"importInvalidFormat": "JSON format does not match profile schema"
+      "importJson": "Import JSON",
+      "importTitle": "Bulk import profiles",
+      "importQueued": "Queued {count} records for import",
+      "importSuccess": "Successfully imported {count} records",
+      "importError": "Failed to process JSON file",
+      "importInvalidFormat": "JSON format does not match profile schema"
     },
     "roles": {
       "viewer": "Viewer",

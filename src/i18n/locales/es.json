@@ -10,31 +10,31 @@
     "crisisResponse": "Respuesta a Crisis",
     "missingPersonsLocator": "y Localizador de Personas Desaparecidas"
   },
-"nav": {
-  "home": "Inicio",
-  "create": "Reportar",
-  "search": "Buscar",
-  "map": "Mapa Local",
-  "signIn": "Iniciar sesión",
-  "signOut": "Cerrar sesión"
-},
-"map": {
-  "title": "Mapa de Emergencia",
-  "subtitle": "Centros médicos cercanos y selección de puntos de paradero",
-  "myLocation": "Mi Ubicación",
-  "gettingLocation": "Obteniendo ubicación...",
-  "locationRequiredNotice": "Activa tu ubicación para cargar los centros médicos y navegar por el mapa.",
-  "allowLocation": "Permitir Ubicación",
-  "selectedPoint": "Punto seleccionado",
-  "createReportHere": "Crear Reporte Aquí",
-  "markerPopupReport": "Punto seleccionado para reporte",
-  "coordinatesPinned": "Coordenadas fijadas:",
-  "unlinkCoordinates": "Desvincular coordenadas",
-  "types": {
-    "hospital": "Hospital",
-    "clinic": "Centro Médico"
-  }
-},
+  "nav": {
+    "home": "Inicio",
+    "create": "Reportar",
+    "search": "Buscar",
+    "map": "Mapa Local",
+    "signIn": "Iniciar sesión",
+    "signOut": "Cerrar sesión"
+  },
+  "map": {
+    "title": "Mapa de Emergencia",
+    "subtitle": "Centros médicos cercanos y selección de puntos de paradero",
+    "myLocation": "Mi Ubicación",
+    "gettingLocation": "Obteniendo ubicación...",
+    "locationRequiredNotice": "Activa tu ubicación para cargar los centros médicos y navegar por el mapa.",
+    "allowLocation": "Permitir Ubicación",
+    "selectedPoint": "Punto seleccionado",
+    "createReportHere": "Crear Reporte Aquí",
+    "markerPopupReport": "Punto seleccionado para reporte",
+    "coordinatesPinned": "Coordenadas fijadas:",
+    "unlinkCoordinates": "Desvincular coordenadas",
+    "types": {
+      "hospital": "Hospital",
+      "clinic": "Centro Médico"
+    }
+  },
   "auth": {
     "loginWithGoogle": "Iniciar sesión con Google",
     "signOut": "Cerrar sesión",
@@ -56,6 +56,22 @@
       "previous": "Anterior",
       "next": "Siguiente",
       "pageOf": "Página {page} de {total}"
+    },
+    "tabs": {
+      "quickActions": "Acciones Rápidas",
+      "searchDirectory": "Directorio de Búsqueda"
+    },
+    "actions": {
+      "urgent": "Acción Urgente",
+      "reportPerson": "Reportar Persona",
+      "reportPersonDesc": "Registra un nuevo perfil para iniciar la búsqueda y alerta inmediata.",
+      "searchCatalog": "Buscar en Directorio",
+      "searchCatalogDesc": "Filtra y localiza perfiles activos guardados en el caché local.",
+      "nearbyCenters": "Puntos de Atención",
+      "nearbyCentersDesc": "Encuentra centros médicos, puntos de emergencia y módulos cercanos.",
+      "guideProtocol": "Guía de Respuesta",
+      "guideProtocolDesc": "Instrucciones y protocolos oficiales sobre cómo actuar durante una crisis.",
+      "offlineNotice": "Los datos se guardan localmente. Puedes reportar y consultar incluso sin conexión a la red."
     }
   },
   "profile": {
@@ -200,12 +216,12 @@
       "verifyError": "Error al verificar perfil",
       "unverifyError": "Error al quitar verificación",
       "selected": "{count} seleccionados",
-"importJson": "Cargar JSON",
-"importTitle": "Importar perfiles masivos",
-"importQueued": "Se encolaron {count} registros para importación",
-"importSuccess": "Se importaron {count} registros correctamente",
-"importError": "Error al procesar el archivo JSON",
-"importInvalidFormat": "El formato del JSON no cumple con el esquema de perfiles"
+      "importJson": "Cargar JSON",
+      "importTitle": "Importar perfiles masivos",
+      "importQueued": "Se encolaron {count} registros para importación",
+      "importSuccess": "Se importaron {count} registros correctamente",
+      "importError": "Error al procesar el archivo JSON",
+      "importInvalidFormat": "El formato del JSON no cumple con el esquema de perfiles"
     },
     "roles": {
       "viewer": "Espectador",
