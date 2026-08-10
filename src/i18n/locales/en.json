@@ -20,7 +20,7 @@
   },
   "map": {
     "title": "Emergency Map",
-    "subtitle": "Nearby medical centers and location selection points",
+    "subtitle": "Select a point to create a report or view your location.",
     "myLocation": "My Location",
     "gettingLocation": "Getting location...",
     "locationRequiredNotice": "Enable your location to load medical centers and navigate the map.",
@@ -42,9 +42,25 @@
     "signOut": "Sign Out",
     "signInToContinue": "Sign in to continue"
   },
+  "breadcrumbs": {
+    "label": "Breadcrumb",
+    "home": "Home",
+    "directory": "Directory",
+    "createReport": "Create report",
+    "careCenters": "Care centers",
+    "map": "Map",
+    "notifications": "Notifications",
+    "protocol": "Response protocol",
+    "about": "About",
+    "myProfile": "My profile",
+    "edit": "Edit",
+    "suggestUpdate": "Suggest update",
+    "profile": "Profile"
+  },
   "home": {
-    "title": "Missing persons",
+    "title": "Directory",
     "subtitle": "Search the registry or create a new profile.",
+    "metrics": "Metrics",
     "searchPlaceholder": "Search by name…",
     "emptyState": "Search for a missing person or create a new profile.",
     "create": "Create profile",
@@ -59,28 +75,28 @@
       "next": "Next",
       "pageOf": "Page {page} of {total}"
     },
-    "tabs": {
-      "quickActions": "Quick Actions",
-      "searchDirectory": "Search Directory"
+    "dashboard": {
+      "title": "Quick Actions",
+      "subtitle": "Start here: report a missing person, search the directory, find nearby centers, or follow the crisis protocol."
     },
     "actions": {
       "urgent": "Urgent Action",
       "reportPerson": "Report Missing Person",
       "reportPersonDesc": "Register a new profile to initiate search and alert immediately.",
-      "searchCatalog": "Search Catalog",
-      "searchCatalogDesc": "Filter and locate active profiles stored in local cache.",
+      "searchCatalog": "Search Directory",
+      "searchCatalogDesc": "Find a missing person in the registry.",
       "nearbyCenters": "Care Centers",
-      "nearbyCentersDesc": "Find nearby medical centers, emergency points, and modules.",
-      "guideProtocol": "Response Protocol",
+      "nearbyCentersDesc": "Find care points near your location.",
+      "guideProtocol": "Crisis Protocol",
       "guideProtocolDesc": "Instructions and official guidelines on how to act during a crisis.",
-      "offlineNotice": "Data is saved locally. You can issue reports and search even without network connectivity."
+      "offlineNotice": "Data is saved locally.\nYou can issue reports and search even without network connectivity."
     }
   },
   "profile": {
-    "createTitle": "Create Profile",
+    "createTitle": "Report Missing Person",
     "editTitle": "Edit Profile",
     "status": {
-      "active": "Active",
+      "active": "Missing",
       "found": "Found",
       "deceased": "Deceased"
     },
@@ -416,26 +432,33 @@
     "backToHome": "Back to home"
   },
   "healthCenters": {
-    "title": "Nearby Health Centers",
-    "subtitle": "Care points ordered by proximity to your current location.",
-    "localCacheActive": "Local cache active ({count} centers saved)",
+    "title": "Care Centers",
+    "subtitle": "Care points near your location, ordered by proximity.",
+    "localCacheCount": "Local cache: {count} centers",
     "lastSync": "Last sync: {time}",
-    "gpsLabel": "GPS:",
-    "noCoordinates": "No location coordinates",
+    "precisionLabel": "Precision:",
+    "precision": "±{accuracy} m",
+    "coordinates": "Cords:",
+    "noLocalData": "No local data yet. Your scan will be saved for offline use.",
     "locating": "Locating...",
-    "retryGps": "Retry GPS",
-    "scanningZone": "Scanning area at {radius}...",
-    "pass1": "Pass 1/3",
-    "pass2": "Pass 2/3",
-    "pass3": "Pass 3/3",
-    "extendedQuery": "Extended Query",
-    "currentRadius": "Current radius:",
-    "extendedDemand": "Expand radius on demand:",
+    "locationActive": "Location active",
+    "enableLocation": "Enable location to find care points near you",
+    "locationDenied": "Location access denied",
+    "useMyLocation": "Use my location",
+    "refetch": "Refetch",
+    "findCarePoints": "Find care points near me",
+    "searchRadius": "Radius",
+    "scanningRadius": "Scanning {radius}",
+    "summaryCount": "{count, plural, one {1 center within {radius}} other {{count} centers within {radius}}}",
+    "filterAll": "All",
+    "filterByType": "Category",
     "networkDegraded": "High server response time. Displaying locally stored data.",
-    "typeLabel": "Type:",
-    "emptyStateWithRadius": "No health care centers found within {radius}.",
-    "retryProgressive": "Retry Progressive Scan (100m - 500m)",
-    "searching": "Searching for new care points in the area...",
+    "table": {
+      "center": "Center",
+      "distance": "Distance"
+    },
+    "emptyStateWithRadius": "No health care centers found within {radius}. Use the extended buttons above to widen the search.",
+    "retryProgressive": "Scan again",
     "noPhone": "No registered phone",
     "viewOnMap": "View on map",
     "loadingRealtime": "Checking care centers in real time...",
@@ -479,80 +502,76 @@
     "subtitle": "Clear instructions and fundamental steps to act in a coordinated manner during an emergency.",
     "sections": {
       "missing": "Missing Persons",
-      "emergencyNumbers": "Emergency Numbers"
+      "emergencyNumbers": "Emergency Numbers",
+      "offlineKit": "Offline Kit",
+      "security": "Security",
+      "label": "Page sections"
     },
     "missing": {
-      "title": "Missing Persons Protocol",
-      "description": "What to do immediately when a family member or acquaintance goes missing and how to leverage the Heroes platform.",
+      "title": "Missing persons protocol",
       "items": {
         "firstHours": {
-          "title": "1. First 24 Hours (Immediate Action)",
-          "content": "Do not wait 24 to 48 hours to act. Contact local authorities immediately. Gather a recent photo showing a clear face, last known clothing, distinguishing marks (tattoos, scars), and contact details of close family."
+          "title": "First 24 hours",
+          "content": "Don't wait 24 to 48 hours to act. Contact local authorities immediately. Gather a recent photo, last-seen clothing, distinguishing marks, and close-family contacts."
         },
         "usingApp": {
-          "title": "2. Publishing a Report on the Platform",
-          "content": "Use the 'Report' section in Heroes to create a profile. Be sure to pin the last known location. If the person is a minor, check the appropriate option so sensitive details remain protected."
-        },
-        "offlineSupport": {
-          "title": "3. Offline Mode and Syncing",
-          "content": "You can create or search reports even without an internet connection. Data is stored safely in your device local storage and automatically syncs with servers once connection is restored."
-        },
-        "verification": {
-          "title": "4. Verification & Collaboration",
-          "content": "Avoid spreading unverified information or rumors. If you have details on a profile submitted by someone else, use the 'Suggest update' option inside their profile for rescuers to review."
+          "title": "Publish a report",
+          "content": "Create a report in Heroes with the person's photo, pin the last known location, and check the minor option so sensitive details stay protected."
         }
       }
     },
     "emergency": {
-      "title": "Official Emergency Directories",
-      "description": "Primary hotline numbers for immediate crisis response based on the detected country.",
+      "title": "Emergency numbers",
       "selectCountry": "Selected country:",
-      "detectedTag": "Detected by location",
-      "categories": {
-        "police": "Police / Security",
-        "medical": "Medical Emergencies / Ambulance",
-        "fire": "Fire Department",
-        "general": "Unified Emergency Line",
-        "civilProtection": "Civil Defense / Rescue"
+      "countries": {
+        "VE": {
+          "name": "Venezuela",
+          "contacts": {
+            "ve-gen": { "category": "general", "label": "Emergency Central", "number": "911" },
+            "ve-pol": { "category": "police", "label": "CICPC (Missing Persons)", "number": "0800-2427224" },
+            "ve-cp": { "category": "civilProtection", "label": "Civil Protection", "number": "0800-7372283" }
+          }
+        },
+        "CO": {
+          "name": "Colombia",
+          "contacts": {
+            "co-gen": { "category": "general", "label": "Unified Emergency Line", "number": "123" },
+            "co-pol": { "category": "police", "label": "National Police", "number": "112" },
+            "co-med": { "category": "medical", "label": "CRUE Ambulance", "number": "125" },
+            "co-cp": { "category": "civilProtection", "label": "Civil Defense", "number": "144" }
+          }
+        },
+        "US": {
+          "name": "United States",
+          "contacts": {
+            "us-gen": { "category": "general", "label": "Emergency Services", "number": "911" },
+            "us-miss": { "category": "police", "label": "NCMEC (Missing Children)", "number": "1-800-843-5678" },
+            "us-text": { "category": "general", "label": "Crisis Text Line", "number": "Text HOME to 741741" }
+          }
+        }
       }
     },
     "security": {
-      "badge": "Security",
-      "title": "Communication and Security Best Practices",
-      "subtitle": "Clear, verified, and responsible communication is vital during a crisis. Follow these guidelines to coordinate effective help without overwhelming network resources.",
+      "title": "Communication & security",
       "guidelines": {
         "clarity": {
-          "title": "Clarity and Objective Data",
-          "description": "Describe needs with maximum accuracy (exact location, count of affected people, and specific help required). Avoid assumptions or alarmist language."
+          "title": "Clarity and objective data",
+          "description": "Share exact location, affected count, and the specific help required."
         },
         "verification": {
-          "title": "Verify Before Sharing",
-          "description": "Confirm the accuracy of information before issuing a broadcast alert. Misinformation can divert critical resources away from real emergencies."
+          "title": "Verify before sharing",
+          "description": "Confirm accuracy before sharing; misinformation diverts critical resources."
         },
         "privacy": {
-          "title": "Protect Sensitive Information",
-          "description": "Do not share identities, legal documents, or personal data of third parties without explicit consent to safeguard their integrity and privacy."
-        },
-        "responsibility": {
-          "title": "Mature Priority Usage",
-          "description": "Classify urgency levels accurately. Reserving maximum priority alerts exclusively for immediate threats increases the probability of an effective response."
+          "title": "Protect sensitive information",
+          "description": "Don't expose third-party identities or documents without consent."
         }
-      },
-      "callToAction": {
-        "title": "Community Commitment",
-        "description": "The value of this network relies on mutual trust. By acting with empathy and technical discipline, we ensure help reaches those who need it most."
       }
     }
   },
   "offlineGuide": {
-    "badge": "Local-First Preparedness",
-    "title": "Offline Emergency Checklist",
-    "subtitle": "Save and prepare your essential supplies. This checklist works fully offline via local storage on your device.",
-    "exportJson": "Export Checklist (JSON)",
-    "shareMessage": "Share List",
-    "copySuccess": "Message copied to clipboard",
-    "storageNotice": "Your progress is automatically saved in your browser's local storage. It will remain accessible even without network connectivity.",
-    "shareTemplate": "Hello, I am sharing the emergency preparedness checklist I am completing to stay ready during a crisis. You can review full details and build yours at {url}",
+    "title": "Emergency checklist",
+    "exportJson": "Export",
     "categories": {
       "waterFood": "Water & Food",
       "medical": "Health & First Aid",

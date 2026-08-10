@@ -12,15 +12,15 @@ const statusStyles: Record<
   { container: string; key: string }
 > = {
   active: {
-    container: "rounded-md bg-green-700 px-2 py-1 text-sm font-medium text-white",
+    container: "rounded-md bg-red-700 px-2 py-1 text-sm font-medium text-white",
     key: "active",
   },
   found: {
-    container: "rounded-md bg-yellow-600 px-2 py-1 text-sm font-medium text-white",
+    container: "rounded-md bg-green-700 px-2 py-1 text-sm font-medium text-white",
     key: "found",
   },
   deceased: {
-    container: "rounded-md bg-red-700 px-2 py-1 text-sm font-medium text-white",
+    container: "rounded-md bg-yellow-600 px-2 py-1 text-sm font-medium text-white",
     key: "deceased",
   },
 };

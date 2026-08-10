@@ -20,7 +20,7 @@
   },
   "map": {
     "title": "Mapa de Emergencia",
-    "subtitle": "Centros médicos cercanos y selección de puntos de paradero",
+    "subtitle": "Selecciona un punto para crear un reporte o consulta tu ubicación.",
     "myLocation": "Mi Ubicación",
     "gettingLocation": "Obteniendo ubicación...",
     "locationRequiredNotice": "Activa tu ubicación para cargar los centros médicos y navegar por el mapa.",
@@ -42,9 +42,25 @@
     "signOut": "Cerrar sesión",
     "signInToContinue": "Inicia sesión para continuar"
   },
+  "breadcrumbs": {
+    "label": "Ruta de navegación",
+    "home": "Inicio",
+    "directory": "Directorio",
+    "createReport": "Crear reporte",
+    "careCenters": "Centros de Atención",
+    "map": "Mapa",
+    "notifications": "Notificaciones",
+    "protocol": "Protocolo de respuesta",
+    "about": "Acerca de",
+    "myProfile": "Mi perfil",
+    "edit": "Editar",
+    "suggestUpdate": "Sugerir actualización",
+    "profile": "Perfil"
+  },
   "home": {
-    "title": "Personas desaparecidas",
+    "title": "Directorio",
     "subtitle": "Busca en el registro o crea un nuevo perfil.",
+    "metrics": "Métricas",
     "searchPlaceholder": "Buscar por nombre…",
     "emptyState": "Busca una persona desaparecida o crea un nuevo perfil.",
     "create": "Crear perfil",
@@ -59,28 +75,28 @@
       "next": "Siguiente",
       "pageOf": "Página {page} de {total}"
     },
-    "tabs": {
-      "quickActions": "Acciones Rápidas",
-      "searchDirectory": "Directorio de Búsqueda"
+    "dashboard": {
+      "title": "Acciones Rápidas",
+      "subtitle": "Comienza aquí: reporta a una persona desaparecida, busca en el directorio, encuentra centros cercanos o sigue el protocolo de crisis."
     },
     "actions": {
       "urgent": "Acción Urgente",
       "reportPerson": "Reportar Persona",
       "reportPersonDesc": "Registra un nuevo perfil para iniciar la búsqueda y alerta inmediata.",
-      "searchCatalog": "Buscar en Directorio",
-      "searchCatalogDesc": "Filtra y localiza perfiles activos guardados en el caché local.",
-      "nearbyCenters": "Puntos de Atención",
-      "nearbyCentersDesc": "Encuentra centros médicos, puntos de emergencia y módulos cercanos.",
-      "guideProtocol": "Guía de Respuesta",
+      "searchCatalog": "Buscar en el Directorio",
+      "searchCatalogDesc": "Busca una persona desaparecida en el registro.",
+      "nearbyCenters": "Centros de Atención",
+      "nearbyCentersDesc": "Encuentra centros de atención cerca de tu ubicación.",
+      "guideProtocol": "Protocolo de Crisis",
       "guideProtocolDesc": "Instrucciones y protocolos oficiales sobre cómo actuar durante una crisis.",
-      "offlineNotice": "Los datos se guardan localmente. Puedes reportar y consultar incluso sin conexión a la red."
+      "offlineNotice": "Los datos se guardan localmente.\nPuedes reportar y consultar incluso sin conexión a la red."
     }
   },
   "profile": {
-    "createTitle": "Crear Perfil",
+    "createTitle": "Reportar Persona Desaparecida",
     "editTitle": "Editar Perfil",
     "status": {
-      "active": "Activo",
+      "active": "Desaparecido",
       "found": "Encontrado",
       "deceased": "Fallecido"
     },
@@ -416,30 +432,37 @@
     "backToHome": "Volver al inicio"
   },
   "healthCenters": {
-    "title": "Centros de Salud Cercanos",
-    "subtitle": "Puntos de atención ordenados por proximidad a tu ubicación actual.",
-    "localCacheActive": "Caché local activa ({count} centros guardados)",
+    "title": "Centros de Atención",
+    "subtitle": "Centros de atención ordenados por proximidad a tu ubicación actual.",
+    "localCacheCount": "Caché local: {count} centros",
     "lastSync": "Última sync: {time}",
-    "gpsLabel": "GPS:",
-    "noCoordinates": "Sin coordenadas de ubicación",
+    "precisionLabel": "Precisión:",
+    "precision": "±{accuracy} m",
+    "coordinates": "Cords:",
+    "noLocalData": "Aún no hay datos locales. Tu búsqueda se guardará para usarla sin conexión.",
     "locating": "Localizando...",
-    "retryGps": "Reintentar GPS",
-    "scanningZone": "Escaneando zona a {radius}...",
-    "pass1": "Pass 1/3",
-    "pass2": "Pass 2/3",
-    "pass3": "Pass 3/3",
-    "extendedQuery": "Consulta Ampliada",
-    "currentRadius": "Radio actual:",
-    "extendedDemand": "Ampliar radio bajo demanda:",
+    "locationActive": "Ubicación activa",
+    "enableLocation": "Activa tu ubicación para encontrar centros de atención cerca de ti",
+    "locationDenied": "Acceso a la ubicación denegado",
+    "useMyLocation": "Usar mi ubicación",
+    "refetch": "Actualizar",
+    "findCarePoints": "Buscar centros cercanos",
+    "searchRadius": "Radio",
+    "scanningRadius": "Buscando en {radius}",
+    "summaryCount": "{count, plural, one {1 centro en un radio de {radius}} other {{count} centros en un radio de {radius}}}",
+    "filterAll": "Todos",
+    "filterByType": "Categoría",
     "networkDegraded": "Servidores con tiempo de respuesta elevado. Mostrando información almacenada localmente.",
-    "typeLabel": "Tipo:",
-    "emptyStateWithRadius": "No se encontraron puntos de atención médica en el radio de {radius}.",
-    "retryProgressive": "Reintentar Escaneo Progresivo (100m - 500m)",
-    "searching": "Buscando nuevos puntos de atención en la zona...",
+    "table": {
+      "center": "Centro",
+      "distance": "Distancia"
+    },
+    "emptyStateWithRadius": "No se encontraron centros de atención en el radio de {radius}. Usa los botones ampliados de arriba para ampliar la búsqueda.",
+    "retryProgressive": "Escanear de nuevo",
     "noPhone": "Sin teléfono registrado",
     "viewOnMap": "Ver en mapa",
     "loadingRealtime": "Consultando centros de atención en tiempo real...",
-    "emptyState": "No se encontraron centros de salud cercanos en el área actual.",
+    "emptyState": "No se encontraron centros de atención cercanos en el área actual.",
     "errors": {
       "geoNotSupported": "La geolocalización no está soportada por tu navegador.",
       "locationFailed": "No se pudo obtener la ubicación exacta. Mostrando resultados predeterminados."
@@ -461,7 +484,7 @@
   "about": {
     "badge": "Sin fines de lucro y Código Abierto",
     "title": "Proyecto Heroes",
-    "description": "Una plataforma comunitaria para localizar rápida y libremente centros de salud, personas desaparecidas y recursos críticos en momentos de necesidad.",
+          "description": "Una plataforma comunitaria para localizar rápida y libremente centros de atención, personas desaparecidas y recursos críticos en momentos de necesidad.",
     "license": {
       "title": "Licencia MIT",
       "description": "Este software es 100% libre. Tienes total libertad de usarlo, modificarlo y distribuirlo. La única condición legal es mantener el aviso de copyright y la atribución original del proyecto.",
@@ -479,80 +502,76 @@
     "subtitle": "Instrucciones claras y pasos fundamentales para actuar de manera coordinada durante una emergencia.",
     "sections": {
       "missing": "Personas Desaparecidas",
-      "emergencyNumbers": "Números de Emergencia"
+      "emergencyNumbers": "Números de Emergencia",
+      "offlineKit": "Kit Offline",
+      "security": "Seguridad",
+      "label": "Secciones de la página"
     },
     "missing": {
-      "title": "Protocolo para Personas Desaparecidas",
-      "description": "Qué hacer inmediatamente ante la desaparición de un familiar o conocido y cómo aprovechar la plataforma Heroes.",
+      "title": "Protocolo para personas desaparecidas",
       "items": {
         "firstHours": {
-          "title": "1. Primeras 24 Horas (Acción Inmediata)",
-          "content": "No esperes 24 o 48 horas para actuar. Contacta a las autoridades locales de inmediato. Reúne una fotografía reciente con rostro visible, vestimenta vista por última vez, señas particulares (tatuajes, cicatrices) y números de contacto de familiares cercanos."
+          "title": "Primeras 24 horas",
+          "content": "No esperes 24 o 48 horas para actuar. Contacta de inmediato a las autoridades. Reúne una foto reciente, la vestimenta de la última vez, señas particulares y contactos de familiares cercanos."
         },
         "usingApp": {
-          "title": "2. Publicación de Reporte en la Plataforma",
-          "content": "Utiliza la sección 'Reportar' de Heroes para crear una ficha. Asegúrate de incluir la última ubicación conocida. Si la persona es menor de edad, marca la casilla correspondiente para que los datos sensibles permanezcan protegidos."
-        },
-        "offlineSupport": {
-          "title": "3. Modo Offline y Sincronización",
-          "content": "Puedes crear o consultar reportes aunque no tengas conexión a internet. Los datos se guardarán de forma segura en el almacenamiento local de tu dispositivo y se enviarán automáticamente a los servidores cuando recuperes señal."
-        },
-        "verification": {
-          "title": "4. Verificación y Colaboración",
-          "content": "Evita difundir rumores o información no confirmada. Si tienes datos sobre un perfil publicado por otra persona, utiliza la opción 'Sugerir actualización' dentro de su perfil para que los rescatistas coordinen la verificación."
+          "title": "Publicar un reporte",
+          "content": "Crea un reporte en Heroes con la foto de la persona, fija la última ubicación conocida y marca la opción de menor de edad para proteger los datos sensibles."
         }
       }
     },
     "emergency": {
-      "title": "Directorios y Canales Oficiales",
-      "description": "Líneas telefónicas primarias para la atención inmediata de crisis según el país detectado.",
+      "title": "Números de emergencia",
       "selectCountry": "País seleccionado:",
-      "detectedTag": "Detectado por ubicación",
-      "categories": {
-        "police": "Policía / Seguridad",
-        "medical": "Emergencias Médicas / Ambulancias",
-        "fire": "Cuerpo de Bomberos",
-        "general": "Central Unificada de Emergencias",
-        "civilProtection": "Protección Civil / Rescue"
+      "countries": {
+        "VE": {
+          "name": "Venezuela",
+          "contacts": {
+            "ve-gen": { "category": "general", "label": "Central de Emergencias", "number": "911" },
+            "ve-pol": { "category": "police", "label": "CICPC (Desapariciones)", "number": "0800-2427224" },
+            "ve-cp": { "category": "civilProtection", "label": "Protección Civil", "number": "0800-7372283" }
+          }
+        },
+        "CO": {
+          "name": "Colombia",
+          "contacts": {
+            "co-gen": { "category": "general", "label": "Línea Única de Emergencias", "number": "123" },
+            "co-pol": { "category": "police", "label": "Policía Nacional", "number": "112" },
+            "co-med": { "category": "medical", "label": "CRUE Ambulancias", "number": "125" },
+            "co-cp": { "category": "civilProtection", "label": "Defensa Civil", "number": "144" }
+          }
+        },
+        "US": {
+          "name": "Estados Unidos",
+          "contacts": {
+            "us-gen": { "category": "general", "label": "Servicios de Emergencia", "number": "911" },
+            "us-miss": { "category": "police", "label": "NCMEC (Niños Desaparecidos)", "number": "1-800-843-5678" },
+            "us-text": { "category": "general", "label": "Línea de Texto para Crisis", "number": "Text HOME to 741741" }
+          }
+        }
       }
     },
     "security": {
-      "badge": "Seguridad",
-      "title": "Buenas Prácticas de Comunicación y Seguridad",
-      "subtitle": "Un lenguaje claro, verificado y responsable es fundamental durante una crisis. Sigue estos lineamientos para coordinar ayuda efectiva sin saturar la red.",
+      "title": "Comunicación y seguridad",
       "guidelines": {
         "clarity": {
-          "title": "Claridad y Datos Objetivos",
-          "description": "Describe las necesidades con la mayor precisión posible (ubicación exacta, número de afectados y tipo de ayuda requerida). Evita suposiciones o lenguaje alarmista."
+          "title": "Claridad y datos objetivos",
+          "description": "Comparte la ubicación exacta, el número de afectados y la ayuda específica requerida."
         },
         "verification": {
-          "title": "Verificación antes de Difundir",
-          "description": "Confirma la veracidad de la información antes de emitir una alerta masiva. La desinformación puede desviar recursos críticos de emergencias reales."
+          "title": "Verifica antes de compartir",
+          "description": "Confirma la información antes de difundirla; la desinformación desvía recursos críticos."
         },
         "privacy": {
-          "title": "Protección de Datos Sensibles",
-          "description": "No compartas identidades, documentación oficial o datos personales de terceros sin su consentimiento explícito para preservar su integridad y seguridad."
-        },
-        "responsibility": {
-          "title": "Uso Maduro de Prioridades",
-          "description": "Clasifica el nivel de urgencia correctamente. Reservar las alertas de máxima prioridad únicamente para situaciones de peligro inmediato aumenta las probabilidades de respuesta efectiva."
+          "title": "Protege la información sensible",
+          "description": "No expongas identidades o documentos de terceros sin su consentimiento explícito."
         }
-      },
-      "callToAction": {
-        "title": "Compromiso de la Comunidad",
-        "description": "El valor de la plataforma radica en la confianza mutua. Al actuar con empatía y disciplina técnica, garantizamos que la ayuda llegue a quien más lo necesita."
       }
     }
   },
   "offlineGuide": {
-    "badge": "Preparación Local-First",
-    "title": "Checklist de Emergencia Offline",
-    "subtitle": "Guarda y prepara tus recursos esenciales. Esta lista funciona sin conexión mediante almacenamiento local en tu dispositivo.",
-    "exportJson": "Exportar Checklist (JSON)",
-    "shareMessage": "Compartir Lista",
-    "copySuccess": "Mensaje copiado al portapapeles",
-    "storageNotice": "Tus progresos se guardan automáticamente en el almacenamiento local de tu navegador. Estarán disponibles aun sin conexión a la red.",
-    "shareTemplate": "Hola, te comparto la lista de preparación de emergencia que estoy completando para estar listos ante cualquier crisis. Puedes revisar los detalles y crear la tuya en {url}",
+    "title": "Lista de emergencia",
+    "exportJson": "Exportar",
     "categories": {
       "waterFood": "Agua y Alimentación",
       "medical": "Salud y Primeros Auxilios",

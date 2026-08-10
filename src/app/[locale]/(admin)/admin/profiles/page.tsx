@@ -29,6 +29,7 @@ type VerifiedFilter = "all" | "verified" | "unverified";
 export default function AdminProfilesPage() {
   const t = useTranslations("admin.profiles");
   const tAdmin = useTranslations("admin");
+  const tProfile = useTranslations("profile");
   const format = useFormatter();
   const { addToast } = useToast();
 
@@ -253,9 +254,9 @@ export default function AdminProfilesPage() {
               className="input-field max-w-[160px] py-2"
             >
               <option value="">{t("filterAll")}</option>
-              <option value="active">Active</option>
-              <option value="found">Found</option>
-              <option value="deceased">Deceased</option>
+              <option value="active">{tProfile("status.active")}</option>
+              <option value="found">{tProfile("status.found")}</option>
+              <option value="deceased">{tProfile("status.deceased")}</option>
             </select>
           </div>
           <div className="flex flex-col gap-1">
