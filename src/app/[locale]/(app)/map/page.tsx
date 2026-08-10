@@ -25,7 +25,6 @@ function MapContent() {
     const { location, error: locationError, isLoading: isLocating, requestLocation } = useUserLocation();
 
     const [profiles, setProfiles] = useState<ProfileDTO[]>([]);
-    const [isLoadingProfiles, setIsLoadingProfiles] = useState(true);
     const [apiError, setApiError] = useState<string | null>(null);
 
     const latParam = searchParams.get("lat");
@@ -47,7 +46,6 @@ function MapContent() {
 
         async function fetchMapProfiles() {
             try {
-                setIsLoadingProfiles(true);
                 const response = await listProfiles({ limit: 100 });
 
                 if (isMounted) {
@@ -70,10 +68,6 @@ function MapContent() {
                     const error = err instanceof Error ? err.message : "Failed to load map profiles";
                     console.error("[MapContent] Error loading profiles:", err);
                     setApiError(error);
-                }
-            } finally {
-                if (isMounted) {
-                    setIsLoadingProfiles(false);
                 }
             }
         }

@@ -29,10 +29,10 @@ export default function LanguageSwitcher() {
         aria-label={t("label")}
         className="bg-transparent text-sm font-medium focus:outline-none"
       >
-        <option value="en" className="bg-black text-white">
+        <option value="en" className="bg-neutral-950 text-white">
           EN
         </option>
-        <option value="es" className="bg-black text-white">
+        <option value="es" className="bg-neutral-950 text-white">
           ES
         </option>
       </select>

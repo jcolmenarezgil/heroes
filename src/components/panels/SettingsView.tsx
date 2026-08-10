@@ -77,7 +77,7 @@ export default function SettingsView() {
             <button
                 onClick={handleSyncNow}
                 disabled={isSyncing || !isOnline}
-                className="flex w-full items-center justify-center rounded-md bg-white px-3 py-2 text-sm font-medium text-black hover:bg-neutral-200 disabled:bg-neutral-800 disabled:text-neutral-500"
+                className="flex w-full items-center justify-center rounded-lg bg-white px-3 py-2 text-sm font-medium text-black hover:bg-neutral-200 disabled:bg-neutral-800 disabled:text-neutral-500"
             >
                 {isSyncing ? t("userMenu.syncing") : t("userMenu.syncNow")}
             </button>

@@ -1,6 +1,3 @@
-import { z } from "zod";
-import { profileSchema } from "@/lib/validations/profile";
-
 export interface PendingSyncItem<T> {
     id: string;
     payload: T;

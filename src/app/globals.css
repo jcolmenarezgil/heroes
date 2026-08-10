@@ -8,9 +8,9 @@
   --color-border: #262626;
   --color-border-strong: #404040;
   --color-surface: #0a0a0a;
-  --color-active: #16a34a;
-  --color-found: #ca8a04;
-  --color-deceased: #dc2626;
+  --color-active: #dc2626;
+  --color-found: #16a34a;
+  --color-deceased: #ca8a04;
   --color-online: #16a34a;
   --color-offline: #ca8a04;
   --radius: 0.5rem;
@@ -113,15 +113,5 @@
     @apply w-full rounded-lg border border-neutral-700 bg-neutral-950 px-4 py-3
            text-white placeholder:text-neutral-500 focus:border-white
            focus:outline-none focus:ring-1 focus:ring-white min-h-touch;
-  }
-
-  .card {
-    @apply flex min-h-[72px] cursor-pointer items-center gap-3 p-4
-           active:bg-neutral-900;
-  }
-
-  .badge {
-    @apply inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs
-           font-semibold;
   }
 }

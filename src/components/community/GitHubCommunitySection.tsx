@@ -15,7 +15,7 @@ export async function GitHubCommunitySection() {
     if (!stats) return null;
 
     return (
-        <section className="rounded-2xl border border-neutral-800 bg-neutral-900/50 p-6">
+        <section className="rounded-xl border border-neutral-800 bg-neutral-900/50 p-6">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                     <h3 className="text-lg font-bold text-white">{t("title")}</h3>
@@ -66,7 +66,7 @@ export async function GitHubCommunitySection() {
                                     alt={contributor.login}
                                     width={36}
                                     height={36}
-                                    className="rounded-full border border-neutral-700 group-hover:border-blue-500"
+                                    className="rounded-full border border-neutral-700 group-hover:border-sky-400"
                                 />
                             </a>
                         ))}

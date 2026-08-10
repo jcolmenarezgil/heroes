@@ -24,7 +24,7 @@ export default async function AboutPage() {
 
             {/* Tarjeta de Licencia y Atribución */}
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <div className="rounded-2xl border border-neutral-800 bg-neutral-900/60 p-5">
+                <div className="rounded-xl border border-neutral-800 bg-neutral-900/60 p-5">
                     <div className="flex items-center gap-2 text-white font-bold text-sm">
                         <DocumentTextIcon className="h-4 w-4 text-emerald-400" />
                         <span>{t("license.title")}</span>
@@ -42,7 +42,7 @@ export default async function AboutPage() {
                     </a>
                 </div>
 
-                <div className="rounded-2xl border border-neutral-800 bg-neutral-900/60 p-5">
+                <div className="rounded-xl border border-neutral-800 bg-neutral-900/60 p-5">
                     <div className="flex items-center gap-2 text-white font-bold text-sm">
                         <CodeBracketIcon className="h-4 w-4 text-blue-400" />
                         <span>{t("contribute.title")}</span>

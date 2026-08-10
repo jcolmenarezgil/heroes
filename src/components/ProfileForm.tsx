@@ -71,7 +71,11 @@ export default function ProfileForm({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Resyncs local fields whenever the parent hands us a new initialData object
+  // (e.g. after a form reset). The parent also remounts via a `key` change, so
+  // this is belt-and-suspenders rather than a first-mount initializer.
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setName(initialData.name);
     setLastKnownLocation(initialData.lastKnownLocation);
     setLatitude(initialData.latitude ?? null);

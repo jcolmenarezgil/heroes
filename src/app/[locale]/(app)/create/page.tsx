@@ -59,6 +59,10 @@ function CreateProfileContent() {
       }
     }
 
+    // Merges the sessionStorage draft with URL-pinned coordinates once the
+    // session is known. sessionStorage is unavailable during SSR, so the read
+    // must happen in a client-only effect rather than a lazy state initializer.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setInitialData({
       name: parsedDraft.name || "",
       photoUrl: parsedDraft.photoUrl || null,
@@ -164,7 +168,7 @@ function CreateProfileContent() {
           <button
             type="button"
             onClick={handleOpenMap}
-            className="inline-flex items-center justify-center gap-2 rounded-md bg-neutral-800 px-3.5 py-2 text-xs font-semibold text-sky-400 border border-neutral-700 hover:bg-neutral-750 hover:border-sky-500/50 transition-colors whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-sky-400"
+            className="inline-flex items-center justify-center gap-2 rounded-lg bg-neutral-800 px-3.5 py-2 text-xs font-semibold text-sky-400 border border-neutral-700 hover:bg-neutral-700 hover:border-sky-500/50 transition-colors whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-sky-400"
           >
             <MapPinIcon className="h-4 w-4" />
             Open Map

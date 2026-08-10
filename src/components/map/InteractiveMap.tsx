@@ -123,7 +123,7 @@ export default function InteractiveMap({
                                 {onCreateReport ? (
                                     <button
                                         onClick={() => onCreateReport(selectedPoint)}
-                                        className="w-full rounded-md bg-sky-400 px-3 py-1.5 text-center text-xs font-semibold text-neutral-950 hover:bg-sky-300 transition-colors focus:ring-2 focus:ring-sky-400 focus:outline-none"
+                                        className="w-full rounded-lg bg-sky-400 px-3 py-1.5 text-center text-xs font-semibold text-neutral-950 hover:bg-sky-300 transition-colors focus:ring-2 focus:ring-sky-400 focus:outline-none"
                                     >
                                         {t("createReportHere")}
                                     </button>
@@ -136,7 +136,7 @@ export default function InteractiveMap({
                                                 lng: selectedPoint.lng.toString(),
                                             },
                                         }}
-                                        className="w-full rounded-md bg-sky-400 px-3 py-1.5 text-center text-xs font-semibold text-neutral-950 hover:bg-sky-300 transition-colors inline-block focus:ring-2 focus:ring-sky-400 focus:outline-none"
+                                        className="w-full rounded-lg bg-sky-400 px-3 py-1.5 text-center text-xs font-semibold text-neutral-950 hover:bg-sky-300 transition-colors inline-block focus:ring-2 focus:ring-sky-400 focus:outline-none"
                                     >
                                         {t("createReportHere")}
                                     </Link>

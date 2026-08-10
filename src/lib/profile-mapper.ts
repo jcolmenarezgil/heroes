@@ -131,31 +131,3 @@ export async function listProfilesWithUsers(options: {
         .limit(options.limit)
         .offset(options.offset);
 }
-
-export function mapProfileToDTO(
-    dbRecord: any, 
-    createdByName: string,
-    updatedByName: string
-): ProfileDTO {
-    return {
-        id: dbRecord.id,
-        userId: dbRecord.userId,
-        createdBy: dbRecord.createdBy,
-        updatedBy: dbRecord.updatedBy,
-        name: dbRecord.name,
-        photoUrl: dbRecord.photoUrl,
-        lastKnownLocation: dbRecord.lastKnownLocation,
-
-        latitude: dbRecord.latitude ?? null,
-        longitude: dbRecord.longitude ?? null,
-        isMinor: dbRecord.isMinor ?? false,
-        status: dbRecord.status,
-        contactPhone: dbRecord.contactPhone,
-        notes: dbRecord.notes,
-        verified: dbRecord.verified ? dbRecord.verified.toISOString() : null,
-        createdAt: dbRecord.createdAt.toISOString(),
-        updatedAt: dbRecord.updatedAt.toISOString(),
-        createdByName,
-        updatedByName,
-    };
-}

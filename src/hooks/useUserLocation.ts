@@ -51,7 +51,7 @@ export function useUserLocation() {
             },
             (err) => {
                 let errorMessage = "Failed to retrieve location.";
-                let perm: PermissionStatus = "denied";
+                const perm: PermissionStatus = "denied";
 
                 if (err.code === err.PERMISSION_DENIED) {
                     errorMessage = "Location permission denied by user.";
@@ -86,6 +86,9 @@ export function useUserLocation() {
                 };
             });
         }
+        // Kick off the initial geolocation request on mount. The request itself
+        // is asynchronous; the sync state updates inside it are intentional.
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         requestLocation();
     }, [requestLocation]);
 

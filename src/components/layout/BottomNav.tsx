@@ -4,7 +4,6 @@ import React from "react";
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { HomeIcon, ReportIcon, MapIcon } from "@/components/icons";
-import SyncStatus from "@/components/layout/SyncStatus";
 
 export default function BottomNav() {
     const t = useTranslations("nav");

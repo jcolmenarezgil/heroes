@@ -110,7 +110,7 @@ export default function SuggestionForm({
               onChange={(e) => setSubmitterName(e.target.value)}
               placeholder={t("suggestionNamePlaceholder")}
               required
-              className="input-field w-full rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2 text-white"
+              className="input-field"
             />
           </div>
         )}
@@ -128,7 +128,7 @@ export default function SuggestionForm({
               value={submitterContact}
               onChange={(e) => setSubmitterContact(e.target.value)}
               placeholder={t("suggestionContactPlaceholder")}
-              className="input-field w-full rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2 text-white"
+              className="input-field"
             />
           </div>
         )}
