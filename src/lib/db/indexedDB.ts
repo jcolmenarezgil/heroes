@@ -10,19 +10,37 @@ export interface PendingSyncItem<T> {
     createdAt: number;
 }
 
-const DB_NAME = "EmergencyAppOfflineDB";
-const STORE_NAME = "profile_outbox";
+const DB_NAME = "heroes_app_db";
 const DB_VERSION = 1;
 
+export const STORES = {
+    OUTBOX: "profile_outbox",
+    CACHE: "kv_store",
+} as const;
+
+/**
+ * Inicialización unificada de IndexedDB con múltiples Object Stores
+ */
 export const openDB = (): Promise<IDBDatabase> => {
     return new Promise((resolve, reject) => {
+        if (typeof window === "undefined" || !window.indexedDB) {
+            return reject(new Error("IndexedDB no está disponible en este entorno"));
+        }
+
         const request = indexedDB.open(DB_NAME, DB_VERSION);
 
         request.onupgradeneeded = (event) => {
             const db = (event.target as IDBOpenDBRequest).result;
-            if (!db.objectStoreNames.contains(STORE_NAME)) {
-                const store = db.createObjectStore(STORE_NAME, { keyPath: "id" });
-                store.createIndex("status", "status", { unique: false });
+
+            // Store 1: Cola de sincronización offline (Outbox)
+            if (!db.objectStoreNames.contains(STORES.OUTBOX)) {
+                const outboxStore = db.createObjectStore(STORES.OUTBOX, { keyPath: "id" });
+                outboxStore.createIndex("status", "status", { unique: false });
+            }
+
+            // Store 2: Caché Key-Value genérica (para OSM, respuestas API, etc.)
+            if (!db.objectStoreNames.contains(STORES.CACHE)) {
+                db.createObjectStore(STORES.CACHE);
             }
         };
 
@@ -31,12 +49,16 @@ export const openDB = (): Promise<IDBDatabase> => {
     });
 };
 
+/* ==========================================================================
+   OUTBOX OPERATIONS (Sync Offline)
+   ========================================================================== */
+
 export const bulkInsertOutbox = async <T>(
     items: T[]
 ): Promise<PendingSyncItem<T>[]> => {
     const db = await openDB();
-    const tx = db.transaction(STORE_NAME, "readwrite");
-    const store = tx.objectStore(STORE_NAME);
+    const tx = db.transaction(STORES.OUTBOX, "readwrite");
+    const store = tx.objectStore(STORES.OUTBOX);
 
     const pendingItems: PendingSyncItem<T>[] = items.map((payload) => ({
         id: crypto.randomUUID(),
@@ -53,11 +75,10 @@ export const bulkInsertOutbox = async <T>(
     });
 };
 
-// Obtener todos los elementos pendientes de sincronizar
 export const getPendingOutboxItems = async <T>(): Promise<PendingSyncItem<T>[]> => {
     const db = await openDB();
-    const tx = db.transaction(STORE_NAME, "readonly");
-    const store = tx.objectStore(STORE_NAME);
+    const tx = db.transaction(STORES.OUTBOX, "readonly");
+    const store = tx.objectStore(STORES.OUTBOX);
 
     return new Promise((resolve, reject) => {
         const request = store.getAll();
@@ -66,14 +87,13 @@ export const getPendingOutboxItems = async <T>(): Promise<PendingSyncItem<T>[]> 
     });
 };
 
-// Eliminar un elemento de IndexedDB tras sincronizarse con éxito en Neon
 export const removeFromOutbox = async (id: string): Promise<void> => {
     const db = await openDB();
-    const tx = db.transaction(STORE_NAME, "readwrite");
-    const store = tx.objectStore(STORE_NAME);
+    const tx = db.transaction(STORES.OUTBOX, "readwrite");
+    const store = tx.objectStore(STORES.OUTBOX);
 
     return new Promise((resolve, reject) => {
-        const request = store.delete(id);
+        store.delete(id);
         tx.oncomplete = () => resolve();
         tx.onerror = () => reject(tx.error);
     });
@@ -81,12 +101,43 @@ export const removeFromOutbox = async (id: string): Promise<void> => {
 
 export const updateOutboxItem = async <T>(item: PendingSyncItem<T>): Promise<void> => {
     const db = await openDB();
-    const tx = db.transaction(STORE_NAME, "readwrite");
-    const store = tx.objectStore(STORE_NAME);
+    const tx = db.transaction(STORES.OUTBOX, "readwrite");
+    const store = tx.objectStore(STORES.OUTBOX);
 
     return new Promise((resolve, reject) => {
-        const request = store.put(item);
+        store.put(item);
         tx.oncomplete = () => resolve();
         tx.onerror = () => reject(tx.error);
     });
 };
+
+export async function getStoredData<T>(key: string): Promise<T | null> {
+    try {
+        const db = await openDB();
+        return new Promise((resolve) => {
+            const tx = db.transaction(STORES.CACHE, "readonly");
+            const store = tx.objectStore(STORES.CACHE);
+            const request = store.get(key);
+
+            request.onsuccess = () => resolve((request.result as T) ?? null);
+            request.onerror = () => resolve(null);
+        });
+    } catch {
+        return null;
+    }
+}
+
+export async function setStoredData<T>(key: string, value: T): Promise<void> {
+    try {
+        const db = await openDB();
+        return new Promise((resolve, reject) => {
+            const tx = db.transaction(STORES.CACHE, "readwrite");
+            const store = tx.objectStore(STORES.CACHE);
+            const request = store.put(value, key);
+
+            request.onsuccess = () => resolve();
+            request.onerror = () => reject(request.error);
+        });
+    } catch {
+    }
+}
