@@ -1,54 +1,107 @@
 "use client";
 
-import { useState, useCallback } from "react";
-import type { Coordinates } from "@/types/map";
+import { useState, useEffect, useCallback } from "react";
 
-interface UseUserLocationReturn {
-    location: Coordinates | null;
-    error: string | null;
+export type PermissionStatus = "prompt" | "granted" | "denied" | "unsupported";
+
+export interface UserLocationState {
+    coordinates: { lat: number; lon: number } | null;
+    location: { latitude: number; longitude: number; accuracy?: number } | null;
+    accuracy: number | null;
+    permission: PermissionStatus;
     isLoading: boolean;
-    requestLocation: () => void;
+    error: string | null;
 }
 
-export function useUserLocation(): UseUserLocationReturn {
-    const [location, setLocation] = useState<Coordinates | null>(null);
-    const [error, setError] = useState<string | null>(null);
-    const [isLoading, setIsLoading] = useState<boolean>(false);
+export function useUserLocation() {
+    const [state, setState] = useState<Omit<UserLocationState, "location" | "coordinates">>({
+        accuracy: null,
+        permission: "prompt",
+        isLoading: true,
+        error: null,
+    });
+
+    const [coords, setCoords] = useState<{ lat: number; lon: number } | null>(null);
 
     const requestLocation = useCallback(() => {
-        if (!navigator.geolocation) {
-            setError("Geolocation is not supported by your device");
+        if (!("geolocation" in navigator)) {
+            setState((prev) => ({
+                ...prev,
+                permission: "unsupported",
+                isLoading: false,
+                error: "Geolocation is not supported by this browser.",
+            }));
             return;
         }
 
-        setIsLoading(true);
-        setError(null);
+        setState((prev) => ({ ...prev, isLoading: true, error: null }));
 
         navigator.geolocation.getCurrentPosition(
             (position) => {
-                setLocation({
-                    latitude: position.coords.latitude,
-                    longitude: position.coords.longitude,
+                setCoords({
+                    lat: position.coords.latitude,
+                    lon: position.coords.longitude,
                 });
-                setIsLoading(false);
+                setState({
+                    accuracy: position.coords.accuracy,
+                    permission: "granted",
+                    isLoading: false,
+                    error: null,
+                });
             },
-            (geoError) => {
-                let msg = "Could not retrieve location";
-                if (geoError.code === geoError.PERMISSION_DENIED) {
-                    msg = "Location permission denied";
-                } else if (geoError.code === geoError.TIMEOUT) {
-                    msg = "Location request timed out";
+            (err) => {
+                let errorMessage = "Failed to retrieve location.";
+                let perm: PermissionStatus = "denied";
+
+                if (err.code === err.PERMISSION_DENIED) {
+                    errorMessage = "Location permission denied by user.";
+                } else if (err.code === err.POSITION_UNAVAILABLE) {
+                    errorMessage = "Location information is unavailable.";
+                } else if (err.code === err.TIMEOUT) {
+                    errorMessage = "Location request timed out.";
                 }
-                setError(msg);
-                setIsLoading(false);
+
+                setCoords(null);
+                setState({
+                    accuracy: null,
+                    permission: perm,
+                    isLoading: false,
+                    error: errorMessage,
+                });
             },
             {
-                enableHighAccuracy: false, 
-                timeout: 10000, 
-                maximumAge: 60000, 
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 60000,
             }
         );
     }, []);
 
-    return { location, error, isLoading, requestLocation };
+    useEffect(() => {
+        if ("permissions" in navigator) {
+            navigator.permissions.query({ name: "geolocation" }).then((result) => {
+                setState((prev) => ({ ...prev, permission: result.state as PermissionStatus }));
+                result.onchange = () => {
+                    setState((prev) => ({ ...prev, permission: result.state as PermissionStatus }));
+                };
+            });
+        }
+        requestLocation();
+    }, [requestLocation]);
+
+    const location = coords
+        ? {
+            latitude: coords.lat,
+            longitude: coords.lon,
+            ...(state.accuracy !== null ? { accuracy: state.accuracy } : {}),
+        }
+        : null;
+
+    return {
+        ...state,
+        coordinates: coords,
+        location,
+        requestLocation,
+        retryLocation: requestLocation,
+    };
 }
