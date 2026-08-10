@@ -18,7 +18,7 @@ import { searchCachedProfiles } from "@/lib/profiles-cache";
 import type { ProfileDTO } from "@/types/profile";
 
 const PAGE_SIZE = 20;
-type StatusFilter = "all" | "active" | "found";
+type StatusFilter = "all" | "active" | "found" | "deceased";
 
 export default function HomePage() {
   const t = useTranslations("home");
@@ -71,7 +71,8 @@ export default function HomePage() {
     const total = profiles.length;
     const active = profiles.filter((p) => p.status === "active").length;
     const found = profiles.filter((p) => p.status === "found").length;
-    return { total, active, found };
+    const deceased = profiles.filter((p) => p.status === "deceased").length;
+    return { total, active, found, deceased };
   }, [profiles]);
 
   // Filtered dataset
@@ -105,20 +106,29 @@ export default function HomePage() {
         )}
       </div>
 
-      {/* 2. Quick Metrics Grid */}
-      <div className="grid grid-cols-3 gap-3 sm:gap-4">
-        <div className="rounded-xl border border-neutral-800/80 bg-neutral-900/50 p-4 backdrop-blur-sm">
-          <p className="text-xs font-medium text-neutral-400">{tAdmin("filterAll")}</p>
-          <p className="mt-1 text-2xl font-bold text-white">{metrics.total}</p>
+      {/* 2. Quick Metrics */}
+      <div className="flex flex-col items-center gap-1.5">
+        <div className="flex flex-wrap items-center justify-center gap-2.5">
+          <div className="inline-flex items-center gap-2 rounded-md bg-neutral-800 px-3 py-1.5">
+            <span className="text-sm font-medium text-neutral-300">{tAdmin("filterAll")}</span>
+            <span className="text-base font-bold text-white">{metrics.total}</span>
+          </div>
+          <div className="inline-flex items-center gap-2 rounded-md bg-red-700 px-3 py-1.5">
+            <span className="text-sm font-medium text-red-100">{tProfile("status.active")}</span>
+            <span className="text-base font-bold text-white">{metrics.active}</span>
+          </div>
+          <div className="inline-flex items-center gap-2 rounded-md bg-green-700 px-3 py-1.5">
+            <span className="text-sm font-medium text-green-100">{tProfile("status.found")}</span>
+            <span className="text-base font-bold text-white">{metrics.found}</span>
+          </div>
+          <div className="inline-flex items-center gap-2 rounded-md bg-yellow-600 px-3 py-1.5">
+            <span className="text-sm font-medium text-yellow-100">{tProfile("status.deceased")}</span>
+            <span className="text-base font-bold text-white">{metrics.deceased}</span>
+          </div>
         </div>
-        <div className="rounded-xl border border-rose-500/20 bg-rose-950/10 p-4 backdrop-blur-sm">
-          <p className="text-xs font-medium text-rose-400">{tProfile("status.active")}</p>
-          <p className="mt-1 text-2xl font-bold text-rose-200">{metrics.active}</p>
-        </div>
-        <div className="rounded-xl border border-emerald-500/20 bg-emerald-950/10 p-4 backdrop-blur-sm">
-          <p className="text-xs font-medium text-emerald-400">{tProfile("status.found")}</p>
-          <p className="mt-1 text-2xl font-bold text-emerald-200">{metrics.found}</p>
-        </div>
+        <p className="text-[10px] font-medium uppercase tracking-widest text-neutral-500">
+          {t("metrics")}
+        </p>
       </div>
 
       {/* 3. Control Bar: Search & Status Filters */}
@@ -131,13 +141,13 @@ export default function HomePage() {
             onChange={(e) => setQuery(e.target.value)}
             placeholder={t("searchPlaceholder")}
             aria-label={t("searchPlaceholder")}
-            className="w-full rounded-lg border border-neutral-800 bg-neutral-900 py-2.5 pl-10 pr-4 text-sm text-white placeholder-neutral-500 focus:border-white focus:outline-none focus:ring-1 focus:ring-white transition-all"
+            className="input-field pl-10 text-sm"
           />
         </div>
 
         {/* Filter Chips using translation namespaces */}
         <div className="flex items-center gap-2 overflow-x-auto pt-1">
-          {(["all", "active", "found"] as StatusFilter[]).map((filter) => (
+          {(["all", "active", "found", "deceased"] as StatusFilter[]).map((filter) => (
             <button
               key={filter}
               onClick={() => {
@@ -207,7 +217,7 @@ export default function HomePage() {
             </p>
             <Link
               href="/create"
-              className="mt-4 inline-flex items-center gap-2 rounded-lg bg-white px-4 py-2 text-xs font-semibold text-neutral-950 transition-hover hover:bg-neutral-200"
+              className="mt-4 inline-flex items-center gap-2 rounded-lg bg-white px-4 py-2 text-xs font-semibold text-neutral-950 transition-colors hover:bg-neutral-200"
             >
               {t("createNew")}
             </Link>

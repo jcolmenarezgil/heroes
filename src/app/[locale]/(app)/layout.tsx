@@ -3,6 +3,7 @@
 import React from "react";
 import NavBar from "@/components/layout/NavBar";
 import BottomNav from "@/components/layout/BottomNav";
+import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import ConnectivityBanner from "@/components/ConnectivityBanner";
 import { useConnectivity } from "@/components/providers/ConnectivityProvider";
 
@@ -23,6 +24,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
       {showBanner && <div className="h-10 shrink-0" />}
 
       <main className="mx-auto w-full max-w-7xl flex-1 px-4 pt-4 pb-28 md:pb-12">
+        <Breadcrumbs />
         {children}
       </main>
 
