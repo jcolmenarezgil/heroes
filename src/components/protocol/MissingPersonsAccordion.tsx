@@ -23,12 +23,13 @@ export function MissingPersonsAccordion({ keys }: MissingPersonsAccordionProps) 
             {keys.map((key) => {
                 const isOpen = !!openItems[key];
                 return (
-                    <div key={key} className="border-b border-neutral-800 last:border-b-0">
+                    <div key={key}>
                         <button
                             type="button"
                             onClick={() => toggleItem(key)}
-                            className="flex w-full items-center justify-between py-4 text-left font-medium text-white transition-colors hover:text-neutral-300 focus:outline-none"
+                            className="flex w-full items-center justify-between py-3 text-left font-medium text-white transition-colors hover:text-neutral-300"
                             aria-expanded={isOpen}
+                            aria-controls={`${key}-panel`}
                         >
                             <span className="text-sm md:text-base">
                                 {t(`missing.items.${key}.title`)}
@@ -39,7 +40,10 @@ export function MissingPersonsAccordion({ keys }: MissingPersonsAccordionProps) 
                             />
                         </button>
                         {isOpen && (
-                            <div className="pb-4 text-xs md:text-sm text-neutral-400 leading-relaxed">
+                            <div
+                                id={`${key}-panel`}
+                                className="pb-3 text-xs md:text-sm text-neutral-400 leading-relaxed"
+                            >
                                 {t(`missing.items.${key}.content`)}
                             </div>
                         )}
