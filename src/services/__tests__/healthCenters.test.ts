@@ -3,6 +3,7 @@ import {
     fetchHealthCentersSingleRadius,
     parseOverpassResponse,
     getLastKnownCache,
+    HealthCenter,
 } from "../healthCenters";
 import * as dbModule from "@/lib/db/indexedDB";
 
@@ -48,27 +49,46 @@ describe("Health Centers Service & Parsing Performance", () => {
         expect(executionTime).toBeLessThan(50);
     });
 
-    it("should return an empty array if all Overpass endpoints fail", async () => {
+    it("should return ok=false with an empty list if all Overpass endpoints fail", async () => {
         global.fetch = vi.fn().mockRejectedValue(new Error("Network Error"));
 
         const result = await fetchHealthCentersSingleRadius(10.48, -66.90, 5000);
 
-        expect(result).toEqual([]);
+        expect(result.ok).toBe(false);
+        expect(result.centers).toEqual([]);
     });
 
     it("should save successfully fetched network data into IndexedDB", async () => {
-        const mockResponse = createMockOverpassResponse(2);
+        const mockCenters: HealthCenter[] = [
+            {
+                id: 1000,
+                name: "Centro de Salud 0",
+                type: "hospital",
+                lat: 10.123,
+                lon: -68.123,
+                distance: 0,
+            },
+            {
+                id: 1001,
+                name: "Centro de Salud 1",
+                type: "clinic",
+                lat: 10.124,
+                lon: -68.124,
+                distance: 0.14,
+            },
+        ];
 
         global.fetch = vi.fn().mockResolvedValue({
             ok: true,
-            json: async () => mockResponse,
+            json: async () => ({ data: mockCenters }),
         } as Response);
 
         const setStoredDataSpy = vi.spyOn(dbModule, "setStoredData");
 
         const results = await fetchHealthCentersSingleRadius(10.123, -68.123, 3000);
 
-        expect(results).toHaveLength(2);
+        expect(results.ok).toBe(true);
+        expect(results.centers).toHaveLength(2);
         expect(setStoredDataSpy).toHaveBeenCalledWith(
             "health_centers_last_known_v1",
             expect.objectContaining({

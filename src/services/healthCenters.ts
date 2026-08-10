@@ -1,4 +1,5 @@
 import { getStoredData, setStoredData } from "@/lib/db/indexedDB";
+import { calculateHaversineDistance } from "@/utils/geo";
 
 export interface HealthCenter {
     id: number;
@@ -17,31 +18,32 @@ export interface CachedDataEntry {
     lastCoords: { lat: number; lon: number };
 }
 
-const OVERPASS_ENDPOINTS = [
-    "https://overpass-api.de/api/interpreter",
-    "https://overpass.kumi.systems/api/interpreter",
-    "https://overpass.private.coffee/api/interpreter",
-    "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
-];
-
 const LAST_KNOWN_CACHE_KEY = "health_centers_last_known_v1";
 
 export async function getLastKnownCache(): Promise<CachedDataEntry | null> {
     return await getStoredData<CachedDataEntry>(LAST_KNOWN_CACHE_KEY);
 }
 
+export type HealthCenterType = "all" | "hospital" | "pharmacy" | "clinic" | "health";
+
+export interface HealthCenterFetchResult {
+    centers: HealthCenter[];
+    ok: boolean;
+}
+
 export async function fetchHealthCentersSingleRadius(
     lat: number,
     lon: number,
-    radiusMeters: number
-): Promise<HealthCenter[]> {
+    radiusMeters: number,
+    type: HealthCenterType = "all"
+): Promise<HealthCenterFetchResult> {
     try {
         const response = await fetch(
-            `/api/health-centers/stream?lat=${lat}&lon=${lon}&radius=${radiusMeters}`,
+            `/api/health-centers?lat=${lat}&lon=${lon}&radius=${radiusMeters}&type=${type}`,
             { method: "GET", headers: { Accept: "application/json" } }
         );
 
-        if (!response.ok) return [];
+        if (!response.ok) return { centers: [], ok: false };
 
         const result = await response.json();
         const centers: HealthCenter[] = result.data || [];
@@ -54,13 +56,26 @@ export async function fetchHealthCentersSingleRadius(
             });
         }
 
-        return centers;
+        return { centers, ok: true };
     } catch {
-        return [];
+        return { centers: [], ok: false };
     }
 }
 
-export function parseOverpassResponse(data: any, userLat: number, userLon: number): HealthCenter[] {
+interface OverpassElement {
+    id: number;
+    type?: string;
+    lat?: number;
+    lon?: number;
+    center?: { lat: number; lon: number };
+    tags?: Record<string, string>;
+}
+
+interface OverpassResponse {
+    elements?: OverpassElement[];
+}
+
+export function parseOverpassResponse(data: OverpassResponse, userLat: number, userLon: number): HealthCenter[] {
     if (!data?.elements || !Array.isArray(data.elements)) return [];
 
     const uniqueMap = new Map<string, HealthCenter>();
@@ -86,7 +101,14 @@ export function parseOverpassResponse(data: any, userLat: number, userLon: numbe
                     ? `${elem.tags["addr:street"]} ${elem.tags["addr:housenumber"] || ""}`.trim()
                     : undefined,
                 phone: elem.tags?.phone || elem.tags?.["contact:phone"],
-                distance: parseFloat(calculateDistance(userLat, userLon, lat, lon).toFixed(2)),
+                distance: parseFloat(
+                    (
+                        calculateHaversineDistance(
+                            { latitude: userLat, longitude: userLon },
+                            { latitude: lat, longitude: lon }
+                        ) / 1000
+                    ).toFixed(2)
+                ),
             });
         }
     }
@@ -108,17 +130,4 @@ function getDefaultName(type: string): string {
         case "clinic": return "Clínica / Ambulatorio";
         default: return "Punto de Atención Médica";
     }
-}
-
-function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
-    const R = 6371;
-    const dLat = ((lat2 - lat1) * Math.PI) / 180;
-    const dLon = ((lon2 - lon1) * Math.PI) / 180;
-    const a =
-        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-        Math.cos((lat1 * Math.PI) / 180) *
-        Math.cos((lat2 * Math.PI) / 180) *
-        Math.sin(dLon / 2) *
-        Math.sin(dLon / 2);
-    return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
 }
