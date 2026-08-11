@@ -4,11 +4,7 @@
     "description": "Una plataforma resiliente y optimizada diseñada para situaciones de crisis que facilita la localización de personas no localizadas, maximizando la persistencia local, la eficiencia de batería y la coordinación segura entre familias y rescatistas."
   },
   "common": {
-    "loading": "Cargando...",
-    "optional": "(Opcional)",
-    "logoAlt": "Logotipo de la aplicación Heroes",
-    "crisisResponse": "Respuesta a Crisis",
-    "missingPersonsLocator": "y Localizador de Personas Desaparecidas"
+    "loading": "Cargando..."
   },
   "nav": {
     "home": "Inicio",
@@ -40,7 +36,8 @@
   "auth": {
     "loginWithGoogle": "Iniciar sesión con Google",
     "signOut": "Cerrar sesión",
-    "signInToContinue": "Inicia sesión para continuar"
+    "signInToContinue": "Inicia sesión para continuar",
+    "goBack": "Volver"
   },
   "breadcrumbs": {
     "label": "Ruta de navegación",
@@ -79,6 +76,28 @@
       "title": "Acciones Rápidas",
       "subtitle": "Comienza aquí: reporta a una persona desaparecida, busca en el directorio, encuentra centros cercanos o sigue el protocolo de crisis."
     },
+    "guest": {
+      "signIn": "Iniciar sesión",
+      "tagline": "Respuesta de emergencia para personas desaparecidas.",
+      "mission": "Reporta personas desaparecidas y ayuda a coordinar su búsqueda durante emergencias.",
+      "reportPersonDesc": "Requiere una cuenta para publicar.",
+      "info": "Inicia sesión para buscar en el directorio o reportar a una persona desaparecida.\nLos centros de atención y el protocolo de crisis están disponibles sin cuenta.",
+      "howTitle": "Cómo funciona",
+      "steps": {
+        "report": {
+          "title": "Reporta",
+          "desc": "Crea un perfil para una persona desaparecida."
+        },
+        "search": {
+          "title": "Busca",
+          "desc": "Encuentra a alguien en el directorio."
+        },
+        "coordinate": {
+          "title": "Coordina",
+          "desc": "Comparte actualizaciones y conéctate con la comunidad."
+        }
+      }
+    },
     "actions": {
       "urgent": "Acción Urgente",
       "reportPerson": "Reportar Persona",
@@ -88,7 +107,7 @@
       "nearbyCenters": "Centros de Atención",
       "nearbyCentersDesc": "Encuentra centros de atención cerca de tu ubicación.",
       "guideProtocol": "Protocolo de Crisis",
-      "guideProtocolDesc": "Instrucciones y protocolos oficiales sobre cómo actuar durante una crisis.",
+      "guideProtocolDesc": "Instrucciones y protocolos sobre cómo actuar.",
       "offlineNotice": "Los datos se guardan localmente.\nPuedes reportar y consultar incluso sin conexión a la red."
     }
   },
@@ -147,6 +166,7 @@
     "resultAria": "Abrir perfil de {name}",
     "qrAlt": "Código QR para {name}",
     "createdBy": "Creado por {name} el {date}",
+    "createdOn": "Creado el {date}",
     "updatedBy": "Actualizado por {name} el {date}",
     "userNotFound": "Usuario no encontrado",
     "saveToast": "Guardado. La lista se actualizará en la próxima sincronización.",
@@ -291,25 +311,6 @@
         "rejected": "rechazada"
       }
     }
-  },
-  "onboarding": {
-    "continueWithoutAccount": "Continuar sin cuenta",
-    "hintLabel": "Consejo:",
-    "hintText": "Puedes continuar sin crear una cuenta, pero para sugerir modificaciones o actualizar estados debes iniciar sesión primero.",
-    "completeProfile": "Completar detalles del perfil",
-    "welcome": "Bienvenido, {name}",
-    "optionalNote": "Estos parámetros demográficos son completamente opcionales. Ayudan a las operaciones de rescate a comparar listas de identificación estructural más rápido durante operaciones de campo.",
-    "gender": {
-      "label": "Género",
-      "placeholder": "Selecciona una opción de género...",
-      "male": "Masculino",
-      "female": "Femenino"
-    },
-    "dateOfBirth": {
-      "label": "Fecha de nacimiento"
-    },
-    "saving": "Guardando parámetros...",
-    "saveAndContinue": "Guardar y continuar"
   },
   "languageSwitcher": {
     "label": "Idioma",
@@ -459,6 +460,9 @@
     },
     "emptyStateWithRadius": "No se encontraron centros de atención en el radio de {radius}. Usa los botones ampliados de arriba para ampliar la búsqueda.",
     "retryProgressive": "Escanear de nuevo",
+    "viewCached": "Ver en caché",
+    "backToLive": "Volver a resultados",
+    "showingCached": "Mostrando resultados en caché · desde {time}",
     "noPhone": "Sin teléfono registrado",
     "viewOnMap": "Ver en mapa",
     "loadingRealtime": "Consultando centros de atención en tiempo real...",
