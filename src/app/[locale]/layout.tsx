@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Arimo } from "next/font/google";
+import { Arimo, Limelight } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import {
   getMessages,
@@ -18,6 +18,13 @@ import "../globals.css";
 const arimo = Arimo({
   variable: "--font-arimo",
   subsets: ["latin"],
+  display: "swap",
+});
+
+const limelight = Limelight({
+  variable: "--font-brand",
+  subsets: ["latin"],
+  weight: "400",
   display: "swap",
 });
 
@@ -60,7 +67,7 @@ export default async function LocaleLayout({
   return (
       <html
         lang={locale}
-        className={`${arimo.variable} h-full antialiased`}
+        className={`${arimo.variable} ${limelight.variable} h-full antialiased`}
       >
       <body className="min-h-full bg-background text-foreground font-sans antialiased selection:bg-white selection:text-black">
         <AuthProvider>
