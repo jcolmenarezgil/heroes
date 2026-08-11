@@ -19,6 +19,17 @@ export interface CachedDataEntry {
 }
 
 const LAST_KNOWN_CACHE_KEY = "health_centers_last_known_v1";
+const CACHE_TTL_MS = 10 * 60 * 1000;
+
+interface CachedCenters {
+    timestamp: number;
+    data: HealthCenter[];
+}
+
+function cacheKey(lat: number, lon: number, radius: number, type: string): string {
+    // Round to ~3 decimals (~111 m) so small GPS drift reuses the same cache.
+    return `health_centers_${lat.toFixed(3)}_${lon.toFixed(3)}_${radius}_${type}`;
+}
 
 export async function getLastKnownCache(): Promise<CachedDataEntry | null> {
     return await getStoredData<CachedDataEntry>(LAST_KNOWN_CACHE_KEY);
@@ -35,11 +46,20 @@ export async function fetchHealthCentersSingleRadius(
     lat: number,
     lon: number,
     radiusMeters: number,
-    type: HealthCenterType = "all"
+    type: HealthCenterType = "all",
+    lang: string = "en"
 ): Promise<HealthCenterFetchResult> {
     try {
+        // Reuse a recent result for the same area/radius/type so repeat scans
+        // do not keep hitting Overpass (which throttles per-IP).
+        const key = cacheKey(lat, lon, radiusMeters, type);
+        const cached = await getStoredData<CachedCenters>(key);
+        if (cached && Date.now() - cached.timestamp < CACHE_TTL_MS) {
+            return { centers: cached.data, ok: true };
+        }
+
         const response = await fetch(
-            `/api/health-centers?lat=${lat}&lon=${lon}&radius=${radiusMeters}&type=${type}`,
+            `/api/health-centers?lat=${lat}&lon=${lon}&radius=${radiusMeters}&type=${type}&lang=${lang}`,
             { method: "GET", headers: { Accept: "application/json" } }
         );
 
@@ -47,6 +67,13 @@ export async function fetchHealthCentersSingleRadius(
 
         const result = await response.json();
         const centers: HealthCenter[] = result.data || [];
+
+        // Cache valid responses (including empty ones) to avoid re-scanning a
+        // sparse area. Throttled 503 responses are never cached.
+        await setStoredData<CachedCenters>(key, {
+            timestamp: Date.now(),
+            data: centers,
+        });
 
         if (centers.length > 0) {
             await setStoredData<CachedDataEntry>(LAST_KNOWN_CACHE_KEY, {
@@ -75,7 +102,12 @@ interface OverpassResponse {
     elements?: OverpassElement[];
 }
 
-export function parseOverpassResponse(data: OverpassResponse, userLat: number, userLon: number): HealthCenter[] {
+export function parseOverpassResponse(
+    data: OverpassResponse,
+    userLat: number,
+    userLon: number,
+    lang: string = "en"
+): HealthCenter[] {
     if (!data?.elements || !Array.isArray(data.elements)) return [];
 
     const uniqueMap = new Map<string, HealthCenter>();
@@ -87,10 +119,14 @@ export function parseOverpassResponse(data: OverpassResponse, userLat: number, u
 
         const rawType = elem.tags?.amenity || elem.tags?.healthcare || "health";
         const type = normalizeType(rawType);
-        const name = elem.tags?.name || getDefaultName(type);
+        const name = elem.tags?.name || getDefaultName(type, lang);
         const key = `${name.toLowerCase()}-${lat.toFixed(3)}-${lon.toFixed(3)}`;
 
         if (!uniqueMap.has(key)) {
+            const rawPhone = elem.tags?.phone || elem.tags?.["contact:phone"];
+            // Drop OSM noise (e.g. "No Disponible") that is not a real number.
+            const phone = rawPhone && /\d{6,}/.test(rawPhone) ? rawPhone : undefined;
+
             uniqueMap.set(key, {
                 id: elem.id,
                 name,
@@ -100,7 +136,7 @@ export function parseOverpassResponse(data: OverpassResponse, userLat: number, u
                 address: elem.tags?.["addr:street"]
                     ? `${elem.tags["addr:street"]} ${elem.tags["addr:housenumber"] || ""}`.trim()
                     : undefined,
-                phone: elem.tags?.phone || elem.tags?.["contact:phone"],
+                phone,
                 distance: parseFloat(
                     (
                         calculateHaversineDistance(
@@ -123,11 +159,22 @@ function normalizeType(type: string): "hospital" | "pharmacy" | "clinic" | "heal
     return "health";
 }
 
-function getDefaultName(type: string): string {
-    switch (type) {
-        case "hospital": return "Hospital / Centro Médico";
-        case "pharmacy": return "Farmacia";
-        case "clinic": return "Clínica / Ambulatorio";
-        default: return "Punto de Atención Médica";
-    }
+const DEFAULT_NAMES: Record<string, Record<string, string>> = {
+    en: {
+        hospital: "Hospital / Medical Center",
+        pharmacy: "Pharmacy",
+        clinic: "Clinic / Health Post",
+        health: "Health Center",
+    },
+    es: {
+        hospital: "Hospital / Centro Médico",
+        pharmacy: "Farmacia",
+        clinic: "Clínica / Ambulatorio",
+        health: "Punto de Atención Médica",
+    },
+};
+
+function getDefaultName(type: string, lang: string): string {
+    const names = DEFAULT_NAMES[lang] ?? DEFAULT_NAMES.en;
+    return names[type] ?? names.health;
 }
