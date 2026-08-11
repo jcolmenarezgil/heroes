@@ -12,6 +12,15 @@ const adminEmails = new Set(
         .filter(Boolean)
 );
 
+// Optional sign-up allowlist. Unset = open registration for any Google
+// account; when set, only these emails (plus ADMIN_EMAILS) may sign in.
+const allowedEmails = new Set(
+    (process.env.ALLOWED_EMAILS || "")
+        .split(",")
+        .map((email) => email.trim().toLowerCase())
+        .filter(Boolean)
+);
+
 export const authOptions: NextAuthOptions = {
     adapter: DrizzleAdapter(db, {
         usersTable: users,
@@ -47,6 +56,16 @@ export const authOptions: NextAuthOptions = {
                     .update(users)
                     .set({ role: "admin" })
                     .where(eq(users.id, user.id));
+            }
+            // Deny sign-in when an allowlist is set and the email is not in it
+            // (admins are always admitted).
+            if (
+                allowedEmails.size > 0 &&
+                email &&
+                !allowedEmails.has(email) &&
+                !adminEmails.has(email)
+            ) {
+                return false;
             }
             return true;
         },

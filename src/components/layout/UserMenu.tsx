@@ -2,9 +2,11 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Link as LocalizedLink } from "@/i18n/navigation";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { useTranslations } from "next-intl";
+import { safeCallbackUrl } from "@/lib/callback-url";
 import SettingsView from "@/components/panels/SettingsView";
 
 function getInitials(name?: string | null, email?: string | null): string {
@@ -26,12 +28,13 @@ export default function UserMenu() {
     const t = useTranslations();
     const tNav = useTranslations("nav");
     const { data: session, status } = useSession();
+    const pathname = usePathname();
 
     const [open, setOpen] = useState(false);
     const [view, setView] = useState<"menu" | "settings">("menu");
     const ref = useRef<HTMLDivElement>(null);
 
-    // Outside click closes the dropdown (and resets to menu view).
+    // Outside click closes the dropdown.
     useEffect(() => {
         if (!open) return;
         const handle = (event: MouseEvent) => {
@@ -60,8 +63,7 @@ export default function UserMenu() {
         return () => document.removeEventListener("keydown", handle);
     }, [open]);
 
-    // Listen for external triggers (e.g. the navbar's SyncStatus pill) that
-    // want to open this menu with a specific view.
+    // Open the menu on demand (e.g. from the navbar's SyncStatus pill).
     useEffect(() => {
         const handle = (event: Event) => {
             const custom = event as CustomEvent<{ view?: "menu" | "settings" }>;
@@ -82,7 +84,7 @@ export default function UserMenu() {
     if (!session?.user) {
         return (
             <button
-                onClick={() => signIn("google")}
+                onClick={() => signIn("google", { callbackUrl: safeCallbackUrl(pathname) })}
                 className="text-sm font-medium text-white hover:text-neutral-300"
             >
                 {tNav("signIn")}
@@ -124,7 +126,6 @@ export default function UserMenu() {
                 <div className="absolute right-0 top-full mt-2 w-64 rounded-lg border border-neutral-800 bg-neutral-950 p-2 shadow-xl">
                     {view === "menu" ? (
                         <>
-                            {/* User header */}
                             <div className="px-3 py-2">
                                 <p className="text-sm font-medium text-white">
                                     {user.name || user.email}
@@ -143,7 +144,6 @@ export default function UserMenu() {
 
                             <div className="my-1 border-t border-neutral-800" />
 
-                            {/* Nav links */}
                             <LocalizedLink
                                 href="/me"
                                 onClick={closeMenu}
@@ -163,7 +163,6 @@ export default function UserMenu() {
 
                             <div className="my-1 border-t border-neutral-800" />
 
-                            {/* Settings entry */}
                             <button
                                 onClick={() => setView("settings")}
                                 className="block w-full rounded-md px-3 py-2 text-left text-sm text-white hover:bg-neutral-900"
@@ -171,7 +170,6 @@ export default function UserMenu() {
                                 {t("userMenu.settings")}
                             </button>
 
-                            {/* About / Proyecto Heroes link */}
                             <LocalizedLink
                                 href="/about"
                                 onClick={closeMenu}
@@ -182,7 +180,6 @@ export default function UserMenu() {
 
                             <div className="my-1 border-t border-neutral-800" />
 
-                            {/* Sign out */}
                             <button
                                 onClick={() => {
                                     closeMenu();
@@ -195,7 +192,6 @@ export default function UserMenu() {
                         </>
                     ) : (
                         <>
-                            {/* Back link */}
                             <button
                                 onClick={() => setView("menu")}
                                 className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm text-neutral-300 hover:bg-neutral-900 hover:text-white"

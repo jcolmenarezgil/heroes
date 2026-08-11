@@ -40,6 +40,7 @@ cp .env.example .env
 - `NEXTAUTH_SECRET` — Random string (32+ chars) for session encryption (`openssl rand -base64 32`)
 - `NEXTAUTH_URL` — App base URL (e.g. `http://localhost:3000`)
 - `ADMIN_EMAILS` — Comma-separated list of admin email addresses
+- `ALLOWED_EMAILS` — Optional comma-separated allowlist of emails that may sign in. When set, only these (and `ADMIN_EMAILS`) may join; unset = open registration to any Google account.
 
 The `.env` file is gitignored.
 
