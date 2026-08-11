@@ -52,13 +52,6 @@ export async function getLastSync(): Promise<number | null> {
     return Number.isFinite(millis) ? millis : null;
 }
 
-export async function getCachedProfilesWithCoords(): Promise<ProfileDTO[]> {
-    const all = await db.profiles.toArray();
-    return all.filter(
-        (p) => typeof p.latitude === "number" && typeof p.longitude === "number"
-    );
-}
-
 export async function searchCachedProfiles(
     query = ""
 ): Promise<ProfileDTO[]> {
@@ -102,8 +95,4 @@ export async function syncProfiles(
     });
 
     return true;
-}
-
-export async function upsertProfile(profile: ProfileDTO): Promise<void> {
-    await db.profiles.put(profile);
 }

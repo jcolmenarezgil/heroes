@@ -33,9 +33,8 @@ export function EmergencyDirectory() {
     ).protocol.emergency.countries;
 
     useEffect(() => {
-        // Lee la cookie asignada por el middleware si existe.
-        // Client-only read: lazy state init would break SSR hydration, so this
-        // sync-from-external-store effect is intentional.
+        // Read the country cookie set by the middleware. Client-only read: a
+        // lazy state initializer would break SSR hydration.
         const match = document.cookie.match(new RegExp("(^| )user-country=([^;]+)"));
         if (match && directories[match[2]]) {
             // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -51,7 +50,6 @@ export function EmergencyDirectory() {
             <div className="mb-3 flex flex-wrap items-center justify-between gap-2 border-b border-neutral-800 pb-3">
                 <h2 className="text-sm font-semibold text-white">{t("title")}</h2>
 
-                {/* Selector manual de país */}
                 <div className="flex items-center gap-1.5 rounded-lg border border-neutral-800 bg-neutral-900 px-2.5 py-1">
                     <GlobeIcon className="h-3.5 w-3.5 text-neutral-400" />
                     <select
@@ -69,7 +67,6 @@ export function EmergencyDirectory() {
                 </div>
             </div>
 
-            {/* Listado de contactos directos */}
             <div className="flex flex-col">
                 {Object.entries(currentDirectory.contacts).map(([id, contact]) => {
                     const isCallable = /^[\d\s()+-]+$/.test(contact.number.trim());

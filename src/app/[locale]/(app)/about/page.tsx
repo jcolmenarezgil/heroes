@@ -8,7 +8,6 @@ export default async function AboutPage() {
 
     return (
         <div className="mx-auto max-w-4xl space-y-8 pb-16 pt-4">
-            {/* Header / Visión del Proyecto */}
             <header className="space-y-3 text-center sm:text-left">
                 <div className="inline-flex items-center gap-2 rounded-full border border-blue-500/30 bg-blue-500/10 px-3 py-1 text-xs font-semibold text-blue-400">
                     <HeartIcon className="h-3.5 w-3.5 text-blue-400" />
@@ -22,7 +21,6 @@ export default async function AboutPage() {
                 </p>
             </header>
 
-            {/* Tarjeta de Licencia y Atribución */}
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div className="rounded-xl border border-neutral-800 bg-neutral-900/60 p-5">
                     <div className="flex items-center gap-2 text-white font-bold text-sm">

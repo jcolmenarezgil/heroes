@@ -1,4 +1,3 @@
-//src/components/ProfileForm.tsx
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -71,9 +70,8 @@ export default function ProfileForm({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Resyncs local fields whenever the parent hands us a new initialData object
-  // (e.g. after a form reset). The parent also remounts via a `key` change, so
-  // this is belt-and-suspenders rather than a first-mount initializer.
+  // Resync local fields when the parent passes new initialData (e.g. after a
+  // form reset); the parent also remounts via a key change.
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setName(initialData.name);
@@ -91,7 +89,7 @@ export default function ProfileForm({
     setErrors({});
   }, [initialData]);
 
-  // Notifica al componente padre ante cualquier cambio en el estado local
+  // Notify the parent of local state changes.
   useEffect(() => {
     if (!onChange) return;
 

@@ -14,11 +14,8 @@ export interface AuthUser {
     role: Role;
 }
 
-/**
- * Returns the authenticated user with a fresh role and name from the database.
- * The JWT role is not trusted for authorization because it is only set
- * at login time and can become stale (e.g. after signIn role promotion).
- */
+// Returns the authenticated user with a fresh role/name from the DB. The JWT
+// role is not trusted because it can go stale after sign-in promotions.
 export async function getAuthUser(): Promise<AuthUser | null> {
     const session = await getServerSession(authOptions);
     const userId = session?.user?.id;
@@ -39,10 +36,8 @@ export async function getAuthUser(): Promise<AuthUser | null> {
     return { id: userId, email, name, fullName, role };
 }
 
-/**
- * Whether the user is allowed to modify (PUT/DELETE) the given profile.
- * Owners can modify their own profile; rescuer/admin can modify any.
- */
+// Whether the user may modify (PUT/DELETE) the given profile: the owner, or
+// any rescuer/admin.
 export function canModifyProfile(user: AuthUser, profileUserId: string): boolean {
     return user.id === profileUserId || user.role === "rescuer" || user.role === "admin";
 }

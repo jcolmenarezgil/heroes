@@ -12,11 +12,7 @@ import { ArrowLeftIcon } from "@/components/icons";
 
 interface SuggestionFormProps {
   profileId: string;
-  /**
-   * When true, the profile name is fetched and rendered in the heading
-   * (useful for a standalone page where the surrounding context doesn't show
-   * the name). When false, only the title is shown.
-   */
+  /** When true, the profile name is shown in the heading. */
   showProfileName?: boolean;
 }
 
@@ -33,7 +29,7 @@ export default function SuggestionForm({
   const [profileName, setProfileName] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Optionally load the profile name for a richer heading.
+  // Load the profile name when requested.
   React.useEffect(() => {
     if (!showProfileName) return;
     let cancelled = false;

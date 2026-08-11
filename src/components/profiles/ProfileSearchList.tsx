@@ -90,14 +90,12 @@ export default function HomePage() {
 
   return (
     <div className="flex flex-col space-y-6 pb-12">
-      {/* 1. Header & Connectivity Context */}
       <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-white">{t("title")}</h1>
           <p className="mt-1 text-sm text-neutral-400">{t("subtitle")}</p>
         </div>
 
-        {/* Dynamic Offline Badge using connectivity i18n */}
         {!isOnline && (
           <div className="inline-flex items-center gap-2 self-start rounded-full border border-amber-500/20 bg-amber-500/10 px-3 py-1 text-xs font-medium text-amber-400">
             <span className="h-2 w-2 rounded-full bg-amber-400 animate-pulse" />
@@ -106,7 +104,6 @@ export default function HomePage() {
         )}
       </div>
 
-      {/* 2. Quick Metrics */}
       <div className="flex flex-col items-center gap-1.5">
         <div className="flex flex-wrap items-center justify-center gap-2.5">
           <div className="inline-flex items-center gap-2 rounded-md bg-neutral-800 px-3 py-1.5">
@@ -131,7 +128,6 @@ export default function HomePage() {
         </p>
       </div>
 
-      {/* 3. Control Bar: Search & Status Filters */}
       <div className="sticky top-14 z-20 space-y-3 rounded-xl border border-neutral-800 bg-neutral-950/80 p-3 backdrop-blur-md">
         <div className="relative w-full">
           <MagnifyingGlassIcon className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-400" />
@@ -145,7 +141,6 @@ export default function HomePage() {
           />
         </div>
 
-        {/* Filter Chips using translation namespaces */}
         <div className="flex items-center gap-2 overflow-x-auto pt-1">
           {(["all", "active", "found", "deceased"] as StatusFilter[]).map((filter) => (
             <button
@@ -165,7 +160,6 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* 4. Results List & States */}
       <div className="overflow-hidden rounded-xl border border-neutral-800 bg-neutral-900/30">
         <div className="grid grid-cols-[56px_1fr_auto] items-center gap-3 border-b border-neutral-800 bg-neutral-950/60 px-4 py-2.5 text-xs font-semibold uppercase tracking-wider text-neutral-400">
           <span className="sr-only">{t("photoHeader")}</span>
@@ -225,7 +219,6 @@ export default function HomePage() {
         )}
       </div>
 
-      {/* 5. Pagination */}
       {!isLoading && totalPages > 1 && (
         <div className="flex items-center justify-between pt-2">
           <Button

@@ -1,10 +1,13 @@
-// src/lib/api-client.ts
 import type {
     CreateProfileInput,
     UpdateProfileInput,
 } from "@/lib/validations/profile";
 import type { UpdateUserInput } from "@/lib/validations/user";
-import type { ProfileDTO, PublicProfileDTO, ProfileListResponse } from "@/types/profile";
+import type {
+    ProfileDTO,
+    PublicProfileDTO,
+    ProfileListResponse,
+} from "@/types/profile";
 import type {
     ProfileSuggestionDTO,
     ProfileSuggestionListResponse,

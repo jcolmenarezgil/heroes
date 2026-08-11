@@ -19,14 +19,7 @@ interface RouteContext {
     params: Promise<{ id: string }>;
 }
 
-/**
- * Change another user's role. Admin-only.
- *
- * Guards:
- * - You cannot change your own role (would lock yourself out of admin).
- * - You cannot demote the last remaining admin (would leave the platform
- *   without any admins).
- */
+// Change another user's role. Admin-only; cannot demote the last admin.
 export async function PATCH(request: Request, context: RouteContext) {
     const user = await getAuthUser();
     if (!user) return jsonUnauthorized();

@@ -1,11 +1,5 @@
-/**
- * Notification polling preferences.
- *
- * The notification bell polls the server at a user-configurable interval
- * (see the sync dropdown in the navbar). The chosen interval is stored in
- * localStorage so it survives reloads and matches the pattern used by
- * `profiles-cache.ts` for the sync interval.
- */
+// Notification bell poll interval, stored in localStorage like the sync
+// interval so it survives reloads.
 
 export const NOTIFICATION_POLL_INTERVALS = [
     { value: 30 * 1000, labelKey: "notificationPrefs.30sec" },
@@ -35,6 +29,6 @@ export function setNotificationPollInterval(ms: number): void {
     try {
         window.localStorage.setItem(POLL_INTERVAL_KEY, String(ms));
     } catch {
-        /* swallow quota / disabled storage */
+        /* ignore quota / disabled storage */
     }
 }

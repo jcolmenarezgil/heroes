@@ -5,14 +5,7 @@ import { useFormatter, useTranslations } from "next-intl";
 import { useConnectivity } from "@/components/providers/ConnectivityProvider";
 import { useSync } from "@/components/providers/SyncProvider";
 
-/**
- * Click-through trigger that opens the user menu's settings sub-view.
- *
- * The pill itself only renders the status indicator (online dot + last sync).
- * Clicking it dispatches a `user-menu:open` CustomEvent on `window`, which
- * `UserMenu` listens for and responds by opening with the requested view.
- * This keeps a single owner of the dropdown panel.
- */
+// Clicking this pill opens the settings sub-view in the user menu.
 export default function SyncStatus() {
     const t = useTranslations();
     const format = useFormatter();

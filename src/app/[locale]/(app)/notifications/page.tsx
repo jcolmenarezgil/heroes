@@ -198,7 +198,6 @@ export default function NotificationsPage() {
 
     return (
         <div className="mx-auto max-w-lg lg:max-w-4xl">
-            {/* Title */}
             <div className="mb-4">
                 <h1 className="text-2xl font-semibold text-white">
                     {t("title")}
@@ -208,7 +207,6 @@ export default function NotificationsPage() {
                 </p>
             </div>
 
-            {/* Filter toggle */}
             <div className="mb-4 flex items-center gap-2">
                 <button
                     onClick={() => {
@@ -234,7 +232,6 @@ export default function NotificationsPage() {
                 )}
             </div>
 
-            {/* List */}
             <div className="overflow-hidden rounded-lg border border-neutral-900">
                 {isLoading ? (
                     <div className="divide-y divide-neutral-900">
@@ -292,7 +289,6 @@ export default function NotificationsPage() {
                 )}
             </div>
 
-            {/* Load more */}
             {!isLoading && items.length > 0 && hasMore && !isLoadingMore && (
                 <div className="mt-4 flex justify-center">
                     <button

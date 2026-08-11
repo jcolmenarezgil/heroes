@@ -1,11 +1,10 @@
-// src/components/community/GitHubCommunitySection.tsx
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { getRepoStats, getRepoContributors } from "@/services/github";
 import { StarIcon, GitForkIcon } from "@/components/icons";
 
 export async function GitHubCommunitySection() {
-    // Ejecutar las promesas en paralelo para evitar waterfalls
+    // Fetch stats and translations in parallel.
     const [stats, contributors, t] = await Promise.all([
         getRepoStats(),
         getRepoContributors(),

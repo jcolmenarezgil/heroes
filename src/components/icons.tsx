@@ -228,8 +228,6 @@ export const BellIcon = ({ className }: IconProps) => (
   </Icon>
 );
 
-/* --- NUEVOS ÍCONOS PARA EL DASHBOARD DE ACCIONES --- */
-
 export const UserPlusIcon = ({ className }: IconProps) => (
   <Icon className={className}>
     <path
@@ -265,32 +263,12 @@ export const MapPinIcon = ({ className }: IconProps) => (
   </Icon>
 );
 
-export const AcademicCapIcon = ({ className }: IconProps) => (
-  <Icon className={className}>
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M4.26 10.147L12 14.634l7.74-4.487l-7.74-4.487l-7.74 4.487zm0 0v5.303a9.006 9.006 0 0015.48 0v-5.303"
-    />
-  </Icon>
-);
-
 export const BookIcon = ({ className }: IconProps) => (
   <Icon className={className}>
     <path
       strokeLinecap="round"
       strokeLinejoin="round"
       d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"
-    />
-  </Icon>
-);
-
-export const InformationCircleIcon = ({ className }: IconProps) => (
-  <Icon className={className}>
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
     />
   </Icon>
 );

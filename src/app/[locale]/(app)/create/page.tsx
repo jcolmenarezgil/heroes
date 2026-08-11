@@ -1,4 +1,3 @@
-//src/app/[locale]/(app)/create/page.tsx
 "use client";
 
 import React, { useEffect, useState, Suspense } from "react";
@@ -59,9 +58,9 @@ function CreateProfileContent() {
       }
     }
 
-    // Merges the sessionStorage draft with URL-pinned coordinates once the
-    // session is known. sessionStorage is unavailable during SSR, so the read
-    // must happen in a client-only effect rather than a lazy state initializer.
+    // Merge the saved draft with URL-pinned coordinates once the session is
+    // known. sessionStorage is not available during SSR, so this happens in a
+    // client-only effect.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setInitialData({
       name: parsedDraft.name || "",
@@ -78,16 +77,9 @@ function CreateProfileContent() {
   }, [sessionStatus, queryLat, queryLng, router]);
 
   const handleResetForm = () => {
-    // 1. Sobrescribe el borrador en sessionStorage con la estructura vacía
     sessionStorage.setItem(DRAFT_KEY, JSON.stringify(emptyProfileData));
-
-    // 2. Restablece el estado inicial
     setInitialData({ ...emptyProfileData });
-
-    // 3. Incrementa la versión para forzar el desmontaje/remontaje de ProfileForm
-    setResetVersion((prev) => prev + 1);
-
-    // 4. Limpia las coordenadas de la URL si existen
+    setResetVersion((prev) => prev + 1); // remount ProfileForm
     if (queryLat !== null || queryLng !== null) {
       router.replace("/create");
     }

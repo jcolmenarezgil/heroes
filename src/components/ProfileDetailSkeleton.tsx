@@ -4,14 +4,12 @@ import Skeleton from "@/components/ui/Skeleton";
 export default function ProfileDetailSkeleton() {
   return (
     <div className="mx-auto max-w-lg lg:max-w-4xl">
-      {/* Top nav actions */}
       <div className="mb-4 flex items-center justify-between">
         <Skeleton className="h-11 w-11 rounded-lg" />
         <Skeleton className="h-11 w-28 rounded-lg" />
       </div>
 
       <div className="lg:grid lg:grid-cols-2 lg:gap-8">
-        {/* Left column */}
         <div className="space-y-6">
           <Skeleton className="aspect-[3/4] w-full rounded-lg" />
           <div className="flex items-center justify-between">
@@ -21,7 +19,6 @@ export default function ProfileDetailSkeleton() {
           <Skeleton className="h-11 w-full rounded-lg" />
         </div>
 
-        {/* Right column */}
         <div className="mt-6 space-y-0 lg:mt-0">
           {[1, 2, 3].map((i) => (
             <div
@@ -40,7 +37,6 @@ export default function ProfileDetailSkeleton() {
             </div>
           </div>
 
-          {/* Audit trail skeleton */}
           <div className="border-t border-neutral-900 py-4">
             <Skeleton className="h-4 w-3/4" />
             <Skeleton className="mt-2 h-4 w-3/4" />

@@ -26,8 +26,7 @@ export function OfflineChecklist() {
     const locale = useLocale();
     const [checkedIds, setCheckedIds] = useState<Record<string, boolean>>({});
 
-    // Carga inicial del caché/almacenamiento local. Client-only read: lazy state
-    // init would break SSR hydration, so this sync-from-external-store effect is intentional.
+    // Load saved state from localStorage on mount. Client-only read.
     useEffect(() => {
         try {
             const saved = localStorage.getItem("heroes_offline_checklist");
@@ -36,22 +35,21 @@ export function OfflineChecklist() {
                 setCheckedIds(JSON.parse(saved));
             }
         } catch {
-            // Manejo silencioso para entornos restringidos en modo local
+            // Ignore restricted storage (private mode).
         }
     }, []);
 
-    // Persistir en almacenamiento local al modificar
+    // Persist changes to localStorage.
     const toggleItem = (id: string) => {
         const updated = { ...checkedIds, [id]: !checkedIds[id] };
         setCheckedIds(updated);
         try {
             localStorage.setItem("heroes_offline_checklist", JSON.stringify(updated));
         } catch {
-            // Fallback seguro si la cuota local falla
+            // Ignore quota/storage errors.
         }
     };
 
-    // Exportar progreso a JSON
     const handleExportJSON = () => {
         const payload = {
             exportedAt: new Date().toISOString(),

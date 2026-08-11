@@ -1,10 +1,7 @@
 import type { profileSuggestions } from "@/lib/db/schema";
 
-/**
- * A suggestion as serialized by the API. Dates are ISO strings over the wire.
- * `userId`/`resolvedBy` identifiers are intentionally hidden from clients;
- * only display names are exposed.
- */
+// Suggestion as serialized by the API. Identifiers are hidden; only display
+// names are exposed.
 export type ProfileSuggestionDTO = Omit<
     typeof profileSuggestions.$inferSelect,
     "userId" | "resolvedBy" | "createdAt" | "resolvedAt"
