@@ -1,4 +1,3 @@
-// src/utils/geo.ts
 import type { Coordinates } from "@/types/map";
 
 export function calculateHaversineDistance(

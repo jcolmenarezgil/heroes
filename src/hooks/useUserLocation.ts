@@ -86,8 +86,7 @@ export function useUserLocation() {
                 };
             });
         }
-        // Kick off the initial geolocation request on mount. The request itself
-        // is asynchronous; the sync state updates inside it are intentional.
+        // Kick off the initial geolocation request on mount.
         // eslint-disable-next-line react-hooks/set-state-in-effect
         requestLocation();
     }, [requestLocation]);

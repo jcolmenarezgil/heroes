@@ -10,7 +10,7 @@ import AvatarPlaceholder from "@/components/ui/AvatarPlaceholder";
 import Skeleton from "@/components/ui/Skeleton";
 import { Button } from "@/components/ui/Button";
 import { useToast } from "@/components/providers/ToastProvider";
-import ProfileJsonImporter from "@/components/admin/ProfileJsonImporter"; // <-- Componente incorporado
+import ProfileJsonImporter from "@/components/admin/ProfileJsonImporter";
 import {
   MagnifyingGlassIcon,
   SearchEmptyIcon,
@@ -213,7 +213,6 @@ export default function AdminProfilesPage() {
         <ProfileJsonImporter onSuccess={refreshList} />
       </div>
 
-      {/* Search + filters */}
       <div className="space-y-3 border-b border-neutral-800 pb-4">
         <div className="flex flex-wrap items-end gap-3">
           <div className="flex flex-col gap-1">
@@ -281,7 +280,6 @@ export default function AdminProfilesPage() {
           </div>
         </div>
 
-        {/* Selection bar */}
         {selected.size > 0 && (
           <div className="flex items-center gap-2 text-xs text-neutral-400">
             <span>{t("selected", { count: selected.size })}</span>
@@ -295,7 +293,6 @@ export default function AdminProfilesPage() {
         )}
       </div>
 
-      {/* Table — same column structure, home-page styling */}
       <div className="overflow-x-auto rounded-lg border border-neutral-900">
         <table className="w-full min-w-[700px] border-collapse">
           <thead>
@@ -457,7 +454,6 @@ export default function AdminProfilesPage() {
         </table>
       </div>
 
-      {/* Pagination */}
       {!isLoading && totalPages > 1 && (
         <div className="flex items-center justify-between">
           <Button
@@ -480,7 +476,6 @@ export default function AdminProfilesPage() {
         </div>
       )}
 
-      {/* Merge Modal */}
       {showMergeModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
           <div className="w-full max-w-lg rounded-xl border border-neutral-800 bg-neutral-950 p-6">

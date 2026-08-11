@@ -1,4 +1,3 @@
-///api/profiles/[uuid]/routes.ts
 import { eq } from "drizzle-orm";
 import { canModifyProfile, getAuthUser } from "@/lib/api-auth";
 import {
@@ -112,8 +111,7 @@ export async function PUT(request: Request, context: RouteContext) {
         if (contactPhone !== undefined) updateData.contactPhone = contactPhone;
         if (notes !== undefined) updateData.notes = notes;
 
-    // If a new photo replaces an existing one, delete the old photo row to
-    // avoid orphaned storage. Skip when photoPath is unchanged (kept unmodified).
+    // Delete the old photo row when a new one replaces it, to avoid orphans.
     const oldPhotoId = profile.photoPath;
     const newPhotoPath = photoPath !== undefined ? photoPath : profile.photoPath;
     if (oldPhotoId && newPhotoPath !== oldPhotoId) {
@@ -152,12 +150,12 @@ export async function DELETE(_request: Request, context: RouteContext) {
         const profile = await getProfileOr404(parsedUuid.data);
         if (!profile) return jsonNotFound("Profile not found");
 
-        // owner can delete their own profile; rescuer/admin can delete any
+        // Owners delete their own; rescuers/admins delete any.
         if (!canModifyProfile(user, profile.userId)) {
             return jsonForbidden("You can only delete your own profiles");
         }
 
-        // Delete the associated photo (best-effort) before removing the row.
+        // Delete the associated photo before removing the row.
         if (profile.photoPath) {
             try {
                 await db

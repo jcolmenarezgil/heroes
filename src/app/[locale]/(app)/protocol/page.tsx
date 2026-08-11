@@ -19,7 +19,6 @@ export default function ProtocolPage() {
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 pb-24 md:pb-12">
-      {/* Encabezado */}
       <header className="mb-6 text-center md:mb-8 md:text-left">
         <span className="inline-flex items-center gap-1.5 rounded-full bg-red-600 px-3 py-1 text-xs font-semibold text-white">
           <ExclamationTriangleIcon className="h-4 w-4" />
@@ -33,7 +32,6 @@ export default function ProtocolPage() {
         </p>
       </header>
 
-      {/* Navegación rápida por secciones */}
       <nav
         className="flex gap-2 overflow-x-auto border-b border-neutral-800 pb-3 lg:hidden"
         aria-label={t("sections.label")}
@@ -50,7 +48,6 @@ export default function ProtocolPage() {
       </nav>
 
       <div className="mt-6 grid gap-5 lg:grid-cols-5 lg:items-start">
-        {/* Sección 1: Protocolo (guía principal) */}
         <section
           id="missing"
           className="scroll-mt-24 rounded-xl border border-neutral-800 bg-neutral-950 p-3.5 shadow-xl lg:order-1 lg:col-span-3"
@@ -64,17 +61,14 @@ export default function ProtocolPage() {
           <MissingPersonsAccordion keys={missingKeys} />
         </section>
 
-        {/* Herramienta: directorio de emergencia */}
         <div id="emergency" className="scroll-mt-24 lg:order-2 lg:col-span-2">
           <EmergencyDirectory />
         </div>
 
-        {/* Herramienta: checklist offline */}
         <div id="offline" className="scroll-mt-24 lg:order-3 lg:col-span-3">
           <OfflineChecklist />
         </div>
 
-        {/* Sección: seguridad y comunicación */}
         <div id="security" className="scroll-mt-24 lg:order-4 lg:col-span-2">
           <ProtocolCommunicationSecurity />
         </div>

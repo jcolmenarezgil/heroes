@@ -1,32 +1,38 @@
 "use client";
 
-import React from "react";
+import React, { Suspense } from "react";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
+import { safeCallbackUrl } from "@/lib/callback-url";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 
-export default function LoginPage() {
+function LoginForm() {
   const t = useTranslations("auth");
+  const searchParams = useSearchParams();
+  const callbackUrl = safeCallbackUrl(searchParams.get("callbackUrl"));
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center px-4">
       <div className="w-full max-w-sm space-y-8 text-center">
         <div className="space-y-2">
           <Image
-            src="/heroes-logo-app.webp"
+            src="/logo.svg"
             alt="Heroes"
-            width={48}
-            height={48}
-            className="mx-auto h-12 w-auto"
+            width={280}
+            height={280}
+            className="mx-auto h-36 w-auto sm:h-52"
             priority
+            unoptimized
           />
-          <h1 className="text-2xl font-semibold text-white">Heroes</h1>
+          <h1 className="font-brand text-2xl font-normal text-white">Heroes</h1>
           <p className="text-sm text-neutral-400">{t("signInToContinue")}</p>
         </div>
 
         <button
-          onClick={() => signIn("google", { callbackUrl: "/" })}
+          onClick={() => signIn("google", { callbackUrl })}
           className="btn-primary flex items-center justify-center gap-2"
         >
           <svg className="h-5 w-5" viewBox="0 0 24 24" aria-hidden="true">
@@ -49,11 +55,26 @@ export default function LoginPage() {
           </svg>
           {t("loginWithGoogle")}
         </button>
+
+        <Link
+          href="/"
+          className="block text-sm text-neutral-400 transition-colors hover:text-white"
+        >
+          {t("goBack")}
+        </Link>
       </div>
 
       <div className="fixed bottom-8 left-1/2 -translate-x-1/2">
         <LanguageSwitcher />
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={null}>
+      <LoginForm />
+    </Suspense>
   );
 }

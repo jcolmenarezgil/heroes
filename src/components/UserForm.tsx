@@ -84,7 +84,6 @@ export default function UserForm({
       onSubmit={handleSubmit}
       className="mx-auto max-w-lg space-y-6 lg:grid lg:max-w-3xl lg:grid-cols-2 lg:gap-8 lg:space-y-0"
     >
-      {/* Left column — avatar from Google */}
       <div className="space-y-3">
         <div className="flex aspect-square h-40 w-40 items-center justify-center overflow-hidden rounded-full bg-neutral-900">
           {initialData.image ? (
@@ -106,7 +105,6 @@ export default function UserForm({
         </p>
       </div>
 
-      {/* Right column — fields */}
       <div className="space-y-6">
         <Field
           id="fullName"

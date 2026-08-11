@@ -1,4 +1,3 @@
-//src/lib/validations/profile.ts
 import { z } from "zod";
 
 export const profileStatusSchema = z.enum(["active", "found", "deceased"]);
@@ -16,7 +15,7 @@ export const profileSchema = z.object({
     status: z.enum(["active", "found", "inactive"]).default("active"),
     contact_phone: z.string().nullable().optional(),
     notes: z.string().nullable().optional(),
-    // Acepta booleano o el timestamp retornado por PostgreSQL
+    // Accepts a boolean or the timestamp returned by PostgreSQL.
     verified: z.union([z.boolean(), z.string()]).nullable().optional(),
     latitude: z.number().min(-90).max(90).nullable().optional(),
     longitude: z.number().min(-180).max(180).nullable().optional(),
@@ -39,7 +38,7 @@ export const createProfileSchema = z.object({
     isMinor: z.boolean().default(false),
     lastKnownLocation: z.string().trim().min(3).max(500),
 
-    // Coordenadas para geolocalización
+    // Geolocation coordinates.
     latitude: z.number().min(-90).max(90).nullable().optional(),
     longitude: z.number().min(-180).max(180).nullable().optional(),
 

@@ -1,4 +1,3 @@
-// src/app/[locale]/(app)/map/page.tsx
 "use client";
 
 import { useEffect, useState, Suspense } from "react";

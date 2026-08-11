@@ -26,13 +26,13 @@ export async function processSyncQueue() {
         const name = rawData.name;
         const lastKnownLocation = rawData.last_known_location || rawData.lastKnownLocation;
 
-        // Omitir registros corruptos que no cumplen con los requerimientos mínimos
+        // Skip corrupt items missing the required fields.
         if (!name || !lastKnownLocation) {
             console.error(`Elemento outbox ${item.id} omitido: falta 'name' o 'lastKnownLocation'`);
             continue;
         }
 
-        // Normalización del estado según el tipo admitido por el cliente API
+        // Normalize status to the type accepted by the API.
         const rawStatus = rawData.status;
         const status: "active" | "found" | "deceased" =
             rawStatus === "found" || rawStatus === "deceased" ? rawStatus : "active";

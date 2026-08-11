@@ -15,9 +15,7 @@ export const STORES = {
     CACHE: "kv_store",
 } as const;
 
-/**
- * Inicialización unificada de IndexedDB con múltiples Object Stores
- */
+// Open IndexedDB with the configured object stores.
 export const openDB = (): Promise<IDBDatabase> => {
     return new Promise((resolve, reject) => {
         if (typeof window === "undefined" || !window.indexedDB) {
@@ -29,13 +27,13 @@ export const openDB = (): Promise<IDBDatabase> => {
         request.onupgradeneeded = (event) => {
             const db = (event.target as IDBOpenDBRequest).result;
 
-            // Store 1: Cola de sincronización offline (Outbox)
+            // Offline sync queue (outbox).
             if (!db.objectStoreNames.contains(STORES.OUTBOX)) {
                 const outboxStore = db.createObjectStore(STORES.OUTBOX, { keyPath: "id" });
                 outboxStore.createIndex("status", "status", { unique: false });
             }
 
-            // Store 2: Caché Key-Value genérica (para OSM, respuestas API, etc.)
+            // Generic key-value cache (OSM responses, API data, etc.).
             if (!db.objectStoreNames.contains(STORES.CACHE)) {
                 db.createObjectStore(STORES.CACHE);
             }
@@ -46,9 +44,7 @@ export const openDB = (): Promise<IDBDatabase> => {
     });
 };
 
-/* ==========================================================================
-   OUTBOX OPERATIONS (Sync Offline)
-   ========================================================================== */
+/* OUTBOX OPERATIONS */
 
 export const bulkInsertOutbox = async <T>(
     items: T[]

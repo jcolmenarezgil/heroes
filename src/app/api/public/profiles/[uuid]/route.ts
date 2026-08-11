@@ -25,8 +25,8 @@ export async function GET(_request: Request, context: RouteContext) {
         const row = await findProfileWithUsers(parsedUuid.data);
         if (!row) return jsonNotFound("Profile not found");
 
-        // Public endpoint: session is optional. When present we also return
-        // `canEdit` so the client knows whether to show the edit affordance.
+        // Session is optional; when present we also return `canEdit` so the
+        // client knows whether to show the edit affordance.
         const authUser = await getAuthUser().catch(() => null);
         const dto = toPublicProfileDTO(row.profile, row.creator, authUser);
         return jsonOk(dto);

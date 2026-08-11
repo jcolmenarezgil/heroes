@@ -128,7 +128,6 @@ export default function AdminUsersPage() {
         </p>
       </div>
 
-      {/* Search + filter */}
       <div className="flex flex-wrap items-end gap-3 border-b border-neutral-800 pb-4">
         <div className="flex flex-col gap-1">
           <label
@@ -173,7 +172,6 @@ export default function AdminUsersPage() {
         </div>
       </div>
 
-      {/* Table */}
       <div className="overflow-x-auto rounded-lg border border-neutral-900">
         <table className="w-full min-w-[560px] border-collapse">
           <thead>
@@ -305,7 +303,6 @@ export default function AdminUsersPage() {
         </table>
       </div>
 
-      {/* Pagination */}
       {!isLoading && totalPages > 1 && (
         <div className="flex items-center justify-between">
           <Button

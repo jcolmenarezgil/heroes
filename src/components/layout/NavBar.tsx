@@ -17,16 +17,17 @@ export default function NavBar() {
             <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-4">
                 <Link
                     href="/"
-                    className="flex items-center gap-2 text-lg font-semibold text-white"
+                    className="font-brand flex items-center gap-2 text-lg font-normal text-white"
                     aria-label={t("home")}
                 >
                     <Image
-                        src="/heroes-logo-app.webp"
+                        src="/logo.svg"
                         alt=""
-                        width={32}
-                        height={32}
-                        className="h-8 w-auto"
+                        width={40}
+                        height={40}
+                        className="h-10 w-auto"
                         priority
+                        unoptimized
                     />
                     Heroes
                 </Link>

@@ -104,7 +104,6 @@ export default function MyProfilePage() {
 
   return (
     <div className="mx-auto max-w-lg lg:max-w-4xl">
-      {/* Top nav actions */}
       <div className="mb-4 flex items-center justify-between">
         <Link
           href="/"
@@ -125,7 +124,6 @@ export default function MyProfilePage() {
 
       <div className="space-y-8">
         <div className="lg:grid lg:grid-cols-2 lg:gap-8">
-          {/* Left column */}
           <div className="space-y-6">
             {user.image ? (
               <div className="relative h-40 w-40 overflow-hidden rounded-full">
@@ -159,7 +157,6 @@ export default function MyProfilePage() {
             </Button>
           </div>
 
-          {/* Right column */}
           <div className="mt-6 space-y-0 lg:mt-0">
             <Section
               label={t("sections.demographics")}
@@ -189,7 +186,6 @@ export default function MyProfilePage() {
               value={<PhoneList phones={user.phoneNumbers} />}
             />
 
-            {/* Audit trail */}
             <div className="border-t border-neutral-900 py-4 text-xs text-neutral-500">
               <p>
                 {t("memberSince", {
@@ -215,7 +211,6 @@ export default function MyProfilePage() {
           </div>
         </div>
 
-        {/* My reports — full width */}
         <div className="border-t border-neutral-900 pt-6">
           <h2 className="mb-4 text-lg font-semibold text-white">
             {t("sections.myReports")}

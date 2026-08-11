@@ -88,8 +88,6 @@ export default function NotificationBell() {
     const ref = useRef<HTMLDivElement>(null);
 
     // Poll unread count at the user-configured interval (default 30s).
-    // We re-read the interval at the start of each cycle so changes from the
-    // sync dropdown's Settings sub-view take effect within one tick.
     useEffect(() => {
         if (status !== "authenticated") return;
 
@@ -109,7 +107,7 @@ export default function NotificationBell() {
                     if (!cancelled) setUnreadCount(res.unreadCount);
                 })
                 .catch(() => {
-                    /* silent — badge just stays stale */
+                    /* badge stays stale on silent errors */
                 })
                 .finally(() => {
                     if (!cancelled) scheduleNext();
@@ -123,7 +121,7 @@ export default function NotificationBell() {
         };
     }, [status]);
 
-    // Load the unread list when the dropdown opens.
+    // Load the list when the dropdown opens.
     useEffect(() => {
         if (!open) return;
         let cancelled = false;
@@ -145,7 +143,7 @@ export default function NotificationBell() {
         };
     }, [open, addToast, t]);
 
-    // Outside click closes the dropdown (same pattern as UserMenu).
+    // Outside click closes the dropdown.
     useEffect(() => {
         if (!open) return;
         const handle = (event: MouseEvent) => {

@@ -2,26 +2,13 @@ import { NextResponse, type NextRequest } from "next/server";
 import createMiddleware from "next-intl/middleware";
 import { getToken } from "next-auth/jwt";
 import { routing } from "./i18n/routing";
+import {
+  isAdminPath,
+  isProtectedPath,
+  stripLocale,
+} from "@/lib/route-guards";
 
 const intlMiddleware = createMiddleware(routing);
-
-// Rutas protegidas que requieren sesión activa
-const PROTECTED_PATTERNS = [
-  /^\/create$/,
-  /^\/me$/,
-  /^\/me\/edit$/,
-  /^\/p\/[^/]+\/edit$/,
-  /^\/notifications$/,
-];
-
-// Rutas exclusivas para administradores
-const ADMIN_PATTERNS = [/^\/admin(\/.*)?$/];
-
-function stripLocale(pathname: string): string {
-  const match = pathname.match(/^\/(en|es)(?=\/|$)/);
-  if (!match) return pathname;
-  return pathname.slice(match[0].length) || "/";
-}
 
 export default async function proxy(req: NextRequest) {
   const { pathname, search } = req.nextUrl;
@@ -32,15 +19,15 @@ export default async function proxy(req: NextRequest) {
     secret: process.env.NEXTAUTH_SECRET,
   });
 
-  // 1. Redirección de usuarios autenticados al intentar ir a /login
+  // Redirect signed-in users away from /login.
   if (token && stripped === "/login") {
     return NextResponse.redirect(new URL("/", req.url));
   }
 
-  const isProtected = PROTECTED_PATTERNS.some((re) => re.test(stripped));
-  const isAdminRoute = ADMIN_PATTERNS.some((re) => re.test(stripped));
+  const isProtected = isProtectedPath(stripped);
+  const isAdminRoute = isAdminPath(stripped);
 
-  // 2. Control de acceso a rutas protegidas o administrativas
+  // Redirect anonymous users to /login for protected or admin routes.
   if (!token && (isProtected || isAdminRoute)) {
     const loginUrl = new URL("/login", req.url);
     loginUrl.searchParams.set("callbackUrl", `${pathname}${search}`);
@@ -51,10 +38,10 @@ export default async function proxy(req: NextRequest) {
     return NextResponse.redirect(new URL("/", req.url));
   }
 
-  // 3. Ejecutar el middleware de i18n
+  // Run the intl middleware.
   const response = intlMiddleware(req);
 
-  // 4. Inyectar detección de país para el directorio de emergencia
+  // Set a country cookie for the emergency directory.
   const country =
     req.headers.get("x-vercel-ip-country") ||
     req.headers.get("cf-ipcountry") ||

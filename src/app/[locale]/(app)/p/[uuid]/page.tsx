@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 import { useFormatter, useTranslations } from "next-intl";
 import QRCodeLib from "qrcode";
 import Image from "next/image";
@@ -36,6 +37,9 @@ export default function ProfileDetailPage() {
   const [pendingSuggestions, setPendingSuggestions] = useState(0);
   const [isPendingSuggestionsLoading, setIsPendingSuggestionsLoading] =
       useState(true);
+
+  const { status: sessionStatus } = useSession();
+  const isAuthenticated = sessionStatus === "authenticated";
 
   const uuid = params.uuid as string;
 
@@ -148,7 +152,6 @@ export default function ProfileDetailPage() {
 
   return (
     <div className="mx-auto max-w-lg lg:max-w-4xl">
-      {/* Top nav actions */}
       <div className="mb-4 flex items-center justify-between">
         <Link
           href="/"
@@ -180,7 +183,6 @@ export default function ProfileDetailPage() {
       </div>
 
       <div className="lg:grid lg:grid-cols-2 lg:gap-8">
-        {/* Left column */}
         <div className="space-y-6">
           {profile.photoUrl ? (
             <div className="relative aspect-[3/4] w-full overflow-hidden rounded-lg bg-neutral-900">
@@ -223,19 +225,21 @@ export default function ProfileDetailPage() {
           </Button>
         </div>
 
-        {/* Right column */}
         <div className="mt-6 space-y-0 lg:mt-0">
           <Section label={t("sections.lastKnownLocation")} value={profile.lastKnownLocation} first />
-          <Section
-            label={t("sections.contact")}
-            value={profile.contactPhone || t("noContact")}
-          />
-          <Section
-            label={t("sections.notes")}
-            value={profile.notes || t("noNotes")}
-          />
+          {isAuthenticated && (
+            <Section
+              label={t("sections.contact")}
+              value={profile.contactPhone || t("noContact")}
+            />
+          )}
+          {isAuthenticated && (
+            <Section
+              label={t("sections.notes")}
+              value={profile.notes || t("noNotes")}
+            />
+          )}
 
-          {/* QR code */}
           <div className="border-t border-neutral-900 py-6">
             <QRCode value={profileUrl} alt={t("qrAlt", { name: profile.name })} className="mx-auto" />
 
@@ -261,7 +265,6 @@ export default function ProfileDetailPage() {
             </div>
           </div>
 
-          {/* Audit trail */}
           {profile.canEdit && isPendingSuggestionsLoading && (
             <Skeleton className="h-4 w-40" />
           )}
@@ -278,16 +281,26 @@ export default function ProfileDetailPage() {
 
           <div className="border-t border-neutral-900 py-4 text-xs text-neutral-500">
             <p>
-              {t("createdBy", {
-                name: profile.createdByName,
-                date: format.dateTime(new Date(profile.createdAt), {
-                  day: "numeric",
-                  month: "short",
-                  year: "numeric",
-                  hour: "numeric",
-                  minute: "numeric",
-                }),
-              })}
+              {profile.createdByName
+                ? t("createdBy", {
+                    name: profile.createdByName,
+                    date: format.dateTime(new Date(profile.createdAt), {
+                      day: "numeric",
+                      month: "short",
+                      year: "numeric",
+                      hour: "numeric",
+                      minute: "numeric",
+                    }),
+                  })
+                : t("createdOn", {
+                    date: format.dateTime(new Date(profile.createdAt), {
+                      day: "numeric",
+                      month: "short",
+                      year: "numeric",
+                      hour: "numeric",
+                      minute: "numeric",
+                    }),
+                  })}
             </p>
             {profile.updatedAt !== profile.createdAt && (
               <p className="mt-1">

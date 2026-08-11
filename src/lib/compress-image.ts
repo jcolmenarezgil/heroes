@@ -1,11 +1,5 @@
-/**
- * Downscale and re-encode a browser image File to WebP before upload.
- *
- * Rationale: keep photos small (≤200 KB) so they fit comfortably in a
- * Postgres `text` column as base64 without bloating the DB. Photos of
- * missing persons are primarily viewed on small cards and detail pages,
- * so a max dimension of 1280px is more than enough.
- */
+// Downscale and re-encode an image to WebP before upload so photos stay
+// small in the base64 Postgres column.
 
 const MAX_DIMENSION = 1280;
 const WEBP_QUALITY = 0.82;
@@ -15,7 +9,7 @@ export async function compressImage(file: File): Promise<File> {
         return file;
     }
 
-    // If it is already a reasonably small WebP, skip the cost.
+    // Skip the work for an already-small WebP.
     if (file.type === "image/webp" && file.size <= 256 * 1024) {
         return file;
     }

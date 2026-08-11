@@ -12,11 +12,7 @@ import {
     setNotificationPollInterval,
 } from "@/lib/notification-prefs";
 
-/**
- * Shared sub-view for client-side settings: online status, last sync, sync
- * now, sync interval, and notification poll interval. Rendered as the
- * "Settings" sub-view inside the user menu's dropdown.
- */
+// Settings panel: online status, sync, and notification intervals.
 export default function SettingsView() {
     const t = useTranslations();
     const format = useFormatter();
@@ -54,7 +50,6 @@ export default function SettingsView() {
 
     return (
         <div className="space-y-2">
-            {/* Online status */}
             <div className="flex items-center gap-2 px-3 py-1">
                 <span
                     className={`h-2 w-2 rounded-full ${
@@ -68,12 +63,10 @@ export default function SettingsView() {
                 </span>
             </div>
 
-            {/* Last sync */}
             <p className="px-3 pb-1 text-xs text-neutral-500">
                 {t("userMenu.lastSync", { time: lastSyncText })}
             </p>
 
-            {/* Sync now */}
             <button
                 onClick={handleSyncNow}
                 disabled={isSyncing || !isOnline}
@@ -82,7 +75,6 @@ export default function SettingsView() {
                 {isSyncing ? t("userMenu.syncing") : t("userMenu.syncNow")}
             </button>
 
-            {/* Sync interval */}
             <div className="px-3 py-1">
                 <label
                     htmlFor="sync-interval"
@@ -104,7 +96,6 @@ export default function SettingsView() {
                 </select>
             </div>
 
-            {/* Notification poll interval */}
             <div className="px-3 py-1">
                 <label
                     htmlFor="notif-interval"

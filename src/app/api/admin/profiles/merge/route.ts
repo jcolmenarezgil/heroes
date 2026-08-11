@@ -15,15 +15,7 @@ import { mergeProfilesSchema } from "@/lib/validations/admin";
 
 export const dynamic = "force-dynamic";
 
-/**
- * Merge a duplicate profile (`source`) into a canonical one (`target`).
- *
- * - Moves non-approved suggestions from `source` to `target`.
- * - When `target` has no photo, adopts the source's photo (photoPath/photoUrl).
- * - Appends the source notes to the target's notes for audit purposes.
- * - Deletes the source profile (cascades to its photos and suggestions if any
- *   were left behind).
- */
+// Merge a duplicate profile into the canonical one, keeping the target.
 export async function POST(request: Request) {
     const user = await getAuthUser();
     if (!user) return jsonUnauthorized();
@@ -58,8 +50,7 @@ export async function POST(request: Request) {
                 return jsonNotFound("Profile not found");
             }
 
-            // Move pending suggestions from source to target (ignore approved
-            // ones; they are historical and stay attached to the source).
+            // Move pending suggestions from source to target.
             await tx
                 .update(profileSuggestions)
                 .set({ profileId: target })
@@ -82,7 +73,7 @@ export async function POST(request: Request) {
                     .where(eq(profiles.id, target));
             }
 
-            // Append source notes to the target's notes with a clear separator.
+            // Append source notes to the target's notes.
             if (sourceRow.notes && sourceRow.notes.trim()) {
                 const stamp = new Date().toISOString();
                 const merged = `${targetRow.notes ?? ""}\n\n--- Merged from ${sourceRow.name} (${stamp}) ---\n${sourceRow.notes}`;
@@ -92,9 +83,7 @@ export async function POST(request: Request) {
                     .where(eq(profiles.id, target));
             }
 
-            // Clean up the source's orphaned photo row when we did NOT adopt it
-            // (it would have been adopted above). Bypassed when adopted because
-            // the photo row is now referenced by the target.
+            // Delete the source photo if we did not adopt it.
             const adoptedPhoto =
                 !targetRow.photoUrl &&
                 !!sourceRow.photoUrl &&

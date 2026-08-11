@@ -28,6 +28,16 @@ export function jsonBadRequest(message = "Bad request", issues?: ZodIssue[]) {
     return jsonError(message, 400, issues);
 }
 
+export function jsonTooManyRequests(
+    message = "Too many requests",
+    retryAfterSeconds?: number
+) {
+    const headers = retryAfterSeconds
+        ? { "Retry-After": String(retryAfterSeconds) }
+        : undefined;
+    return NextResponse.json({ error: message }, { status: 429, headers });
+}
+
 export function jsonServerError(message = "Internal server error") {
     return jsonError(message, 500);
 }

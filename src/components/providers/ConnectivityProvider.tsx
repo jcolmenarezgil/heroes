@@ -36,9 +36,7 @@ function getSnapshot() {
   return navigator.onLine;
 }
 
-// During SSR and hydration we assume "online" so the server-rendered HTML
-// always matches the first client render; React re-renders with the real
-// value right after hydration.
+// Assume "online" during SSR/hydration so server HTML matches the first render.
 function getServerSnapshot() {
   return true;
 }
@@ -55,7 +53,7 @@ export function ConnectivityProvider({
   );
   const [onlineFlash, setOnlineFlash] = useState(false);
 
-  // Brief "back online" flash, driven by the browser event only.
+  // Brief "back online" flash when the browser reconnects.
   useEffect(() => {
     const handleOnline = () => {
       setOnlineFlash(true);
@@ -68,7 +66,7 @@ export function ConnectivityProvider({
   const value = useMemo(
     () => ({
       isOnline,
-      // banner is persistent while offline, transient when back online
+      // Persistent while offline, transient when back online.
       showBanner: !isOnline || onlineFlash,
     }),
     [isOnline, onlineFlash]

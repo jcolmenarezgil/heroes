@@ -1,4 +1,3 @@
-//src/app/api/profiles/route.ts
 import { and, desc, eq, ilike, sql } from "drizzle-orm";
 import { getAuthUser } from "@/lib/api-auth";
 import {

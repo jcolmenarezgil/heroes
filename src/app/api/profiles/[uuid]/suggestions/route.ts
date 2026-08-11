@@ -6,6 +6,7 @@ import {
     jsonNotFound,
     jsonOk,
     jsonServerError,
+    jsonTooManyRequests,
     jsonUnauthorized,
 } from "@/lib/api-response";
 import { db } from "@/lib/db/client";
@@ -20,19 +21,20 @@ import {
     createSuggestionSchema,
     listSuggestionsQuerySchema,
 } from "@/lib/validations/profile-suggestion";
+import { getClientIp, isRateLimited } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
+
+// Best-effort spam guard for anonymous submissions.
+export const ANON_SUGGEST_MAX = 5;
+export const ANON_SUGGEST_WINDOW_MS = 60 * 60 * 1000; // 1 hour
 
 interface RouteContext {
     params: Promise<{ uuid: string }>;
 }
 
-/**
- * Anonymous suggestions are allowed but require a name (the `submitterName`
- * is mandatory when not authenticated to discourage spam). Authenticated
- * users get their userId stamped; the submitted name is ignored in favor of
- * the profile's display name (see toSuggestionDTO).
- */
+// Anonymous suggestions require a submitter name to discourage spam. When
+// signed in, the profile's display name is used instead.
 export async function POST(request: Request, context: RouteContext) {
     const { uuid } = await context.params;
 
@@ -50,6 +52,22 @@ export async function POST(request: Request, context: RouteContext) {
 
     const { submitterName, submitterContact, note } = parsed.data;
     const authUser = await getAuthUser().catch(() => null);
+
+    if (!authUser) {
+        const ip = getClientIp(request);
+        if (
+            isRateLimited(
+                `suggest:anon:${ip}`,
+                ANON_SUGGEST_MAX,
+                ANON_SUGGEST_WINDOW_MS
+            )
+        ) {
+            return jsonTooManyRequests(
+                "Too many requests. Please try again later.",
+                Math.ceil(ANON_SUGGEST_WINDOW_MS / 1000)
+            );
+        }
+    }
 
     if (!authUser && !submitterName) {
         return jsonBadRequest(

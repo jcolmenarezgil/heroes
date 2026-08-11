@@ -14,7 +14,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { AdapterAccount } from "next-auth/adapters";
 
-// Definición física del Enum para el género en PostgreSQL
+// PostgreSQL enum for gender.
 export const genderEnum = pgEnum("gender_enum", ["male", "female"]);
 
 export const roleEnum = pgEnum("role_enum", ["viewer", "rescuer", "admin"]);
@@ -106,10 +106,7 @@ export const profiles = pgTable("profiles", {
         .references(() => users.id, { onDelete: "set null" }),
     name: text("name").notNull(),
     photoUrl: text("photo_url"),
-    // References photos.id (a UUID), not a filesystem path. The misleading
-    // "Path" name is kept to avoid a wide-reaching rename across the schema,
-    // API, and mappers. Stored client-side as the photos.id returned by the
-    // upload endpoint and resolved via GET /api/photos/[id].
+    // Stores photos.id, not a filesystem path (legacy name kept).
     photoPath: text("photo_path"),
     isMinor: boolean("is_minor").default(false).notNull(),
     lastKnownLocation: text("last_known_location").notNull(),
@@ -149,7 +146,7 @@ export const photos = pgTable("photos", {
         .notNull()
         .references(() => users.id, { onDelete: "cascade" }),
     mime: text("mime").notNull(),
-    // Base64-encoded image bytes. Kept small by client-side WebP compression.
+    // Base64 image bytes, kept small by client-side WebP compression.
     data: text("data").notNull(),
     size: integer("size").notNull(),
     createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),

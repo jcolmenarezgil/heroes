@@ -114,4 +114,9 @@
            text-white placeholder:text-neutral-500 focus:border-white
            focus:outline-none focus:ring-1 focus:ring-white min-h-touch;
   }
+
+  /* Brand display font, used only for the "Heroes" title. */
+  .font-brand {
+    font-family: var(--font-brand), ui-sans-serif, system-ui, sans-serif;
+  }
 }

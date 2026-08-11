@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import {
     fetchHealthCentersSingleRadius,
     parseOverpassResponse,
@@ -122,5 +122,71 @@ describe("Health Centers Service & Parsing Performance", () => {
 
         expect(cached).not.toBeNull();
         expect(cached?.data[0].name).toBe("Cached Health Center");
+    });
+});
+
+describe("fetchHealthCentersSingleRadius caching", () => {
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
+
+    afterEach(() => {
+        vi.unstubAllGlobals();
+    });
+
+    it("returns cached data without calling the API when the cache is fresh", async () => {
+        const fetchMock = vi.fn();
+        vi.stubGlobal("fetch", fetchMock);
+        vi.mocked(dbModule.getStoredData).mockResolvedValue({
+            timestamp: Date.now(),
+            data: [
+                {
+                    id: 7,
+                    name: "Cached Facility",
+                    type: "hospital" as const,
+                    lat: 10.48,
+                    lon: -66.9,
+                    distance: 1,
+                },
+            ],
+        } as never);
+
+        const result = await fetchHealthCentersSingleRadius(10.48, -66.9, 3000);
+
+        expect(result.ok).toBe(true);
+        expect(result.centers[0].name).toBe("Cached Facility");
+        expect(fetchMock).not.toHaveBeenCalled();
+    });
+
+    it("fetches from the API when the cached entry is stale", async () => {
+        vi.stubGlobal(
+            "fetch",
+            vi.fn().mockResolvedValue({
+                ok: true,
+                json: async () => ({ data: [] }),
+            } as Response)
+        );
+        vi.mocked(dbModule.getStoredData).mockResolvedValue({
+            timestamp: Date.now() - 60 * 60 * 1000,
+            data: [],
+        } as never);
+
+        const result = await fetchHealthCentersSingleRadius(10.48, -66.9, 3000);
+
+        expect(result.ok).toBe(true);
+    });
+
+    it("does not cache a throttled (503) response", async () => {
+        const setStoredDataSpy = vi.mocked(dbModule.setStoredData);
+        vi.stubGlobal(
+            "fetch",
+            vi.fn().mockResolvedValue(new Response("unavailable", { status: 503 }))
+        );
+        vi.mocked(dbModule.getStoredData).mockResolvedValue(null as never);
+
+        const result = await fetchHealthCentersSingleRadius(10.48, -66.9, 3000);
+
+        expect(result.ok).toBe(false);
+        expect(setStoredDataSpy).not.toHaveBeenCalled();
     });
 });

@@ -15,20 +15,17 @@ interface ProfileJsonImporterProps {
     onSuccess?: () => void;
 }
 
-/**
- * Normaliza campos exportados directamente de SQL/Neon para alinearlos
- * con la especificación de tipos de Zod.
- */
+// Normalize fields exported from raw SQL/Neon to match the Zod types.
 function normalizeRawDbItem(item: Record<string, unknown>): Record<string, unknown> {
     const sanitizeDate = (val: unknown) =>
         typeof val === "string" ? val.replace(" ", "T") : val;
 
     return {
         ...item,
-        // Formatear timestamps SQL a ISO-8601 válido para Zod
+        // Convert SQL timestamps to ISO-8601 for Zod.
         created_at: item.created_at ? sanitizeDate(item.created_at) : undefined,
         updated_at: item.updated_at ? sanitizeDate(item.updated_at) : undefined,
-        // Convertir valores null en undefined para compatibilidad con campos optional()
+        // Convert null to undefined for optional() fields.
         photo_url: item.photo_url ?? undefined,
         photo_path: item.photo_path ?? undefined,
         verified: item.verified ?? undefined,
@@ -70,7 +67,6 @@ export default function ProfileJsonImporter({ onSuccess }: ProfileJsonImporterPr
                 const validatedItems: ProfileInput[] = [];
 
                 for (const rawItem of rawItems) {
-                    // Pre-procesar el item extraído del JSON antes de validar con Zod
                     const normalized = normalizeRawDbItem(rawItem as Record<string, unknown>);
                     const validation = profileSchema.safeParse(normalized);
 

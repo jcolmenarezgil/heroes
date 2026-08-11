@@ -4,11 +4,7 @@
     "description": "A resilient and optimized platform designed for crisis situations to facilitate the locating of unaccounted individuals, maximizing local persistence, battery efficiency, and secure coordination between families and rescuers."
   },
   "common": {
-    "loading": "Loading...",
-    "optional": "(Optional)",
-    "logoAlt": "Heroes Application Logo",
-    "crisisResponse": "Crisis Response",
-    "missingPersonsLocator": "& Missing Persons Locator"
+    "loading": "Loading..."
   },
   "nav": {
     "home": "Home",
@@ -40,7 +36,8 @@
   "auth": {
     "loginWithGoogle": "Sign in with Google",
     "signOut": "Sign Out",
-    "signInToContinue": "Sign in to continue"
+    "signInToContinue": "Sign in to continue",
+    "goBack": "Go back"
   },
   "breadcrumbs": {
     "label": "Breadcrumb",
@@ -79,6 +76,28 @@
       "title": "Quick Actions",
       "subtitle": "Start here: report a missing person, search the directory, find nearby centers, or follow the crisis protocol."
     },
+    "guest": {
+      "signIn": "Sign in",
+      "tagline": "Emergency response for missing persons.",
+      "mission": "Report missing persons and help coordinate their search during emergencies.",
+      "reportPersonDesc": "Requires an account to publish.",
+      "info": "Sign in to search the directory or report a missing person.\nCare centers and the crisis protocol are available without an account.",
+      "howTitle": "How it works",
+      "steps": {
+        "report": {
+          "title": "Report",
+          "desc": "Create a profile for a missing person."
+        },
+        "search": {
+          "title": "Search",
+          "desc": "Find someone in the directory."
+        },
+        "coordinate": {
+          "title": "Coordinate",
+          "desc": "Share updates and connect with the community."
+        }
+      }
+    },
     "actions": {
       "urgent": "Urgent Action",
       "reportPerson": "Report Missing Person",
@@ -88,7 +107,7 @@
       "nearbyCenters": "Care Centers",
       "nearbyCentersDesc": "Find care points near your location.",
       "guideProtocol": "Crisis Protocol",
-      "guideProtocolDesc": "Instructions and official guidelines on how to act during a crisis.",
+      "guideProtocolDesc": "Instructions and protocols on how to act.",
       "offlineNotice": "Data is saved locally.\nYou can issue reports and search even without network connectivity."
     }
   },
@@ -147,6 +166,7 @@
     "resultAria": "Open profile for {name}",
     "qrAlt": "QR code for {name}",
     "createdBy": "Created by {name} on {date}",
+    "createdOn": "Created on {date}",
     "updatedBy": "Updated by {name} on {date}",
     "userNotFound": "User not found",
     "saveToast": "Saved. The list will update on the next sync.",
@@ -291,25 +311,6 @@
         "rejected": "rejected"
       }
     }
-  },
-  "onboarding": {
-    "continueWithoutAccount": "Continue without Account",
-    "hintLabel": "Hint:",
-    "hintText": "You can continue without creating an account, but to suggest modifications or update statuses, you must log in first.",
-    "completeProfile": "Complete Profile Details",
-    "welcome": "Welcome, {name}",
-    "optionalNote": "These demographic parameters are completely optional. They assist rescue operations in matching structural identification lists faster during field operations.",
-    "gender": {
-      "label": "Gender",
-      "placeholder": "Select gender option...",
-      "male": "Male",
-      "female": "Female"
-    },
-    "dateOfBirth": {
-      "label": "Date of Birth"
-    },
-    "saving": "Saving Parameters...",
-    "saveAndContinue": "Save and Continue"
   },
   "languageSwitcher": {
     "label": "Language",
@@ -459,6 +460,9 @@
     },
     "emptyStateWithRadius": "No health care centers found within {radius}. Use the extended buttons above to widen the search.",
     "retryProgressive": "Scan again",
+    "viewCached": "View cached",
+    "backToLive": "Back to live",
+    "showingCached": "Showing cached results · from {time}",
     "noPhone": "No registered phone",
     "viewOnMap": "View on map",
     "loadingRealtime": "Checking care centers in real time...",

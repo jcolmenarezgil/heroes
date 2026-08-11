@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { useUserLocation } from "@/hooks/useUserLocation";
 import { MapPinIcon, PhoneIcon, RefreshClockIcon } from "@/components/icons";
 import {
@@ -21,10 +21,12 @@ const formatRadius = (meters: number): string => {
 
 export default function HealthCentersPage() {
     const t = useTranslations("healthCenters");
+    const locale = useLocale();
     const { coordinates, permission, isLoading: isLocating, requestLocation, accuracy } = useUserLocation();
 
     const [centers, setCenters] = useState<HealthCenter[]>([]);
     const [cachedState, setCachedState] = useState<CachedDataEntry | null>(null);
+    const [viewingCached, setViewingCached] = useState(false);
     const [isSearching, setIsSearching] = useState(false);
     const [activeRadius, setActiveRadius] = useState<number>(500);
     const [searchType, setSearchType] = useState<HealthCenterType>("all");
@@ -36,7 +38,6 @@ export default function HealthCentersPage() {
         getLastKnownCache().then((cached) => {
             if (!active || !cached) return;
             setCachedState(cached);
-            setCenters((prev) => (prev.length === 0 ? cached.data : prev));
         });
         return () => {
             active = false;
@@ -50,28 +51,40 @@ export default function HealthCentersPage() {
 
     const runSearch = useCallback(
         async (lat: number, lon: number, radius: number, type: HealthCenterType) => {
+            setViewingCached(false);
             setIsSearching(true);
             setNetworkFailed(false);
 
-            const { centers: results, ok } = await fetchHealthCentersSingleRadius(lat, lon, radius, type);
+            const { centers: results, ok } = await fetchHealthCentersSingleRadius(lat, lon, radius, type, locale);
 
             if (results.length > 0) {
                 setCenters(results);
                 refreshCachedState();
             } else {
                 setCenters([]);
-                if (!ok) {
-                    const cached = await getLastKnownCache();
-                    if (cached) setCenters(cached.data);
-                }
                 setNetworkFailed(!ok);
             }
 
             setHasSearched(true);
             setIsSearching(false);
         },
-        [refreshCachedState]
+        [refreshCachedState, locale]
     );
+
+    const toggleCachedView = () => {
+        setViewingCached((v) => {
+            const next = !v;
+            if (next) setNetworkFailed(false);
+            return next;
+        });
+    };
+
+    const shownCenters = viewingCached && cachedState ? cachedState.data : centers;
+
+    const typeBreakdown = (["hospital", "pharmacy", "clinic", "health"] as const)
+        .map((type) => ({ type, count: shownCenters.filter((c) => c.type === type).length }))
+        .filter((entry) => entry.count > 0)
+        .map((entry) => `${entry.count} ${t(`types.${entry.type}`)}`);
 
     const handleRadiusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const radius = Number(e.target.value);
@@ -84,11 +97,6 @@ export default function HealthCentersPage() {
         setSearchType(type);
         if (coordinates) runSearch(coordinates.lat, coordinates.lon, activeRadius, type);
     };
-
-    const typeBreakdown = (["hospital", "pharmacy", "clinic", "health"] as const)
-        .map((type) => ({ type, count: centers.filter((c) => c.type === type).length }))
-        .filter((entry) => entry.count > 0)
-        .map((entry) => `${entry.count} ${t(`types.${entry.type}`)}`);
 
     return (
         <div className="max-w-4xl mx-auto p-4 space-y-5">
@@ -111,20 +119,25 @@ export default function HealthCentersPage() {
                         <div className="flex flex-col items-center gap-3 py-5 text-center">
                             <MapPinIcon className="h-8 w-8 text-neutral-500" />
                             <p className="text-neutral-400">
-                                {permission === "denied" ? t("locationDenied") : t("enableLocation")}
+                                {permission === "denied"
+                                    ? t("locationDenied")
+                                    : permission === "unsupported"
+                                        ? t("errors.geoNotSupported")
+                                        : t("enableLocation")}
                             </p>
-                            <button
-                                onClick={requestLocation}
-                                className="rounded-lg bg-white px-4 py-2 text-xs font-semibold text-neutral-950 transition hover:bg-neutral-200"
-                            >
-                                {t("useMyLocation")}
-                            </button>
+                            {permission !== "unsupported" && (
+                                <button
+                                    onClick={requestLocation}
+                                    className="rounded-lg bg-white px-4 py-2 text-xs font-semibold text-neutral-950 transition hover:bg-neutral-200"
+                                >
+                                    {t("useMyLocation")}
+                                </button>
+                            )}
                         </div>
                     )}
                 </div>
             ) : (
                 <div className="grid gap-4 md:grid-cols-10">
-                    {/* Card A: buscar centros de atención (70%) */}
                     <div className="rounded-xl border border-neutral-800 bg-neutral-950 p-3.5 shadow-xl text-xs md:col-span-7">
                         <div className="flex items-center justify-between gap-2">
                             <div className="flex items-center gap-2">
@@ -211,7 +224,7 @@ export default function HealthCentersPage() {
                                 </p>
                             )}
 
-                            {!isSearching && hasSearched && centers.length > 0 && (
+                            {!isSearching && hasSearched && !viewingCached && centers.length > 0 && (
                                 <div className="border-t border-neutral-800 pt-3">
                                     <p className="text-lg font-bold text-white">
                                         {t("summaryCount", {
@@ -229,7 +242,6 @@ export default function HealthCentersPage() {
                         </div>
                     </div>
 
-                    {/* Card B: ubicación y datos locales (30%) */}
                     <div className="rounded-xl border border-neutral-800 bg-neutral-950 p-3.5 shadow-xl text-xs md:col-span-3">
                         <div className="space-y-1">
                             {accuracy != null && (
@@ -250,11 +262,21 @@ export default function HealthCentersPage() {
 
                         {cachedState ? (
                             <div>
-                                <div className="flex items-center gap-2">
-                                    <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-                                    <span className="font-medium text-neutral-200">
-                                        {t("localCacheCount", { count: cachedState.data.length })}
-                                    </span>
+                                <div className="flex items-center justify-between gap-2">
+                                    <div className="flex items-center gap-2">
+                                        <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                                        <span className="font-medium text-neutral-200">
+                                            {t("localCacheCount", { count: cachedState.data.length })}
+                                        </span>
+                                    </div>
+                                    {cachedState.data.length > 0 && (
+                                        <button
+                                            onClick={toggleCachedView}
+                                            className="rounded-md border border-neutral-700 px-2 py-0.5 text-[11px] font-medium text-neutral-300 transition hover:bg-neutral-900 hover:text-white"
+                                        >
+                                            {viewingCached ? t("backToLive") : t("viewCached")}
+                                        </button>
+                                    )}
                                 </div>
                                 <p className="mt-0.5 text-neutral-500">
                                     {t("lastSync", {
@@ -275,14 +297,30 @@ export default function HealthCentersPage() {
                 </div>
             )}
 
-            {centers.length > 0 && (
+            {viewingCached && cachedState && (
+                <div className="flex items-center justify-between gap-2 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs text-amber-300">
+                    <span>
+                        {t("showingCached", {
+                            time: new Date(cachedState.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                        })}
+                    </span>
+                    <button
+                        onClick={toggleCachedView}
+                        className="font-medium underline underline-offset-2 transition hover:text-white"
+                    >
+                        {t("backToLive")}
+                    </button>
+                </div>
+            )}
+
+            {shownCenters.length > 0 && (
                 <div className="overflow-hidden rounded-xl border border-neutral-800 bg-neutral-900/30">
                     <div className="grid grid-cols-[1fr_auto] items-center gap-4 border-b border-neutral-800 bg-neutral-950/60 px-4 py-2.5 text-xs font-semibold uppercase tracking-wider text-neutral-400">
                         <span>{t("table.center")}</span>
                         <span className="text-right">{t("table.distance")}</span>
                     </div>
                     <div className="divide-y divide-neutral-800/60">
-                        {centers.map((center) => (
+                        {shownCenters.map((center) => (
                             <div
                                 key={center.id}
                                 className="grid grid-cols-[1fr_auto] items-center gap-4 px-4 py-3"
@@ -325,7 +363,7 @@ export default function HealthCentersPage() {
                 </div>
             )}
 
-            {hasSearched && !isSearching && !networkFailed && centers.length === 0 && (
+            {hasSearched && !isSearching && !networkFailed && !viewingCached && shownCenters.length === 0 && (
                 <div className="p-8 border border-neutral-800 rounded-lg text-center space-y-3">
                     <p className="text-neutral-400 text-sm">
                         {t("emptyStateWithRadius", { radius: formatRadius(activeRadius) })}
