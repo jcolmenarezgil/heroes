@@ -18,9 +18,7 @@ export function resetRateLimits(): void {
 
 // Client IP from x-forwarded-for, x-real-ip, then "unknown".
 // Trusted proxies append the client IP at the END of x-forwarded-for, so the
-// last entry is the one added by the proxy we trust (Vercel overwrites the
-// header with the real client IP). Earlier entries can be attacker-supplied
-// and must not be used as the rate-limit key.
+// last entry is the one added by the proxy we trust
 export function getClientIp(request: Request): string {
     const forwarded = request.headers.get("x-forwarded-for");
     if (forwarded) {
