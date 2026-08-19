@@ -1,6 +1,7 @@
 import { eq } from "drizzle-orm";
 import { getAuthUser } from "@/lib/api-auth";
 import {
+    jsonBadRequest,
     jsonForbidden,
     jsonNotFound,
     jsonOk,
@@ -27,7 +28,7 @@ export async function POST(_request: Request, context: RouteContext) {
     const { uuid } = await context.params;
     const parsedUuid = uuidParamSchema.safeParse(uuid);
     if (!parsedUuid.success) {
-        return jsonServerError("Invalid profile id");
+        return jsonBadRequest("Invalid profile id");
     }
 
     try {

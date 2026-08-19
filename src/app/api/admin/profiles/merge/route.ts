@@ -9,8 +9,9 @@ import {
     jsonUnauthorized,
 } from "@/lib/api-response";
 import { db } from "@/lib/db/client";
-import { photos, profileSuggestions, profiles } from "@/lib/db/schema";
+import { profileSuggestions, profiles } from "@/lib/db/schema";
 import { createNotification } from "@/lib/notification-helpers";
+import { deletePhotoIfAllowed } from "@/lib/photo-guard";
 import { mergeProfilesSchema } from "@/lib/validations/admin";
 
 export const dynamic = "force-dynamic";
@@ -89,12 +90,14 @@ export async function POST(request: Request) {
                 !!sourceRow.photoUrl &&
                 !!sourceRow.photoPath;
             if (!adoptedPhoto && sourceRow.photoPath) {
-                await tx
-                    .delete(photos)
-                    .where(eq(photos.id, sourceRow.photoPath))
-                    .catch((err) => {
-                        console.error("Failed to delete source photo:", err);
-                    });
+                await deletePhotoIfAllowed(
+                    sourceRow.photoPath,
+                    sourceRow.userId ?? "",
+                    user,
+                    tx
+                ).catch((err) => {
+                    console.error("Failed to delete source photo:", err);
+                });
             }
 
             await tx.delete(profiles).where(eq(profiles.id, source));

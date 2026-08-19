@@ -20,7 +20,9 @@ export const profileSchema = z.object({
     latitude: z.number().min(-90).max(90).nullable().optional(),
     longitude: z.number().min(-180).max(180).nullable().optional(),
     is_minor: z.boolean().default(false),
-    photo_path: z.string().nullable().optional(),
+    // photo_path stores the photos table UUID (not a path). Enforced as a UUID
+    // so client payloads cannot point at arbitrary rows.
+    photo_path: z.string().uuid().nullable().optional(),
     created_at: z.string().optional(),
     updated_at: z.string().optional(),
     created_by: z.string().optional(),
@@ -34,7 +36,7 @@ export const createProfileSchema = z.object({
         .max(2000)
         .regex(/^(\/api\/photos\/[0-9a-f-]{36}|https?:\/\/.+)$/i)
         .nullish(),
-    photoPath: z.string().max(500).nullish(),
+    photoPath: z.string().uuid().nullish(),
     isMinor: z.boolean().default(false),
     lastKnownLocation: z.string().trim().min(3).max(500),
 

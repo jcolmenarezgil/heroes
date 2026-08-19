@@ -9,8 +9,9 @@ import {
     jsonUnauthorized,
 } from "@/lib/api-response";
 import { db } from "@/lib/db/client";
-import { photos, profiles } from "@/lib/db/schema";
+import { profiles } from "@/lib/db/schema";
 import { findProfileWithUsers, toProfileDTO } from "@/lib/profile-mapper";
+import { canAttachPhoto, deletePhotoIfAllowed } from "@/lib/photo-guard";
 import {
     updateProfileSchema,
     uuidParamSchema,
@@ -100,6 +101,14 @@ export async function PUT(request: Request, context: RouteContext) {
             notes,
         } = parsed.data;
 
+        const newPhotoPath = photoPath !== undefined ? photoPath : profile.photoPath;
+        if (newPhotoPath && newPhotoPath !== profile.photoPath) {
+            const allowed = await canAttachPhoto(newPhotoPath, user);
+            if (!allowed) {
+                return jsonForbidden("You can only attach photos you uploaded");
+            }
+        }
+
         if (name !== undefined) updateData.name = name;
         if (photoUrl !== undefined) updateData.photoUrl = photoUrl;
         if (photoPath !== undefined) updateData.photoPath = photoPath;
@@ -111,22 +120,21 @@ export async function PUT(request: Request, context: RouteContext) {
         if (contactPhone !== undefined) updateData.contactPhone = contactPhone;
         if (notes !== undefined) updateData.notes = notes;
 
-    // Delete the old photo row when a new one replaces it, to avoid orphans.
-    const oldPhotoId = profile.photoPath;
-    const newPhotoPath = photoPath !== undefined ? photoPath : profile.photoPath;
-    if (oldPhotoId && newPhotoPath !== oldPhotoId) {
-        try {
-            await db.delete(photos).where(eq(photos.id, oldPhotoId));
-        } catch (err) {
-            console.error("Failed to delete old photo:", err);
+        // Delete the old photo row when a new one replaces it, to avoid orphans.
+        const oldPhotoId = profile.photoPath;
+        if (oldPhotoId && newPhotoPath !== oldPhotoId) {
+            await deletePhotoIfAllowed(oldPhotoId, profile.userId, user).catch(
+                (err) => {
+                    console.error("Failed to delete old photo:", err);
+                }
+            );
         }
-    }
 
-    const [updated] = await db
-        .update(profiles)
-        .set({ ...updateData, updatedBy: user.id })
-        .where(eq(profiles.id, parsedUuid.data))
-        .returning();
+        const [updated] = await db
+            .update(profiles)
+            .set({ ...updateData, updatedBy: user.id })
+            .where(eq(profiles.id, parsedUuid.data))
+            .returning();
 
         const profileDto = toProfileDTO(updated, user, user);
         return jsonOk(profileDto);
@@ -155,15 +163,16 @@ export async function DELETE(_request: Request, context: RouteContext) {
             return jsonForbidden("You can only delete your own profiles");
         }
 
-        // Delete the associated photo before removing the row.
+        // Delete the associated photo before removing the row. Only allowed
+        // when the actor is the uploader, the profile owner, or an admin.
         if (profile.photoPath) {
-            try {
-                await db
-                    .delete(photos)
-                    .where(eq(photos.id, profile.photoPath));
-            } catch (err) {
+            await deletePhotoIfAllowed(
+                profile.photoPath,
+                profile.userId,
+                user
+            ).catch((err) => {
                 console.error("Failed to delete photo:", err);
-            }
+            });
         }
 
         await db.delete(profiles).where(eq(profiles.id, parsedUuid.data));
