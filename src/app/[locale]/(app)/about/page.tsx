@@ -31,7 +31,7 @@ export default async function AboutPage() {
                         {t("license.description")}
                     </p>
                     <a
-                        href="https://github.com/tu-usuario/heroes/blob/main/LICENSE"
+                        href="https://github.com/jcolmenarezgil/heroes/blob/main/LICENSE"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="mt-4 inline-block text-xs font-semibold text-emerald-400 hover:underline"
@@ -49,7 +49,7 @@ export default async function AboutPage() {
                         {t("contribute.description")}
                     </p>
                     <a
-                        href="https://github.com/tu-usuario/heroes/blob/main/CONTRIBUTING.md"
+                        href="https://github.com/jcolmenarezgil/heroes/blob/main/CONTRIBUTING.md"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="mt-4 inline-block text-xs font-semibold text-blue-400 hover:underline"

@@ -1,6 +1,7 @@
 import { eq } from "drizzle-orm";
 import { db } from "@/lib/db/client";
 import { photos } from "@/lib/db/schema";
+import { uuidParamSchema } from "@/lib/validations/profile";
 
 export const dynamic = "force-dynamic";
 
@@ -10,6 +11,9 @@ interface RouteContext {
 
 export async function GET(_request: Request, context: RouteContext) {
     const { id } = await context.params;
+    if (!uuidParamSchema.safeParse(id).success) {
+        return new Response("Invalid photo id", { status: 400 });
+    }
 
     try {
         const rows = await db

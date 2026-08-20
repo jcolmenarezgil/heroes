@@ -490,8 +490,8 @@
     "title": "Heroes Project",
     "description": "A community-driven platform to quickly and freely locate health centers, missing persons, and critical resources in times of need.",
     "license": {
-      "title": "MIT License",
-      "description": "This software is 100% free. You have full freedom to use, modify, and distribute it. The only legal requirement is to maintain copyright and original attribution.",
+      "title": "CC BY-NC 4.0",
+      "description": "This software is 100% free for non-commercial use. You are free to share and adapt it with attribution, but commercial use is not permitted.",
       "link": "View Full License →"
     },
     "contribute": {

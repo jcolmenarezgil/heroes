@@ -490,8 +490,8 @@
     "title": "Proyecto Heroes",
           "description": "Una plataforma comunitaria para localizar rápida y libremente centros de atención, personas desaparecidas y recursos críticos en momentos de necesidad.",
     "license": {
-      "title": "Licencia MIT",
-      "description": "Este software es 100% libre. Tienes total libertad de usarlo, modificarlo y distribuirlo. La única condición legal es mantener el aviso de copyright y la atribución original del proyecto.",
+      "title": "CC BY-NC 4.0",
+      "description": "Este software es 100% libre para uso no comercial. Puedes compartirlo y adaptarlo libremente con atribución, pero no se permite el uso comercial.",
       "link": "Ver Licencia Completa →"
     },
     "contribute": {

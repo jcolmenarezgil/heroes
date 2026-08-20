@@ -10,7 +10,6 @@ import {
 } from "@/components/icons";
 import ProfileCard from "@/components/ui/ProfileCard";
 import Skeleton from "@/components/ui/Skeleton";
-import { Button } from "@/components/ui/Button";
 import FabCreate from "@/components/ui/FabCreate";
 import { useToast } from "@/components/providers/ToastProvider";
 import { useSync } from "@/components/providers/SyncProvider";
@@ -220,25 +219,30 @@ export default function HomePage() {
       </div>
 
       {!isLoading && totalPages > 1 && (
-        <div className="flex items-center justify-between pt-2">
-          <Button
-            variant="secondary"
+        <nav
+          aria-label="Pagination"
+          className="flex items-center justify-center gap-5 pt-2 text-sm"
+        >
+          <button
+            type="button"
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={currentPage <= 1}
+            className="flex items-center gap-1 text-neutral-400 transition-colors hover:text-white disabled:cursor-default disabled:text-neutral-600"
           >
-            {t("pagination.previous")}
-          </Button>
-          <span className="text-xs text-neutral-400">
+            <span aria-hidden="true">{"\u2190"}</span> {t("pagination.previous")}
+          </button>
+          <span className="text-xs text-neutral-500">
             {t("pagination.pageOf", { page: currentPage, total: totalPages })}
           </span>
-          <Button
-            variant="secondary"
+          <button
+            type="button"
             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
             disabled={currentPage >= totalPages}
+            className="flex items-center gap-1 text-neutral-400 transition-colors hover:text-white disabled:cursor-default disabled:text-neutral-600"
           >
-            {t("pagination.next")}
-          </Button>
-        </div>
+            {t("pagination.next")} <span aria-hidden="true">{"\u2192"}</span>
+          </button>
+        </nav>
       )}
 
       <FabCreate />

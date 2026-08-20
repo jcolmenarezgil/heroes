@@ -255,30 +255,35 @@ export default function MyProfilePage() {
           )}
 
           {reports && reports.totalPages > 1 && (
-            <div className="mt-4 flex items-center justify-between">
-              <Button
-                variant="secondary"
+            <nav
+              aria-label="Pagination"
+              className="mt-4 flex items-center justify-center gap-5 text-sm"
+            >
+              <button
+                type="button"
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={page <= 1}
+                className="flex items-center gap-1 text-neutral-400 transition-colors hover:text-white disabled:cursor-default disabled:text-neutral-600"
               >
-                {t("pagination.previous")}
-              </Button>
-              <span className="text-sm text-neutral-400">
+                <span aria-hidden="true">{"\u2190"}</span> {t("pagination.previous")}
+              </button>
+              <span className="text-xs text-neutral-500">
                 {t("pagination.pageOf", {
                   page,
                   total: reports.totalPages,
                 })}
               </span>
-              <Button
-                variant="secondary"
+              <button
+                type="button"
                 onClick={() =>
                   setPage((p) => Math.min(reports.totalPages, p + 1))
                 }
                 disabled={page >= reports.totalPages}
+                className="flex items-center gap-1 text-neutral-400 transition-colors hover:text-white disabled:cursor-default disabled:text-neutral-600"
               >
-                {t("pagination.next")}
-              </Button>
-            </div>
+                {t("pagination.next")} <span aria-hidden="true">{"\u2192"}</span>
+              </button>
+            </nav>
           )}
         </div>
       </div>

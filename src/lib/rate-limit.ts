@@ -16,14 +16,20 @@ export function resetRateLimits(): void {
     buckets.clear();
 }
 
-// Client IP from x-forwarded-for (first entry), x-real-ip, then "unknown".
+// Client IP from x-forwarded-for, x-real-ip, then "unknown".
+// Trusted proxies append the client IP at the END of x-forwarded-for, so the
+// last entry is the one added by the proxy we trust
 export function getClientIp(request: Request): string {
     const forwarded = request.headers.get("x-forwarded-for");
     if (forwarded) {
-        const first = forwarded.split(",")[0]?.trim();
-        if (first) return first;
+        const entries = forwarded
+            .split(",")
+            .map((part) => part.trim())
+            .filter(Boolean);
+        const last = entries[entries.length - 1];
+        if (last) return last;
     }
-    return request.headers.get("x-real-ip") ?? "unknown";
+    return request.headers.get("x-real-ip")?.trim() || "unknown";
 }
 
 // Record a hit for `key` and report whether the caller is now over the limit.

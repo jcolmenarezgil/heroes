@@ -2,6 +2,7 @@ import { and, desc, eq, ilike, sql } from "drizzle-orm";
 import { getAuthUser } from "@/lib/api-auth";
 import {
     jsonBadRequest,
+    jsonForbidden,
     jsonOk,
     jsonServerError,
     jsonUnauthorized,
@@ -9,6 +10,7 @@ import {
 import { db } from "@/lib/db/client";
 import { profiles } from "@/lib/db/schema";
 import { listProfilesWithUsers, toProfileDTO } from "@/lib/profile-mapper";
+import { canAttachPhoto } from "@/lib/photo-guard";
 import {
     createProfileSchema,
     listProfilesQuerySchema,
@@ -98,6 +100,13 @@ export async function POST(request: Request) {
     } = parsed.data;
 
     try {
+        if (photoPath) {
+            const allowed = await canAttachPhoto(photoPath, user);
+            if (!allowed) {
+                return jsonForbidden("You can only attach photos you uploaded");
+            }
+        }
+
         const [created] = await db
             .insert(profiles)
             .values({
